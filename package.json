@@ -1,7 +1,11 @@
 {
+  "name": "hsbc-svns-stats-analyzer",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build --base=/HSBC-SVNS-Stats-Analyzer/",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -11,6 +15,5 @@
     "react-dom": "latest",
     "lucide-react": "latest",
     "recharts": "latest"
-  },
-  "devDependencies": {}
+  }
 }
