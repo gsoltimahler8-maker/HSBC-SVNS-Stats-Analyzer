@@ -25,11 +25,13 @@ jobs:
         with:
           node-version: 22
 
-      - run: npm cache clean --force
+      - run: corepack enable
 
-      - run: npm install --no-audit --no-fund
+      - run: corepack prepare pnpm@latest --activate
 
-      - run: npm run build
+      - run: pnpm install
+
+      - run: pnpm run build
 
       - uses: actions/configure-pages@v5
 
