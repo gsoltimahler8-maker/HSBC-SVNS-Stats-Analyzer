@@ -41,6 +41,9 @@ function App(){
   const correlations=['cleanBreaks','defendersBeaten','turnoversWon','turnoversConceded','possession','tackleSuccess'].map(k=>({metric:k, correlation:corr(corrData,k,'pointDiff')})).filter(x=>x.correlation!==null).sort((a,b)=>Math.abs(b.correlation)-Math.abs(a.correlation));
   const mixedSeasonWarning=false;
   return <div className="app">
+    <div style={{background:'#fff3cd', color:'#3b2f00', padding:'12px 16px', border:'1px solid #ffda6a', borderRadius:'12px', margin:'12px'}}>
+      ⚠ SAMPLE DATA / DEMO MODE：現在表示されている試合結果・スタッツは画面確認用の仮データです。実際のHSBC SVNS公式結果ではありません。
+    </div>
     <header className="hero"><div><img className="appIconPreview" src="/icon-192.png" alt="SVNS Stats icon"/><p className="eyebrow">PWA prototype</p><h1>SVNS Stats Analyzer</h1><p>シーズン・大会・男女区分を明示し、試合単位の元データまで遡るためのHSBC SVNS分析PWA試作。</p></div><div className="badge"><Database size={22}/> Vercel + Supabase想定</div></header>
     <section className="panel scope"><h2><Filter size={18}/> Data Scope</h2><div className="filters">
       <label>Season<select value={season} onChange={e=>setSeason(e.target.value)}>{seasons.map(s=><option key={s}>{s}</option>)}</select></label>
