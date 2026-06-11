@@ -837,3 +837,18 @@
     font-size: 0.68rem;
   }
 }
+/* Version 0.2: responsive home hero images */
+.homeMenu {
+  background-image:
+    linear-gradient(rgba(2, 6, 23, 0.06), rgba(2, 6, 23, 0.24)),
+    var(--home-hero-image) !important;
+}
+
+@media (max-width: 800px) {
+  .homeMenu {
+    background-image:
+      linear-gradient(rgba(2, 6, 23, 0.04), rgba(2, 6, 23, 0.18)),
+      var(--home-hero-mobile-image) !important;
+    background-position: center top !important;
+  }
+}
