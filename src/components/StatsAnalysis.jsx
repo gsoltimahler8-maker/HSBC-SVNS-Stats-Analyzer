@@ -94,7 +94,7 @@ export default function StatsAnalysis({ onBackHome }) {
           margin: '12px',
         }}
       >
-        ⚠ SAMPLE DATA / DEMO MODE：現在表示されている試合結果・スタッツは画面確認用の仮データです。実際のHSBC SVNS公式結果ではありません。
+        ⚠ SAMPLE DATA / DEMO MODE：現在表示されている試合結果・スタッツは画面確認用の仮データです。実際の公式結果・公式スタッツではありません。
       </div>
 
       <header className="hero">
@@ -105,10 +105,10 @@ export default function StatsAnalysis({ onBackHome }) {
             alt="SVNS Stats icon"
           />
           <h1>SVNS Stats Analyzer</h1>
-          <p>シーズン・大会・男女区分を明示し、試合単位の元データまで遡るためのHSBC SVNS分析PWA試作。</p>
+          <p>シーズン・大会・男女区分を明示し、試合単位の元データまで遡るためのSVNS分析PWA試作。</p>
         </div>
         <div className="badge">
-          <Database size={22} /> HSBC SVNS Analytics
+          <Database size={22} /> SVNS Analytics
         </div>
       </header>
 
