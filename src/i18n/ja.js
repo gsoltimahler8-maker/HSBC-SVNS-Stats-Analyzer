@@ -5,31 +5,85 @@ const ja = {
   homeDescription:
     '速報ではなく分析。SVNSの試合スタッツを、シーズン・大会・男女区分・チーム・対戦相手・試合数を明示して検証するためのプラットフォームです。',
 
-  unofficialNotice:
-    '本アプリは非公式のSVNSスタッツ分析アプリです。データ出典: Rugby.com.au / SVNS Match Centre',
-  statsAnalysis: {
+    statsAnalysis: {
     sampleWarning:
-      '⚠ SAMPLE DATA / DEMO MODE：現在表示されている試合結果・スタッツは画面確認用の仮データです。実際の公式結果・公式スタッツではありません。',
+      '⚠ SAMPLE DATA / DEMO MODE: The match results and statistics shown here are sample data for screen testing. They are not official results or official statistics.',
     subtitle:
-      'シーズン・大会・男女区分を明示し、試合単位の元データまで遡るためのSVNS分析PWA試作。',
+      'A prototype SVNS analytics PWA for keeping season, tournament, gender, and match-level traceability explicit.',
     badge: 'SVNS Analytics',
+
     dataScope: 'Data Scope',
-    matchList: 'Match list',
-    matchDetail: 'Match detail',
-    winLossComparison: 'Win/Loss comparison',
+    matchList: 'Match List',
+    matchDetail: 'Match Detail',
+    winLossComparison: 'Win/Loss Comparison',
     winLossNote:
-      '分析条件を固定した上で、勝利試合と敗戦試合の平均値を比較します。',
-    candidateDrivers: 'Candidate drivers',
+      'Compares average values for wins and losses while keeping the analysis scope fixed.',
+    candidateDrivers: 'Candidate Drivers',
     candidateDriversNote:
-      '点差との相関係数です。因果ではなく、候補の順位付けとして扱います。',
-    scatterTitle: 'Clean breaks vs point difference',
-    nextImplementation: 'Next implementation',
-    noSampleData: 'この条件のサンプルデータはありません。',
+      'Correlation with point difference. Treat these as candidate indicators, not causal factors.',
+    scatterTitle: 'Clean Breaks vs Point Difference',
+    nextImplementation: 'Next Implementation',
+
+    noSampleData: 'No sample data is available for this condition.',
     traceability: 'Traceability',
     internalMatchId: 'Internal Match ID',
     rugbyComAuId: 'Rugby.com.au ID',
     svnsId: 'SVNS ID',
     lastFetched: 'Last fetched',
+
+    filters: {
+      season: 'Season',
+      gender: 'Gender',
+      team: 'Team',
+      tournament: 'Tournament',
+      all: 'All',
+      women: 'Women',
+      men: 'Men',
+    },
+
+    scopeLabels: {
+      season: 'Season',
+      gender: 'Gender',
+      tournament: 'Tournament',
+      matches: 'Matches',
+    },
+
+    results: {
+      win: 'Win',
+      loss: 'Loss',
+      winsAvg: 'Wins avg',
+      lossesAvg: 'Losses avg',
+    },
+
+    metrics: {
+      pointsFor: 'Points For',
+      pointsAgainst: 'Points Against',
+      cleanBreaks: 'Clean Breaks',
+      defendersBeaten: 'Defenders Beaten',
+      turnoversWon: 'Turnovers Won',
+      turnoversConceded: 'Turnovers Conceded',
+      tackleSuccess: 'Tackle Success',
+      possession: 'Possession',
+      pointDiff: 'Point Difference',
+      tackles: 'Tackles',
+      missedTackles: 'Missed Tackles',
+    },
+
+    scatter: {
+      xAxis: 'Clean Breaks',
+      yAxis: 'Point Difference',
+      matches: 'Matches',
+    },
+
+    mixedSeasonWarning:
+      'This analysis combines multiple seasons. Be careful about squad changes and tournament-format differences.',
+
+    nextImplementationItems: [
+      'Create Supabase tables for seasons / tournaments / matches / match_team_stats / sources.',
+      'Add CSV import and validate the workflow with manually prepared data.',
+      'Add Rugby.com.au / SVNS data import through a scheduled import service or serverless functions.',
+      'Store source HTML/JSON as raw_data so analysis values can be checked against source data.',
+    ],
   },
   menu: {
     analysis: {
