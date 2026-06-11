@@ -43,14 +43,16 @@ function getMenuItems(t) {
 
 export default function HomeMenu({ onNavigate, t = ja }) {
   const heroImage = `${import.meta.env.BASE_URL}assets/home-hero.png`;
-  const menuItems = getMenuItems(t);
+const mobileHeroImage = `${import.meta.env.BASE_URL}assets/home-hero-mobile.png`;
+const menuItems = getMenuItems(t);
 
   return (
     <div
       className="homeMenu"
       style={{
-        backgroundImage: `linear-gradient(rgba(2, 6, 23, 0.06), rgba(2, 6, 23, 0.24)), url(${heroImage})`,
-      }}
+  '--home-hero-image': `url(${heroImage})`,
+  '--home-hero-mobile-image': `url(${mobileHeroImage})`,
+}}
     >
       <div className="homeOverlay">
         <header className="homeHeader">
