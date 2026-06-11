@@ -4,7 +4,7 @@ import { ShieldAlert, Database, Trophy, Filter, Info, RefreshCcw } from 'lucide-
 import { sampleMatches } from '../data/sampleMatches.js';
 import { pct, avg, corr } from '../utils/statistics.js';
 
-export default function StatsAnalysis({ onBackHome }) {
+export default function StatsAnalysis({ onBackHome, t }) {
   const seasons = [...new Set(sampleMatches.map((m) => m.season))];
 
   const [season, setSeason] = useState('2025-26');
@@ -79,10 +79,10 @@ export default function StatsAnalysis({ onBackHome }) {
   return (
     <div className="app">
             {onBackHome && (
-        <button type="button" className="backHomeButton" onClick={onBackHome}>
-          ← ホームへ戻る
-        </button>
-      )}
+  <button type="button" className="backHomeButton" onClick={onBackHome}>
+    {t?.navigation?.backHome || '← ホームへ戻る'}
+  </button>
+)}
       
       <div
         style={{
