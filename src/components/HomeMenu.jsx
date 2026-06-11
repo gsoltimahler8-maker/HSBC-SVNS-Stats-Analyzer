@@ -43,8 +43,8 @@ export default function HomeMenu({ onNavigate }) {
     <div
       className="homeMenu"
       style={{
-        backgroundImage: `linear-gradient(rgba(2, 6, 23, 0.35), rgba(2, 6, 23, 0.75)), url(${heroImage})`,
-      }}
+  backgroundImage: `linear-gradient(rgba(2, 6, 23, 0.06), rgba(2, 6, 23, 0.24)), url(${heroImage})`,
+}}
     >
       <div className="homeOverlay">
         <header className="homeHeader">
