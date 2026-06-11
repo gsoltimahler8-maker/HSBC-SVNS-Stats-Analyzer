@@ -520,3 +520,66 @@
     text-align: left !important;
   }
 }
+/* Version 0.2: compact centered title banner */
+.homeHeader {
+  position: absolute !important;
+  top: 18px !important;
+  left: 50vw !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+  width: min(520px, calc(100vw - 80px)) !important;
+  max-width: 520px !important;
+  padding: 8px 14px !important;
+  border-radius: 16px !important;
+  text-align: center !important;
+  background: rgba(2, 6, 23, 0.34) !important;
+  z-index: 5 !important;
+}
+
+.homeHeader h1 {
+  margin: 0 0 4px !important;
+  font-size: clamp(1.35rem, 2.2vw, 2.25rem) !important;
+  line-height: 1.05 !important;
+}
+
+.homeHeader p {
+  margin: 0 !important;
+  font-size: 0.72rem !important;
+  line-height: 1.35 !important;
+  max-width: none !important;
+}
+
+.homeKicker {
+  margin: 0 0 3px !important;
+  font-size: 0.58rem !important;
+  letter-spacing: 0.08em !important;
+}
+
+.homeOverlay .homeHeader {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+@media (max-width: 800px) {
+  .homeHeader {
+    left: 12px !important;
+    right: 12px !important;
+    top: 12px !important;
+    transform: none !important;
+    width: auto !important;
+    max-width: none !important;
+    text-align: left !important;
+  }
+
+  .homeHeader h1 {
+    font-size: 1.35rem !important;
+  }
+
+  .homeHeader p {
+    font-size: 0.68rem !important;
+  }
+
+  .homeKicker {
+    font-size: 0.56rem !important;
+  }
+}
