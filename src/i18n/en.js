@@ -7,7 +7,30 @@ const en = {
 
   unofficialNotice:
     'This is an unofficial SVNS statistics and analytics app. Data sources: Rugby.com.au / SVNS Match Centre',
-
+  statsAnalysis: {
+    sampleWarning:
+      '⚠ SAMPLE DATA / DEMO MODE: The match results and statistics shown here are sample data for screen testing. They are not official results or official statistics.',
+    subtitle:
+      'A prototype SVNS analytics PWA for keeping season, tournament, gender, and match-level traceability explicit.',
+    badge: 'SVNS Analytics',
+    dataScope: 'Data Scope',
+    matchList: 'Match List',
+    matchDetail: 'Match Detail',
+    winLossComparison: 'Win/Loss Comparison',
+    winLossNote:
+      'Compares average values for wins and losses while keeping the analysis scope fixed.',
+    candidateDrivers: 'Candidate Drivers',
+    candidateDriversNote:
+      'Correlation with point difference. Treat these as candidate indicators, not causal factors.',
+    scatterTitle: 'Clean Breaks vs Point Difference',
+    nextImplementation: 'Next Implementation',
+    noSampleData: 'No sample data is available for this condition.',
+    traceability: 'Traceability',
+    internalMatchId: 'Internal Match ID',
+    rugbyComAuId: 'Rugby.com.au ID',
+    svnsId: 'SVNS ID',
+    lastFetched: 'Last fetched',
+  },
   menu: {
     analysis: {
       label: 'Stats Analysis',
