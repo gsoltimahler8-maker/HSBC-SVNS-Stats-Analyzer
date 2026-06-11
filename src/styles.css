@@ -292,3 +292,183 @@
     display: block;
   }
 }
+/* Version 0.2: force image-based home menu layout */
+.homeMenu {
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.homeOverlay {
+  min-height: 100vh;
+  position: relative;
+  padding: 0;
+}
+
+.homeHeader {
+  position: absolute;
+  top: 16px;
+  left: 18px;
+  z-index: 3;
+  max-width: 520px;
+  padding: 12px 16px;
+  border-radius: 20px;
+}
+
+.homeHeader h1 {
+  font-size: clamp(1.55rem, 3vw, 2.6rem);
+}
+
+.homeHeader p {
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+.homeKicker {
+  font-size: 0.72rem;
+}
+
+.homeMenuButtons {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  min-height: 100vh !important;
+  margin: 0 !important;
+  pointer-events: none;
+}
+
+.homeButton,
+.homeButtonAnalysis,
+.homeButtonTrends,
+.homeButtonSearch,
+.homeButtonVideos,
+.homeButtonAdmin {
+  position: absolute !important;
+  width: 150px !important;
+  min-height: 54px;
+  padding: 8px 10px;
+  border-radius: 15px;
+  background: rgba(15, 23, 42, 0.58);
+  pointer-events: auto;
+  transform: none;
+}
+
+.homeButton small {
+  display: none !important;
+}
+
+.homeButtonLabelJa {
+  font-size: 0.94rem;
+  margin-bottom: 2px;
+}
+
+.homeButtonLabelEn {
+  font-size: 0.58rem;
+  margin-bottom: 0;
+}
+
+.homeButtonAnalysis {
+  left: 6% !important;
+  top: 31% !important;
+}
+
+.homeButtonTrends {
+  right: 6% !important;
+  top: 31% !important;
+}
+
+.homeButtonSearch {
+  left: 8% !important;
+  top: 61% !important;
+}
+
+.homeButtonVideos {
+  right: 8% !important;
+  top: 61% !important;
+}
+
+.homeButtonAdmin {
+  left: 50% !important;
+  top: 78% !important;
+  width: 160px !important;
+  text-align: center;
+  transform: translateX(-50%) !important;
+}
+
+.homeButtonAdmin:hover {
+  transform: translateX(-50%) translateY(-2px) !important;
+}
+
+.homeFooter {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 14px;
+  max-width: none;
+  padding: 9px 12px;
+  font-size: 0.76rem;
+  z-index: 3;
+}
+
+@media (max-width: 800px) {
+  .homeHeader {
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    max-width: none;
+    padding: 10px 12px;
+  }
+
+  .homeHeader h1 {
+    font-size: 1.45rem;
+  }
+
+  .homeHeader p {
+    font-size: 0.76rem;
+    line-height: 1.45;
+  }
+
+  .homeButton,
+  .homeButtonAnalysis,
+  .homeButtonTrends,
+  .homeButtonSearch,
+  .homeButtonVideos,
+  .homeButtonAdmin {
+    width: 132px !important;
+    min-height: 48px;
+    padding: 7px 9px;
+  }
+
+  .homeButtonLabelJa {
+    font-size: 0.86rem;
+  }
+
+  .homeButtonLabelEn {
+    font-size: 0.52rem;
+  }
+
+  .homeButtonAnalysis {
+    left: 4% !important;
+    top: 33% !important;
+  }
+
+  .homeButtonTrends {
+    right: 4% !important;
+    top: 33% !important;
+  }
+
+  .homeButtonSearch {
+    left: 5% !important;
+    top: 60% !important;
+  }
+
+  .homeButtonVideos {
+    right: 5% !important;
+    top: 60% !important;
+  }
+
+  .homeButtonAdmin {
+    left: 50% !important;
+    top: 76% !important;
+    width: 144px !important;
+  }
+}
