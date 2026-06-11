@@ -7,7 +7,30 @@ const ja = {
 
   unofficialNotice:
     '本アプリは非公式のSVNSスタッツ分析アプリです。データ出典: Rugby.com.au / SVNS Match Centre',
-
+  statsAnalysis: {
+    sampleWarning:
+      '⚠ SAMPLE DATA / DEMO MODE：現在表示されている試合結果・スタッツは画面確認用の仮データです。実際の公式結果・公式スタッツではありません。',
+    subtitle:
+      'シーズン・大会・男女区分を明示し、試合単位の元データまで遡るためのSVNS分析PWA試作。',
+    badge: 'SVNS Analytics',
+    dataScope: 'Data Scope',
+    matchList: 'Match list',
+    matchDetail: 'Match detail',
+    winLossComparison: 'Win/Loss comparison',
+    winLossNote:
+      '分析条件を固定した上で、勝利試合と敗戦試合の平均値を比較します。',
+    candidateDrivers: 'Candidate drivers',
+    candidateDriversNote:
+      '点差との相関係数です。因果ではなく、候補の順位付けとして扱います。',
+    scatterTitle: 'Clean breaks vs point difference',
+    nextImplementation: 'Next implementation',
+    noSampleData: 'この条件のサンプルデータはありません。',
+    traceability: 'Traceability',
+    internalMatchId: 'Internal Match ID',
+    rugbyComAuId: 'Rugby.com.au ID',
+    svnsId: 'SVNS ID',
+    lastFetched: 'Last fetched',
+  },
   menu: {
     analysis: {
       label: 'スタッツ分析',
