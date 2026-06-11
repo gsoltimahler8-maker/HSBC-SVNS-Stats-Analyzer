@@ -1,59 +1,62 @@
-const menuItems = [
-  {
-    id: 'analysis',
-    labelJa: 'スタッツ分析',
-    labelEn: 'Stats Analysis',
-    descriptionJa: '試合単位のスタッツ、勝敗比較、相関候補を確認します。',
-    positionClass: 'homeButtonAnalysis',
-  },
-  {
-    id: 'trends',
-    labelJa: 'スタッツ推移',
-    labelEn: 'Stats Trends',
-    descriptionJa: 'シーズン内推移、対戦国別推移、過去シーズン比較を確認します。',
-    positionClass: 'homeButtonTrends',
-  },
-  {
-    id: 'search',
-    labelJa: '試合検索',
-    labelEn: 'Match Search',
-    descriptionJa: 'Season / Tournament / Team / Opponent などで試合を検索します。',
-    positionClass: 'homeButtonSearch',
-  },
-  {
-    id: 'videos',
-    labelJa: '動画ライブラリ',
-    labelEn: 'Video Library',
-    descriptionJa: 'スタッツ分析結果を動画で確認するための補助機能です。',
-    positionClass: 'homeButtonVideos',
-  },
-  {
-    id: 'admin',
-    labelJa: 'データ管理',
-    labelEn: 'Data Management',
-    descriptionJa: '管理者用のデータ取込・確認・更新履歴管理です。',
-    positionClass: 'homeButtonAdmin',
-  },
-];
+import ja from '../i18n/ja.js';
 
-export default function HomeMenu({ onNavigate }) {
+function getMenuItems(t) {
+  return [
+    {
+      id: 'analysis',
+      label: t.menu.analysis.label,
+      labelEn: t.menu.analysis.labelEn,
+      description: t.menu.analysis.description,
+      positionClass: 'homeButtonAnalysis',
+    },
+    {
+      id: 'trends',
+      label: t.menu.trends.label,
+      labelEn: t.menu.trends.labelEn,
+      description: t.menu.trends.description,
+      positionClass: 'homeButtonTrends',
+    },
+    {
+      id: 'search',
+      label: t.menu.search.label,
+      labelEn: t.menu.search.labelEn,
+      description: t.menu.search.description,
+      positionClass: 'homeButtonSearch',
+    },
+    {
+      id: 'videos',
+      label: t.menu.videos.label,
+      labelEn: t.menu.videos.labelEn,
+      description: t.menu.videos.description,
+      positionClass: 'homeButtonVideos',
+    },
+    {
+      id: 'admin',
+      label: t.menu.admin.label,
+      labelEn: t.menu.admin.labelEn,
+      description: t.menu.admin.description,
+      adminOnly: t.menu.admin.adminOnly,
+      positionClass: 'homeButtonAdmin',
+    },
+  ];
+}
+
+export default function HomeMenu({ onNavigate, t = ja }) {
   const heroImage = `${import.meta.env.BASE_URL}assets/home-hero.png`;
+  const menuItems = getMenuItems(t);
 
   return (
     <div
       className="homeMenu"
       style={{
-  backgroundImage: `linear-gradient(rgba(2, 6, 23, 0.06), rgba(2, 6, 23, 0.24)), url(${heroImage})`,
-}}
+        backgroundImage: `linear-gradient(rgba(2, 6, 23, 0.06), rgba(2, 6, 23, 0.24)), url(${heroImage})`,
+      }}
     >
       <div className="homeOverlay">
         <header className="homeHeader">
-          <p className="homeKicker">Unofficial SVNS analytics platform</p>
-          <h1>SVNS Stats Analyzer</h1>
-          <p>
-            速報ではなく分析。SVNSの試合スタッツを、シーズン・大会・男女区分・
-            チーム・対戦相手・試合数を明示して検証するためのプラットフォームです。
-          </p>
+          <p className="homeKicker">{t.appKicker}</p>
+          <h1>{t.appTitle}</h1>
+          <p>{t.homeDescription}</p>
         </header>
 
         <div className="homeMenuButtons" aria-label="Main menu">
@@ -64,19 +67,18 @@ export default function HomeMenu({ onNavigate }) {
               className={`homeButton ${item.positionClass}`}
               onClick={() => onNavigate(item.id)}
             >
-              <span className="homeButtonLabelJa">{item.labelJa}</span>
-<span className="homeButtonLabelEn">{item.labelEn}</span>
-{item.id === 'admin' && <span className="adminOnlyBadge">管理者のみ</span>}
-<small>{item.descriptionJa}</small>
+              <span className="homeButtonLabelJa">{item.label}</span>
+              <span className="homeButtonLabelEn">{item.labelEn}</span>
+              {item.id === 'admin' && (
+                <span className="adminOnlyBadge">{item.adminOnly}</span>
+              )}
+              <small>{item.description}</small>
             </button>
           ))}
         </div>
 
         <footer className="homeFooter">
-          <p>
-            本アプリは非公式のSVNSスタッツ分析アプリです。
-            データ出典: Rugby.com.au / SVNS Match Centre
-          </p>
+          <p>{t.unofficialNotice}</p>
         </footer>
       </div>
     </div>
