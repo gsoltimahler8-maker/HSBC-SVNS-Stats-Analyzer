@@ -65,8 +65,9 @@ export default function HomeMenu({ onNavigate }) {
               onClick={() => onNavigate(item.id)}
             >
               <span className="homeButtonLabelJa">{item.labelJa}</span>
-              <span className="homeButtonLabelEn">{item.labelEn}</span>
-              <small>{item.descriptionJa}</small>
+<span className="homeButtonLabelEn">{item.labelEn}</span>
+{item.id === 'admin' && <span className="adminOnlyBadge">管理者のみ</span>}
+<small>{item.descriptionJa}</small>
             </button>
           ))}
         </div>
