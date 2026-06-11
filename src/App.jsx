@@ -57,8 +57,8 @@ export default function App() {
   let content;
 
   if (screen === 'analysis') {
-    content = <StatsAnalysis onBackHome={backHome} />;
-  } else if (screen === 'trends') {
+  content = <StatsAnalysis onBackHome={backHome} t={t} />;
+} else if (screen === 'trends') {
     content = (
       <ComingSoon
         title={t.comingSoon.trendsTitle}
