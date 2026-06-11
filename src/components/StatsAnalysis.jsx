@@ -3,8 +3,10 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { ShieldAlert, Database, Trophy, Filter, Info, RefreshCcw } from 'lucide-react';
 import { sampleMatches } from '../data/sampleMatches.js';
 import { pct, avg, corr } from '../utils/statistics.js';
+import ja from '../i18n/ja.js';
 
-export default function StatsAnalysis({ onBackHome, t }) {
+export default function StatsAnalysis({ onBackHome, t = ja }) {
+  const labels = t.statsAnalysis;
   const seasons = [...new Set(sampleMatches.map((m) => m.season))];
 
   const [season, setSeason] = useState('2025-26');
@@ -78,12 +80,12 @@ export default function StatsAnalysis({ onBackHome, t }) {
 
   return (
     <div className="app">
-            {onBackHome && (
-  <button type="button" className="backHomeButton" onClick={onBackHome}>
-    {t?.navigation?.backHome || '← ホームへ戻る'}
-  </button>
-)}
-      
+      {onBackHome && (
+        <button type="button" className="backHomeButton" onClick={onBackHome}>
+          {t.navigation.backHome}
+        </button>
+      )}
+
       <div
         style={{
           background: '#fff3cd',
@@ -94,7 +96,7 @@ export default function StatsAnalysis({ onBackHome, t }) {
           margin: '12px',
         }}
       >
-        ⚠ SAMPLE DATA / DEMO MODE：現在表示されている試合結果・スタッツは画面確認用の仮データです。実際の公式結果・公式スタッツではありません。
+        {labels.sampleWarning}
       </div>
 
       <header className="hero">
@@ -104,17 +106,17 @@ export default function StatsAnalysis({ onBackHome, t }) {
             src={`${import.meta.env.BASE_URL}icon-192.png`}
             alt="SVNS Stats icon"
           />
-          <h1>SVNS Stats Analyzer</h1>
-          <p>シーズン・大会・男女区分を明示し、試合単位の元データまで遡るためのSVNS分析PWA試作。</p>
+          <h1>{t.appTitle}</h1>
+          <p>{labels.subtitle}</p>
         </div>
         <div className="badge">
-          <Database size={22} /> SVNS Analytics
+          <Database size={22} /> {labels.badge}
         </div>
       </header>
 
       <section className="panel scope">
         <h2>
-          <Filter size={18} /> Data Scope
+          <Filter size={18} /> {labels.dataScope}
         </h2>
 
         <div className="filters">
@@ -145,8 +147,8 @@ export default function StatsAnalysis({ onBackHome, t }) {
           <label>
             Tournament
             <select value={tournament} onChange={(e) => setTournament(e.target.value)}>
-              {tournaments.map((t) => (
-                <option key={t}>{t}</option>
+              {tournaments.map((tournamentName) => (
+                <option key={tournamentName}>{tournamentName}</option>
               ))}
             </select>
           </label>
@@ -177,7 +179,7 @@ export default function StatsAnalysis({ onBackHome, t }) {
       <main className="grid">
         <section className="panel">
           <h2>
-            <Trophy size={18} /> Match list
+            <Trophy size={18} /> {labels.matchList}
           </h2>
 
           <div className="matches">
@@ -200,14 +202,14 @@ export default function StatsAnalysis({ onBackHome, t }) {
             ))}
 
             {filtered.length === 0 && (
-              <p className="empty">この条件のサンプルデータはありません。</p>
+              <p className="empty">{labels.noSampleData}</p>
             )}
           </div>
         </section>
 
         <section className="panel">
           <h2>
-            <Info size={18} /> Match detail
+            <Info size={18} /> {labels.matchDetail}
           </h2>
 
           {selectedMatch && (
@@ -250,25 +252,23 @@ export default function StatsAnalysis({ onBackHome, t }) {
               </div>
 
               <div className="sourceBox">
-                <b>Traceability</b>
+                <b>{labels.traceability}</b>
                 <br />
-                Internal Match ID: {selectedMatch.id}
+                {labels.internalMatchId}: {selectedMatch.id}
                 <br />
-                Rugby.com.au ID: {selectedMatch.external.rugbyComAu}
+                {labels.rugbyComAuId}: {selectedMatch.external.rugbyComAu}
                 <br />
-                SVNS ID: {selectedMatch.external.svns}
+                {labels.svnsId}: {selectedMatch.external.svns}
                 <br />
-                Last fetched: {selectedMatch.lastFetched}
+                {labels.lastFetched}: {selectedMatch.lastFetched}
               </div>
             </div>
           )}
         </section>
 
         <section className="panel wide">
-          <h2>Win/Loss comparison</h2>
-          <p className="note">
-            分析条件を固定した上で、勝利試合と敗戦試合の平均値を比較します。
-          </p>
+          <h2>{labels.winLossComparison}</h2>
+          <p className="note">{labels.winLossNote}</p>
 
           <div className="chart">
             <ResponsiveContainer width="100%" height={320}>
@@ -286,10 +286,8 @@ export default function StatsAnalysis({ onBackHome, t }) {
         </section>
 
         <section className="panel wide">
-          <h2>Candidate drivers</h2>
-          <p className="note">
-            点差との相関係数です。因果ではなく、候補の順位付けとして扱います。
-          </p>
+          <h2>{labels.candidateDrivers}</h2>
+          <p className="note">{labels.candidateDriversNote}</p>
 
           <div className="cards">
             {correlations.map((c) => (
@@ -302,7 +300,7 @@ export default function StatsAnalysis({ onBackHome, t }) {
         </section>
 
         <section className="panel wide">
-          <h2>Clean breaks vs point difference</h2>
+          <h2>{labels.scatterTitle}</h2>
 
           <div className="chart">
             <ResponsiveContainer width="100%" height={300}>
@@ -319,7 +317,7 @@ export default function StatsAnalysis({ onBackHome, t }) {
 
         <section className="panel wide">
           <h2>
-            <RefreshCcw size={18} /> Next implementation
+            <RefreshCcw size={18} /> {labels.nextImplementation}
           </h2>
 
           <ol>
