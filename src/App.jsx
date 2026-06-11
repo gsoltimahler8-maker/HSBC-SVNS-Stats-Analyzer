@@ -1,20 +1,46 @@
 import { useState } from 'react';
 import HomeMenu from './components/HomeMenu.jsx';
 import StatsAnalysis from './components/StatsAnalysis.jsx';
+import ja from './i18n/ja.js';
+import en from './i18n/en.js';
 
-function ComingSoon({ title, description, onBackHome }) {
+const dictionaries = {
+  ja,
+  en,
+};
+
+function LanguageToggle({ language, onChangeLanguage }) {
+  return (
+    <div className="languageToggle" aria-label="Language selector">
+      <button
+        type="button"
+        className={language === 'ja' ? 'languageButton active' : 'languageButton'}
+        onClick={() => onChangeLanguage('ja')}
+      >
+        日本語
+      </button>
+      <button
+        type="button"
+        className={language === 'en' ? 'languageButton active' : 'languageButton'}
+        onClick={() => onChangeLanguage('en')}
+      >
+        English
+      </button>
+    </div>
+  );
+}
+
+function ComingSoon({ title, description, notice, onBackHome, backHomeLabel }) {
   return (
     <div className="app">
       <button type="button" className="backHomeButton" onClick={onBackHome}>
-        ← ホームへ戻る
+        {backHomeLabel}
       </button>
 
       <section className="panel">
         <h1>{title}</h1>
         <p>{description}</p>
-        <p className="note">
-          この画面はVersion0.2以降で段階的に実装します。現時点では、既存のスタッツ分析画面を壊さずにホーム画面から遷移できることを優先しています。
-        </p>
+        <p className="note">{notice}</p>
       </section>
     </div>
   );
@@ -22,50 +48,64 @@ function ComingSoon({ title, description, onBackHome }) {
 
 export default function App() {
   const [screen, setScreen] = useState('home');
+  const [language, setLanguage] = useState('ja');
+
+  const t = dictionaries[language];
+
+  const backHome = () => setScreen('home');
+
+  let content;
 
   if (screen === 'analysis') {
-    return <StatsAnalysis onBackHome={() => setScreen('home')} />;
-  }
-
-  if (screen === 'trends') {
-    return (
+    content = <StatsAnalysis onBackHome={backHome} />;
+  } else if (screen === 'trends') {
+    content = (
       <ComingSoon
-        title="スタッツ推移"
-        description="シーズン内推移、対戦国別推移、過去シーズン比較、大会別比較を確認する中核機能です。"
-        onBackHome={() => setScreen('home')}
+        title={t.comingSoon.trendsTitle}
+        description={t.comingSoon.trendsDescription}
+        notice={t.comingSoon.notice}
+        backHomeLabel={t.navigation.backHome}
+        onBackHome={backHome}
       />
     );
-  }
-
-  if (screen === 'search') {
-    return (
+  } else if (screen === 'search') {
+    content = (
       <ComingSoon
-        title="試合検索"
-        description="Season / Tournament / Gender / Team / Opponent / Stage / Result / Match ID で試合を検索する画面です。"
-        onBackHome={() => setScreen('home')}
+        title={t.comingSoon.searchTitle}
+        description={t.comingSoon.searchDescription}
+        notice={t.comingSoon.notice}
+        backHomeLabel={t.navigation.backHome}
+        onBackHome={backHome}
       />
     );
-  }
-
-  if (screen === 'videos') {
-    return (
+  } else if (screen === 'videos') {
+    content = (
       <ComingSoon
-        title="動画ライブラリ"
-        description="スタッツ分析結果を動画で検証するための補助機能です。将来的にはスタッツを見ながら動画を確認できる構成にします。"
-        onBackHome={() => setScreen('home')}
+        title={t.comingSoon.videosTitle}
+        description={t.comingSoon.videosDescription}
+        notice={t.comingSoon.notice}
+        backHomeLabel={t.navigation.backHome}
+        onBackHome={backHome}
       />
     );
-  }
-
-  if (screen === 'admin') {
-    return (
+  } else if (screen === 'admin') {
+    content = (
       <ComingSoon
-        title="データ管理"
-        description="管理者専用のデータ取込、確認、更新履歴、大会ステータス管理画面です。"
-        onBackHome={() => setScreen('home')}
+        title={t.comingSoon.adminTitle}
+        description={t.comingSoon.adminDescription}
+        notice={t.comingSoon.notice}
+        backHomeLabel={t.navigation.backHome}
+        onBackHome={backHome}
       />
     );
+  } else {
+    content = <HomeMenu onNavigate={setScreen} t={t} />;
   }
 
-  return <HomeMenu onNavigate={setScreen} />;
+  return (
+    <>
+      <LanguageToggle language={language} onChangeLanguage={setLanguage} />
+      {content}
+    </>
+  );
 }
