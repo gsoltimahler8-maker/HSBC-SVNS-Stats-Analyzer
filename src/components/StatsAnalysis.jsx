@@ -41,6 +41,8 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
   const wins = filtered.filter((m) => m.result === 'W');
   const losses = filtered.filter((m) => m.result === 'L');
 
+  const metricLabels = labels.metrics;
+
   const analysisRows = [
     'pointsFor',
     'pointsAgainst',
@@ -51,6 +53,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
     'possession',
   ].map((k) => ({
     metric: k,
+    metricLabel: metricLabels[k] || k,
     wins: +avg(wins, k).toFixed(1),
     losses: +avg(losses, k).toFixed(1),
   }));
@@ -71,12 +74,16 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
   ]
     .map((k) => ({
       metric: k,
+      metricLabel: metricLabels[k] || k,
       correlation: corr(corrData, k, 'pointDiff'),
     }))
     .filter((x) => x.correlation !== null)
     .sort((a, b) => Math.abs(b.correlation) - Math.abs(a.correlation));
 
   const mixedSeasonWarning = false;
+
+  const tournamentLabel = (name) => (name === 'All' ? labels.filters.all : name);
+  const resultLabel = (result) => (result === 'W' ? labels.results.win : labels.results.loss);
 
   return (
     <div className="app">
@@ -121,7 +128,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
 
         <div className="filters">
           <label>
-            Season
+            {labels.filters.season}
             <select value={season} onChange={(e) => setSeason(e.target.value)}>
               {seasons.map((s) => (
                 <option key={s}>{s}</option>
@@ -130,25 +137,27 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
           </label>
 
           <label>
-            Gender
+            {labels.filters.gender}
             <select value={gender} onChange={(e) => setGender(e.target.value)}>
-              <option>Women</option>
-              <option>Men</option>
+              <option value="Women">{labels.filters.women}</option>
+              <option value="Men">{labels.filters.men}</option>
             </select>
           </label>
 
           <label>
-            Team
+            {labels.filters.team}
             <select value={team} onChange={(e) => setTeam(e.target.value)}>
               <option>Japan</option>
             </select>
           </label>
 
           <label>
-            Tournament
+            {labels.filters.tournament}
             <select value={tournament} onChange={(e) => setTournament(e.target.value)}>
               {tournaments.map((tournamentName) => (
-                <option key={tournamentName}>{tournamentName}</option>
+                <option key={tournamentName} value={tournamentName}>
+                  {tournamentLabel(tournamentName)}
+                </option>
               ))}
             </select>
           </label>
@@ -156,22 +165,22 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
 
         <div className="scopeGrid">
           <span>
-            Season: <b>{season}</b>
+            {labels.scopeLabels.season}: <b>{season}</b>
           </span>
           <span>
-            Gender: <b>{gender}</b>
+            {labels.scopeLabels.gender}: <b>{gender === 'Women' ? labels.filters.women : labels.filters.men}</b>
           </span>
           <span>
-            Tournament: <b>{tournament}</b>
+            {labels.scopeLabels.tournament}: <b>{tournamentLabel(tournament)}</b>
           </span>
           <span>
-            Matches: <b>{filtered.length}</b>
+            {labels.scopeLabels.matches}: <b>{filtered.length}</b>
           </span>
         </div>
 
         {mixedSeasonWarning && (
           <div className="warn">
-            <ShieldAlert /> 複数シーズンの統合分析です。選手構成・大会形式の差に注意。
+            <ShieldAlert /> {labels.mixedSeasonWarning}
           </div>
         )}
       </section>
@@ -196,7 +205,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
                   {m.date} / {m.tournament} / {m.stage}
                 </span>
                 <em>
-                  {m.result === 'W' ? 'Win' : 'Loss'} · {m.id}
+                  {resultLabel(m.result)} · {m.id}
                 </em>
               </button>
             ))}
@@ -225,16 +234,16 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
 
               <div className="statGrid">
                 <span>
-                  Clean breaks<b>{selectedMatch.cleanBreaks}</b>
+                  {metricLabels.cleanBreaks}<b>{selectedMatch.cleanBreaks}</b>
                 </span>
                 <span>
-                  Defenders beaten<b>{selectedMatch.defendersBeaten}</b>
+                  {metricLabels.defendersBeaten}<b>{selectedMatch.defendersBeaten}</b>
                 </span>
                 <span>
-                  Turnovers won<b>{selectedMatch.turnoversWon}</b>
+                  {metricLabels.turnoversWon}<b>{selectedMatch.turnoversWon}</b>
                 </span>
                 <span>
-                  Tackle success
+                  {metricLabels.tackleSuccess}
                   <b>
                     {pct(
                       (100 * selectedMatch.tackles) /
@@ -243,10 +252,10 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
                   </b>
                 </span>
                 <span>
-                  Possession<b>{pct(selectedMatch.possession)}</b>
+                  {metricLabels.possession}<b>{pct(selectedMatch.possession)}</b>
                 </span>
                 <span>
-                  Point diff
+                  {metricLabels.pointDiff}
                   <b>{selectedMatch.pointsFor - selectedMatch.pointsAgainst}</b>
                 </span>
               </div>
@@ -274,12 +283,12 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
             <ResponsiveContainer width="100%" height={320}>
               <BarChart data={analysisRows}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="metric" />
+                <XAxis dataKey="metricLabel" />
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="wins" name="Wins avg" fill="#22c55e" />
-                <Bar dataKey="losses" name="Losses avg" fill="#ef4444" />
+                <Bar dataKey="wins" name={labels.results.winsAvg} fill="#22c55e" />
+                <Bar dataKey="losses" name={labels.results.lossesAvg} fill="#ef4444" />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -292,7 +301,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
           <div className="cards">
             {correlations.map((c) => (
               <div className="corr" key={c.metric}>
-                <span>{c.metric}</span>
+                <span>{c.metricLabel}</span>
                 <b>{c.correlation.toFixed(2)}</b>
               </div>
             ))}
@@ -306,10 +315,10 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
             <ResponsiveContainer width="100%" height={300}>
               <ScatterChart>
                 <CartesianGrid />
-                <XAxis type="number" dataKey="cleanBreaks" name="Clean breaks" />
-                <YAxis type="number" dataKey="pointDiff" name="Point diff" />
+                <XAxis type="number" dataKey="cleanBreaks" name={labels.scatter.xAxis} />
+                <YAxis type="number" dataKey="pointDiff" name={labels.scatter.yAxis} />
                 <Tooltip cursor={{ strokeDasharray: '3 3' }} />
-                <Scatter data={corrData} name="Matches" fill="#38bdf8" />
+                <Scatter data={corrData} name={labels.scatter.matches} fill="#38bdf8" />
               </ScatterChart>
             </ResponsiveContainer>
           </div>
@@ -321,15 +330,9 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
           </h2>
 
           <ol>
-            <li>Supabaseに seasons / tournaments / matches / match_team_stats / sources を作る。</li>
-            <li>CSV取込を追加して手動データで検証する。</li>
-            <li>
-              Rugby.com.au/SVNSの取得処理をScheduled Import Service / Serverless
-              Functionsに追加する。
-            </li>
-            <li>
-              取得元HTML/JSONを raw_data として保存し、分析値と元データを照合可能にする。
-            </li>
+            {labels.nextImplementationItems.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
           </ol>
         </section>
       </main>
