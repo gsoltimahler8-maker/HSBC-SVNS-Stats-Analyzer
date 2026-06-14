@@ -5,84 +5,84 @@ const ja = {
   homeDescription:
     '速報ではなく分析。SVNSの試合スタッツを、シーズン・大会・男女区分・チーム・対戦相手・試合数を明示して検証するためのプラットフォームです。',
 
-    statsAnalysis: {
+      statsAnalysis: {
     sampleWarning:
-      '⚠ SAMPLE DATA / DEMO MODE: The match results and statistics shown here are sample data for screen testing. They are not official results or official statistics.',
+      '⚠ SAMPLE DATA / DEMO MODE：現在表示されている試合結果・スタッツは画面確認用の仮データです。実際の公式結果・公式スタッツではありません。',
     subtitle:
-      'A prototype SVNS analytics PWA for keeping season, tournament, gender, and match-level traceability explicit.',
+      'シーズン・大会・男女区分を明示し、試合単位の元データまで遡るためのSVNS分析PWA試作。',
     badge: 'SVNS Analytics',
 
-    dataScope: 'Data Scope',
-    matchList: 'Match List',
-    matchDetail: 'Match Detail',
-    winLossComparison: 'Win/Loss Comparison',
+    dataScope: '分析条件',
+    matchList: '試合一覧',
+    matchDetail: '試合詳細',
+    winLossComparison: '勝敗比較',
     winLossNote:
-      'Compares average values for wins and losses while keeping the analysis scope fixed.',
-    candidateDrivers: 'Candidate Drivers',
+      '分析条件を固定した上で、勝利試合と敗戦試合の平均値を比較します。',
+    candidateDrivers: '関連候補指標',
     candidateDriversNote:
-      'Correlation with point difference. Treat these as candidate indicators, not causal factors.',
-    scatterTitle: 'Clean Breaks vs Point Difference',
-    nextImplementation: 'Next Implementation',
+      '点差との相関係数です。因果ではなく、勝敗・点差と統計的関連が見られる候補指標として扱います。',
+    scatterTitle: 'クリーンブレイク数と点差',
+    nextImplementation: '次の実装予定',
 
-    noSampleData: 'No sample data is available for this condition.',
-    traceability: 'Traceability',
-    internalMatchId: 'Internal Match ID',
+    noSampleData: 'この条件のサンプルデータはありません。',
+    traceability: '出典追跡',
+    internalMatchId: '内部Match ID',
     rugbyComAuId: 'Rugby.com.au ID',
     svnsId: 'SVNS ID',
-    lastFetched: 'Last fetched',
+    lastFetched: '最終取得日時',
 
     filters: {
-      season: 'Season',
-      gender: 'Gender',
-      team: 'Team',
-      tournament: 'Tournament',
-      all: 'All',
-      women: 'Women',
-      men: 'Men',
+      season: 'シーズン',
+      gender: '男女区分',
+      team: 'チーム',
+      tournament: '大会',
+      all: 'すべて',
+      women: '女子',
+      men: '男子',
     },
 
     scopeLabels: {
-      season: 'Season',
-      gender: 'Gender',
-      tournament: 'Tournament',
-      matches: 'Matches',
+      season: 'シーズン',
+      gender: '男女区分',
+      tournament: '大会',
+      matches: '試合数',
     },
 
     results: {
-      win: 'Win',
-      loss: 'Loss',
-      winsAvg: 'Wins avg',
-      lossesAvg: 'Losses avg',
+      win: '勝利',
+      loss: '敗戦',
+      winsAvg: '勝利平均',
+      lossesAvg: '敗戦平均',
     },
 
     metrics: {
       pointsFor: 'Points For',
       pointsAgainst: 'Points Against',
-      cleanBreaks: 'Clean Breaks',
-      defendersBeaten: 'Defenders Beaten',
-      turnoversWon: 'Turnovers Won',
-      turnoversConceded: 'Turnovers Conceded',
-      tackleSuccess: 'Tackle Success',
+      cleanBreaks: 'Clean breaks',
+      defendersBeaten: 'Defenders beaten',
+      turnoversWon: 'Turnovers won',
+      turnoversConceded: 'Turnovers conceded',
+      tackleSuccess: 'Tackle success',
       possession: 'Possession',
-      pointDiff: 'Point Difference',
+      pointDiff: 'Point diff',
       tackles: 'Tackles',
-      missedTackles: 'Missed Tackles',
+      missedTackles: 'Missed tackles',
     },
 
     scatter: {
-      xAxis: 'Clean Breaks',
-      yAxis: 'Point Difference',
+      xAxis: 'Clean breaks',
+      yAxis: 'Point diff',
       matches: 'Matches',
     },
 
     mixedSeasonWarning:
-      'This analysis combines multiple seasons. Be careful about squad changes and tournament-format differences.',
+      '複数シーズンの統合分析です。選手構成・大会形式の差に注意してください。',
 
     nextImplementationItems: [
-      'Create Supabase tables for seasons / tournaments / matches / match_team_stats / sources.',
-      'Add CSV import and validate the workflow with manually prepared data.',
-      'Add Rugby.com.au / SVNS data import through a scheduled import service or serverless functions.',
-      'Store source HTML/JSON as raw_data so analysis values can be checked against source data.',
+      'Supabaseに seasons / tournaments / matches / match_team_stats / sources を作る。',
+      'CSV取込を追加して手動データで検証する。',
+      'Rugby.com.au / SVNSの取得処理をScheduled Import ServiceまたはServerless Functionsに追加する。',
+      '取得元HTML / JSONを raw_data として保存し、分析値と元データを照合可能にする。',
     ],
   },
   menu: {
