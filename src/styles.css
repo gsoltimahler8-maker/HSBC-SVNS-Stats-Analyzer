@@ -966,3 +966,13 @@
 .trendPlaceholder span {
   color: #94a3b8;
 }
+/* Version 0.3: stats trends data coverage status */
+.coverageOkText {
+  color: #bbf7d0 !important;
+  font-weight: 800;
+}
+
+.coverageWarningText {
+  color: #fde68a !important;
+  font-weight: 800;
+}
