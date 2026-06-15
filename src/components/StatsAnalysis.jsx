@@ -84,7 +84,12 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
 
   const tournamentLabel = (name) => (name === 'All' ? labels.filters.all : name);
   const resultLabel = (result) => (result === 'W' ? labels.results.win : labels.results.loss);
-
+  const coverageLevelLabel = (level) =>
+    labels.dataCoverage?.levels?.[level] ||
+    labels.dataCoverage?.levels?.unknown ||
+    level ||
+    labels.dataCoverage?.unknownSource;
+  
   return (
     <div className="app">
       {onBackHome && (
@@ -267,7 +272,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
                 </span>
               </div>
 
-              <div className="sourceBox">
+                            <div className="sourceBox">
                 <b>{labels.traceability}</b>
                 <br />
                 {labels.internalMatchId}: {selectedMatch.id}
@@ -277,6 +282,11 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
                 {labels.svnsId}: {selectedMatch.external.svns}
                 <br />
                 {labels.lastFetched}: {selectedMatch.lastFetched}
+                <br />
+                {labels.dataCoverage.label}: {coverageLevelLabel(selectedMatch.dataCoverageLevel)}
+                <br />
+                {labels.dataCoverage.sourceLabel}:{' '}
+                {selectedMatch.dataCoverageSource || labels.dataCoverage.unknownSource}
               </div>
             </div>
           )}
