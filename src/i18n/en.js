@@ -7,8 +7,8 @@ const en = {
 
   unofficialNotice:
     'This is an unofficial SVNS statistics and analytics app. Data sources: Rugby.com.au / SVNS Match Centre',
+
   statsAnalysis: {
-      statsAnalysis: {
     sampleWarning:
       '⚠ SAMPLE DATA / DEMO MODE: The match results and statistics shown here are sample data for screen testing. They are not official results or official statistics.',
     subtitle:
@@ -95,6 +95,7 @@ const en = {
       'Store source HTML/JSON as raw_data so analysis values can be checked against source data.',
     ],
   },
+
   menu: {
     analysis: {
       label: 'Stats Analysis',
