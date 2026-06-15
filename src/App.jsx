@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import HomeMenu from './components/HomeMenu.jsx';
 import StatsAnalysis from './components/StatsAnalysis.jsx';
+import StatsTrends from './components/StatsTrends.jsx';
 import ja from './i18n/ja.js';
 import en from './i18n/en.js';
 
@@ -58,16 +59,8 @@ export default function App() {
 
   if (screen === 'analysis') {
   content = <StatsAnalysis onBackHome={backHome} t={t} />;
-} else if (screen === 'trends') {
-    content = (
-      <ComingSoon
-        title={t.comingSoon.trendsTitle}
-        description={t.comingSoon.trendsDescription}
-        notice={t.comingSoon.notice}
-        backHomeLabel={t.navigation.backHome}
-        onBackHome={backHome}
-      />
-    );
+  } else if (screen === 'trends') {
+    content = <StatsTrends onBackHome={backHome} t={t} />;
   } else if (screen === 'search') {
     content = (
       <ComingSoon
