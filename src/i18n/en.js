@@ -21,9 +21,12 @@ const en = {
     winLossComparison: 'Win/Loss Comparison',
     winLossNote:
       'Compares average values for wins and losses while keeping the analysis scope fixed.',
-    candidateDrivers: 'Candidate Drivers',
+        candidateDrivers: 'Candidate Drivers',
     candidateDriversNote:
       'Correlation with point difference. Treat these as candidate indicators, not causal factors.',
+    candidateDriversSampleSize: 'Sample size',
+    candidateDriversSmallSampleWarning:
+      'The sample size is small, so these correlations should be treated as reference values. Do not use them as proof of causal win/loss factors; use them as indicators for further review.',
     scatterTitle: 'Clean Breaks vs Point Difference',
     nextImplementation: 'Next Implementation',
 
