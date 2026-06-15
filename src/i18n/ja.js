@@ -2,7 +2,7 @@ const ja = {
   appTitle: 'SVNS Stats Analyzer',
   appKicker: 'Unofficial SVNS analytics platform',
 
-    homeDescription:
+  homeDescription:
     'SVNSの試合スタッツを、シーズン・大会・男女区分・チーム・対戦相手・試合数を明示して分析・検証するためのプラットフォームです。',
 
   unofficialNotice:
@@ -77,12 +77,14 @@ const ja = {
       yAxis: 'Point diff',
       matches: 'Matches',
     },
+
     dataAvailability: {
       title: 'データ利用可能範囲',
       fullStatsEra: '詳細チームスタッツ標準対象：2022-23シーズン以降',
       note:
         'Rugby.com.au Match Statsは高粒度の主データソース候補ですが、確認できるSVNS詳細スタッツは2022-23シーズン以降です。それ以前のシーズンはLimited Data / Results Onlyとして扱い、無警告で詳細スタッツ比較に混ぜません。',
     },
+
     mixedSeasonWarning:
       '複数シーズンの統合分析です。選手構成・大会形式の差に注意してください。',
 
@@ -93,6 +95,7 @@ const ja = {
       '取得元HTML / JSONを raw_data として保存し、分析値と元データを照合可能にする。',
     ],
   },
+
   menu: {
     analysis: {
       label: 'スタッツ分析',
