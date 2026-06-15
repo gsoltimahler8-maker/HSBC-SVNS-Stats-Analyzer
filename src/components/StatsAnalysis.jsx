@@ -318,7 +318,11 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
                   tickLine={false}
                   tick={{ fontSize: 11 }}
                 />
-                <Tooltip />
+                <Tooltip
+  labelFormatter={(value, payload) =>
+    payload?.[0]?.payload?.metricLabel || value
+  }
+/>
                 <Legend />
                 <Bar dataKey="wins" name={labels.results.winsAvg} fill="#22c55e" />
                 <Bar dataKey="losses" name={labels.results.lossesAvg} fill="#ef4444" />
@@ -357,28 +361,15 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
         <section className="panel wide">
           <h2>{labels.scatterTitle}</h2>
 
-                    <div className="chart">
-            <ResponsiveContainer width="100%" height={390}>
-              <BarChart
-                data={analysisRows}
-                layout="vertical"
-                margin={{ top: 8, right: 20, bottom: 8, left: 12 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis type="number" />
-                <YAxis
-                  type="category"
-                  dataKey="metricLabel"
-                  width={150}
-                  interval={0}
-                  tickLine={false}
-                  tick={{ fontSize: 12 }}
-                />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="wins" name={labels.results.winsAvg} fill="#22c55e" />
-                <Bar dataKey="losses" name={labels.results.lossesAvg} fill="#ef4444" />
-              </BarChart>
+                             <div className="chart">
+            <ResponsiveContainer width="100%" height={300}>
+              <ScatterChart>
+                <CartesianGrid />
+                <XAxis type="number" dataKey="cleanBreaks" name={labels.scatter.xAxis} />
+                <YAxis type="number" dataKey="pointDiff" name={labels.scatter.yAxis} />
+                <Tooltip cursor={{ strokeDasharray: '3 3' }} />
+                <Scatter data={corrData} name={labels.scatter.matches} fill="#38bdf8" />
+              </ScatterChart>
             </ResponsiveContainer>
           </div>
         </section>
