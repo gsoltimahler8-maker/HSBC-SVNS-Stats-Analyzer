@@ -917,3 +917,30 @@
   color: #94a3b8;
   font-size: 0.74rem;
 }
+/* Version 0.2: avoid language toggle overlap on narrow screens */
+@media (max-width: 900px) {
+  .languageToggle {
+    position: static !important;
+    margin: 8px auto 10px !important;
+    width: max-content !important;
+    z-index: auto !important;
+  }
+}
+/* Version 0.2: remove unwanted chart focus outlines on tap/click */
+.chart,
+.chart * {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.chart .recharts-wrapper,
+.chart .recharts-surface,
+.chart svg {
+  outline: none !important;
+}
+
+.chart .recharts-wrapper:focus,
+.chart .recharts-surface:focus,
+.chart svg:focus,
+.chart *:focus {
+  outline: none !important;
+}
