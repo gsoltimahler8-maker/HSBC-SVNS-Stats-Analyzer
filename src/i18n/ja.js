@@ -81,12 +81,26 @@ const ja = {
       matches: 'Matches',
     },
 
-    dataAvailability: {
+        dataAvailability: {
       title: 'データ利用可能範囲',
       fullStatsEra: '詳細チームスタッツ標準対象：2022-23シーズン以降',
       note:
-        'Rugby.com.au Match Statsは高粒度の主データソース候補ですが、確認できるSVNS詳細スタッツは2022-23シーズン以降です。それ以前のシーズンはLimited Data / Results Onlyとして扱い、無警告で詳細スタッツ比較に混ぜません。',
+        'Rugby.com.au Match Statsは高粒度の主データソース候補ですが...',
     },
+
+    dataCoverage: {
+      label: 'データ粒度',
+      sourceLabel: '主スタッツソース',
+      unknownSource: '未確認',
+      levels: {
+        full_match_stats: '詳細試合スタッツ',
+        limited_data: '限定データ',
+        results_only: '結果のみ',
+        unknown: '未確認',
+      },
+    },
+
+    mixedSeasonWarning:
 
     mixedSeasonWarning:
       '複数シーズンの統合分析です。選手構成・大会形式の差に注意してください。',
