@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   LineChart as RechartsLineChart,
   Line,
@@ -46,8 +46,10 @@ export default function StatsTrends({ onBackHome, t = ja }) {
     filters: isJapanese ? '分析条件' : 'Analysis Scope',
     season: isJapanese ? 'シーズン' : 'Season',
     gender: isJapanese ? '男女区分' : 'Gender',
-    team: isJapanese ? 'チーム' : 'Team',
+        team: isJapanese ? 'チーム' : 'Team',
+    opponent: isJapanese ? '対戦相手' : 'Opponent',
     metric: isJapanese ? '指標' : 'Metric',
+    allOpponents: isJapanese ? 'すべて' : 'All',
     women: isJapanese ? '女子' : 'Women',
     men: isJapanese ? '男子' : 'Men',
     dataAvailability: isJapanese ? 'データ利用可能範囲' : 'Data Availability',
@@ -79,17 +81,35 @@ export default function StatsTrends({ onBackHome, t = ja }) {
 
   const seasons = [...new Set(sampleMatches.map((match) => match.season))];
 
-  const [season, setSeason] = useState('2025-26');
+    const [season, setSeason] = useState('2025-26');
   const [gender, setGender] = useState('Women');
   const [team, setTeam] = useState('Japan');
+  const [opponent, setOpponent] = useState('All');
   const [metric, setMetric] = useState('cleanBreaks');
 
-  const filtered = useMemo(
+    const baseFiltered = useMemo(
     () =>
       sampleMatches.filter(
         (match) => match.season === season && match.gender === gender && match.team === team
       ),
     [season, gender, team]
+  );
+
+  const opponents = [
+    'All',
+    ...new Set(baseFiltered.map((match) => match.opponent)),
+  ];
+
+  useEffect(() => {
+    setOpponent('All');
+  }, [season, gender, team]);
+
+  const filtered = useMemo(
+    () =>
+      baseFiltered.filter(
+        (match) => opponent === 'All' || match.opponent === opponent
+      ),
+    [baseFiltered, opponent]
   );
 
   const selectedMetric = metricOptions.find((item) => item.key === metric) || metricOptions[0];
@@ -238,7 +258,16 @@ export default function StatsTrends({ onBackHome, t = ja }) {
               <option value="Japan">Japan</option>
             </select>
           </label>
-
+          <label>
+            {labels.opponent}
+            <select value={opponent} onChange={(event) => setOpponent(event.target.value)}>
+              {opponents.map((opponentName) => (
+                <option key={opponentName} value={opponentName}>
+                  {opponentName === 'All' ? labels.allOpponents : opponentName}
+                </option>
+              ))}
+            </select>
+          </label>
           <label>
             {labels.metric}
             <select value={metric} onChange={(event) => setMetric(event.target.value)}>
