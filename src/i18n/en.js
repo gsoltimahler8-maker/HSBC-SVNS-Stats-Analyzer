@@ -87,7 +87,17 @@ const en = {
       note:
         'Rugby.com.au Match Stats is the primary high-detail source candidate, but confirmed SVNS detailed match stats are available from the 2022-23 season onward. Earlier seasons should be treated as Limited Data / Results Only and must not be mixed into detailed-stat comparisons without warning.',
     },
-
+    dataCoverage: {
+      label: 'Data coverage',
+      sourceLabel: 'Primary stats source',
+      unknownSource: 'Unknown',
+      levels: {
+        full_match_stats: 'Full match stats',
+        limited_data: 'Limited data',
+        results_only: 'Results only',
+        unknown: 'Unknown',
+      },
+    },
     mixedSeasonWarning:
       'This analysis combines multiple seasons. Be careful about squad changes and tournament-format differences.',
 
