@@ -944,3 +944,25 @@
 .chart *:focus {
   outline: none !important;
 }
+/* Version 0.3: stats trends screen */
+.trendPlaceholder {
+  min-height: 220px;
+  border: 1px dashed rgba(148, 163, 184, 0.42);
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  padding: 24px;
+  color: #cbd5e1;
+  background: rgba(15, 23, 42, 0.35);
+  text-align: center;
+}
+
+.trendPlaceholder strong {
+  color: #f8fafc;
+  font-size: 1.25rem;
+}
+
+.trendPlaceholder span {
+  color: #94a3b8;
+}
