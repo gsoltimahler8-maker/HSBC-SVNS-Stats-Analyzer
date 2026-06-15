@@ -887,3 +887,33 @@
     font-size: 0.76rem;
   }
 }
+/* Version 0.2: candidate driver sample-size warning */
+.sampleSizeNote {
+  margin-top: 4px;
+  font-weight: 700;
+}
+
+.smallSampleWarning {
+  margin: 10px 0 14px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.32);
+  color: #fde68a;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  line-height: 1.55;
+}
+
+.smallSampleWarning svg {
+  flex: 0 0 auto;
+  margin-top: 3px;
+}
+
+.corr small {
+  display: block;
+  margin-top: 4px;
+  color: #94a3b8;
+  font-size: 0.74rem;
+}
