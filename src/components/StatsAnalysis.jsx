@@ -99,6 +99,22 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
     labels.dataCoverage?.levels?.unknown ||
     level ||
     labels.dataCoverage?.unknownSource;
+    const chartTooltipStyle = {
+    backgroundColor: '#0f172a',
+    border: '1px solid rgba(148, 163, 184, 0.45)',
+    borderRadius: '10px',
+    color: '#e5e7eb',
+    boxShadow: '0 10px 24px rgba(0, 0, 0, 0.28)',
+  };
+
+  const chartTooltipLabelStyle = {
+    color: '#f8fafc',
+    fontWeight: 800,
+  };
+
+  const chartTooltipItemStyle = {
+    color: '#e5e7eb',
+  };
   
   return (
     <div className="app">
@@ -322,6 +338,9 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
   labelFormatter={(value, payload) =>
     payload?.[0]?.payload?.metricLabel || value
   }
+  contentStyle={chartTooltipStyle}
+  labelStyle={chartTooltipLabelStyle}
+  itemStyle={chartTooltipItemStyle}
 />
                 <Legend />
                 <Bar dataKey="wins" name={labels.results.winsAvg} fill="#22c55e" />
@@ -367,7 +386,12 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
                 <CartesianGrid />
                 <XAxis type="number" dataKey="cleanBreaks" name={labels.scatter.xAxis} />
                 <YAxis type="number" dataKey="pointDiff" name={labels.scatter.yAxis} />
-                <Tooltip cursor={{ strokeDasharray: '3 3' }} />
+                <Tooltip
+  cursor={{ strokeDasharray: '3 3' }}
+  contentStyle={chartTooltipStyle}
+  labelStyle={chartTooltipLabelStyle}
+  itemStyle={chartTooltipItemStyle}
+/>
                 <Scatter data={corrData} name={labels.scatter.matches} fill="#38bdf8" />
               </ScatterChart>
             </ResponsiveContainer>
