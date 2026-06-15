@@ -301,15 +301,28 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
           </div>
         </section>
 
-        <section className="panel wide">
+                <section className="panel wide">
           <h2>{labels.candidateDrivers}</h2>
           <p className="note">{labels.candidateDriversNote}</p>
+          <p className="note sampleSizeNote">
+            {labels.candidateDriversSampleSize}: n={corrData.length}
+          </p>
+
+          {corrData.length > 0 && corrData.length < 6 && (
+            <div className="smallSampleWarning">
+              <ShieldAlert size={16} />
+              <span>{labels.candidateDriversSmallSampleWarning}</span>
+            </div>
+          )}
 
           <div className="cards">
             {correlations.map((c) => (
               <div className="corr" key={c.metric}>
                 <span>{c.metricLabel}</span>
                 <b>{c.correlation.toFixed(2)}</b>
+                <small>
+                  {labels.candidateDriversSampleSize}: n={corrData.length}
+                </small>
               </div>
             ))}
           </div>
