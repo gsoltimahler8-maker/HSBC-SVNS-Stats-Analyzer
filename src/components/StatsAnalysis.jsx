@@ -61,13 +61,13 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
     'turnoversWon',
     'turnoversConceded',
     'possession',
-  ].map((k) => ({
+    ].map((k) => ({
     metric: k,
     metricLabel: metricLabels[k] || k,
+    chartMetricLabel: chartMetricLabels[k] || metricLabels[k] || k,
     wins: +avg(wins, k).toFixed(1),
     losses: +avg(losses, k).toFixed(1),
   }));
-
   const corrData = filtered.map((m) => ({
     ...m,
     pointDiff: m.pointsFor - m.pointsAgainst,
@@ -310,13 +310,13 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis type="number" />
-                <YAxis
+                                <YAxis
                   type="category"
-                  dataKey="metricLabel"
-                  width={150}
+                  dataKey="chartMetricLabel"
+                  width={92}
                   interval={0}
                   tickLine={false}
-                  tick={{ fontSize: 12 }}
+                  tick={{ fontSize: 11 }}
                 />
                 <Tooltip />
                 <Legend />
