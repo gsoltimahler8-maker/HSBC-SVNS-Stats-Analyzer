@@ -335,6 +335,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
                   tick={{ fontSize: 11 }}
                 />
                 <Tooltip
+  cursor={false}
   labelFormatter={(value, payload) =>
     payload?.[0]?.payload?.metricLabel || value
   }
@@ -387,7 +388,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
                 <XAxis type="number" dataKey="cleanBreaks" name={labels.scatter.xAxis} />
                 <YAxis type="number" dataKey="pointDiff" name={labels.scatter.yAxis} />
                 <Tooltip
-  cursor={{ strokeDasharray: '3 3' }}
+  cursor={false}
   contentStyle={chartTooltipStyle}
   labelStyle={chartTooltipLabelStyle}
   itemStyle={chartTooltipItemStyle}
