@@ -113,11 +113,6 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
 
       <header className="hero">
         <div>
-          <img
-            className="appIconPreview"
-            src={`${import.meta.env.BASE_URL}icon-192.png`}
-            alt="SVNS Stats icon"
-          />
           <h1>{t.appTitle}</h1>
           <p>{labels.subtitle}</p>
         </div>
