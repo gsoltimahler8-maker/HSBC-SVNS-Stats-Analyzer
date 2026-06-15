@@ -41,7 +41,17 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
   const wins = filtered.filter((m) => m.result === 'W');
   const losses = filtered.filter((m) => m.result === 'L');
 
-  const metricLabels = labels.metrics;
+    const metricLabels = labels.metrics;
+
+  const chartMetricLabels = {
+    pointsFor: 'PF',
+    pointsAgainst: 'PA',
+    cleanBreaks: 'Clean breaks',
+    defendersBeaten: 'Def. beaten',
+    turnoversWon: 'TO won',
+    turnoversConceded: 'TO conceded',
+    possession: 'Possession',
+  };
 
   const analysisRows = [
     'pointsFor',
