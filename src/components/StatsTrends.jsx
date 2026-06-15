@@ -144,8 +144,10 @@ export default function StatsTrends({ onBackHome, t = ja }) {
         <div className="dataAvailabilityNotice">
           <b>{labels.dataAvailability}</b>
           <span>{labels.dataAvailabilityText}</span>
-          <small>
-            Rugby.com.au Match Stats / dataCoverageLevel を前提に、今後シーズン比較時のデータ粒度警告を追加します。
+                    <small>
+            {isJapanese
+              ? 'Rugby.com.au Match Stats / dataCoverageLevel を前提に、今後シーズン比較時のデータ粒度警告を追加します。'
+              : 'Future updates will use Rugby.com.au Match Stats and dataCoverageLevel to warn users when season comparisons include different data coverage levels.'}
           </small>
         </div>
       </section>
