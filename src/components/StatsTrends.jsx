@@ -54,9 +54,9 @@ export default function StatsTrends({ onBackHome, t = ja }) {
     dataAvailabilityText: isJapanese
       ? '詳細チームスタッツの標準対象は2022-23シーズン以降です。'
       : 'Full team match stats are treated as standard from the 2022-23 season onward.',
-        dataCoverageNote: isJapanese
-      ? 'Rugby.com.au Match Stats / dataCoverageLevel を前提に、シーズン比較時のデータ粒度警告を表示します。'
-      : 'This screen uses Rugby.com.au Match Stats and dataCoverageLevel to warn users when comparisons include different data coverage levels.',
+            dataCoverageNote: isJapanese
+      ? '表示中の試合データの粒度を確認し、比較条件に注意が必要な場合は警告します。'
+      : 'This screen checks the data coverage of the displayed matches and warns when comparisons need caution.',
     dataCoverageSummary: isJapanese ? '現在の表示範囲のデータ粒度' : 'Data coverage in current view',
     coverageAllFull: isJapanese
       ? '現在の表示範囲は詳細試合スタッツのみです。'
