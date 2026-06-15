@@ -54,10 +54,23 @@ export default function StatsTrends({ onBackHome, t = ja }) {
     dataAvailabilityText: isJapanese
       ? '詳細チームスタッツの標準対象は2022-23シーズン以降です。'
       : 'Full team match stats are treated as standard from the 2022-23 season onward.',
-    dataCoverageNote: isJapanese
-      ? 'Rugby.com.au Match Stats / dataCoverageLevel を前提に、今後シーズン比較時のデータ粒度警告を追加します。'
-      : 'Future updates will use Rugby.com.au Match Stats and dataCoverageLevel to warn users when season comparisons include different data coverage levels.',
-        tournamentCards: isJapanese ? '大会別平均値' : 'Tournament averages',
+        dataCoverageNote: isJapanese
+      ? 'Rugby.com.au Match Stats / dataCoverageLevel を前提に、シーズン比較時のデータ粒度警告を表示します。'
+      : 'This screen uses Rugby.com.au Match Stats and dataCoverageLevel to warn users when comparisons include different data coverage levels.',
+    dataCoverageSummary: isJapanese ? '現在の表示範囲のデータ粒度' : 'Data coverage in current view',
+    coverageAllFull: isJapanese
+      ? '現在の表示範囲は詳細試合スタッツのみです。'
+      : 'The current view contains full match stats only.',
+    coverageMixedWarning: isJapanese
+      ? 'データ粒度の異なる試合が含まれています。比較結果の解釈に注意してください。'
+      : 'This view includes matches with different data coverage levels. Interpret comparisons carefully.',
+    coverageLevels: {
+      full_match_stats: isJapanese ? '詳細試合スタッツ' : 'Full match stats',
+      limited_data: isJapanese ? '限定データ' : 'Limited data',
+      results_only: isJapanese ? '結果のみ' : 'Results only',
+      unknown: isJapanese ? '未確認' : 'Unknown',
+    },
+    tournamentCards: isJapanese ? '大会別平均値' : 'Tournament averages',
     opponentCards: isJapanese ? '対戦相手別平均値' : 'Opponent averages',
     next: isJapanese ? '今後の追加予定' : 'Next implementation',
     matches: isJapanese ? '試合' : 'matches',
@@ -81,6 +94,24 @@ export default function StatsTrends({ onBackHome, t = ja }) {
 
   const selectedMetric = metricOptions.find((item) => item.key === metric) || metricOptions[0];
   const metricLabel = isJapanese ? selectedMetric.labelJa : selectedMetric.labelEn;
+    const coverageLevels = [
+    ...new Set(filtered.map((match) => match.dataCoverageLevel || 'unknown')),
+  ];
+
+  const hasMixedCoverage = coverageLevels.length > 1;
+  const hasNonFullCoverage = coverageLevels.some((level) => level !== 'full_match_stats');
+
+  const coverageLevelText =
+    coverageLevels.length > 0
+      ? coverageLevels
+          .map((level) => labels.coverageLevels[level] || level)
+          .join(' / ')
+      : labels.coverageLevels.unknown;
+
+  const coverageStatusText =
+    hasMixedCoverage || hasNonFullCoverage
+      ? labels.coverageMixedWarning
+      : labels.coverageAllFull;
 
   const trendRows = useMemo(
     () =>
@@ -220,10 +251,23 @@ export default function StatsTrends({ onBackHome, t = ja }) {
           </label>
         </div>
 
-        <div className="dataAvailabilityNotice">
+                <div className="dataAvailabilityNotice">
           <b>{labels.dataAvailability}</b>
           <span>{labels.dataAvailabilityText}</span>
           <small>{labels.dataCoverageNote}</small>
+          <small>
+            <strong>{labels.dataCoverageSummary}: </strong>
+            {coverageLevelText}
+          </small>
+          <small
+            className={
+              hasMixedCoverage || hasNonFullCoverage
+                ? 'coverageWarningText'
+                : 'coverageOkText'
+            }
+          >
+            {coverageStatusText}
+          </small>
         </div>
       </section>
 
