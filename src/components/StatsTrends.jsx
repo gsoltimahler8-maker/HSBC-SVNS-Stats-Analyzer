@@ -57,7 +57,8 @@ export default function StatsTrends({ onBackHome, t = ja }) {
     dataCoverageNote: isJapanese
       ? 'Rugby.com.au Match Stats / dataCoverageLevel を前提に、今後シーズン比較時のデータ粒度警告を追加します。'
       : 'Future updates will use Rugby.com.au Match Stats and dataCoverageLevel to warn users when season comparisons include different data coverage levels.',
-    tournamentCards: isJapanese ? '大会別平均値' : 'Tournament averages',
+        tournamentCards: isJapanese ? '大会別平均値' : 'Tournament averages',
+    opponentCards: isJapanese ? '対戦相手別平均値' : 'Opponent averages',
     next: isJapanese ? '今後の追加予定' : 'Next implementation',
     matches: isJapanese ? '試合' : 'matches',
     noData: isJapanese ? 'この条件のサンプルデータはありません。' : 'No sample data is available for this condition.',
@@ -115,6 +116,29 @@ export default function StatsTrends({ onBackHome, t = ja }) {
         average,
       };
     });
+  }, [filtered, metric]);
+    const opponentAverages = useMemo(() => {
+    const groups = new Map();
+
+    filtered.forEach((match) => {
+      if (!groups.has(match.opponent)) {
+        groups.set(match.opponent, []);
+      }
+      groups.get(match.opponent).push(match);
+    });
+
+    return [...groups.entries()]
+      .map(([opponent, matches]) => {
+        const total = matches.reduce((sum, match) => sum + getMetricValue(match, metric), 0);
+        const average = matches.length > 0 ? total / matches.length : 0;
+
+        return {
+          opponent,
+          matches: matches.length,
+          average,
+        };
+      })
+      .sort((a, b) => b.average - a.average);
   }, [filtered, metric]);
 
   const chartTooltipStyle = {
@@ -263,6 +287,24 @@ export default function StatsTrends({ onBackHome, t = ja }) {
             {tournamentAverages.map((item) => (
               <div className="corr" key={item.tournament}>
                 <span>{item.tournament}</span>
+                <b>
+                  {item.average.toFixed(1)}
+                  {selectedMetric.suffix}
+                </b>
+                <small>
+                  n={item.matches} / {metricLabel}
+                </small>
+              </div>
+            ))}
+          </div>
+        </section>
+                <section className="panel wide">
+          <h2>{labels.opponentCards}</h2>
+
+          <div className="cards">
+            {opponentAverages.map((item) => (
+              <div className="corr" key={item.opponent}>
+                <span>{item.opponent}</span>
                 <b>
                   {item.average.toFixed(1)}
                   {selectedMetric.suffix}
