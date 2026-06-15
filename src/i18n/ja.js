@@ -21,9 +21,12 @@ const ja = {
     winLossComparison: '勝敗比較',
     winLossNote:
       '分析条件を固定した上で、勝利試合と敗戦試合の平均値を比較します。',
-    candidateDrivers: '関連候補指標',
+        candidateDrivers: '関連候補指標',
     candidateDriversNote:
       '点差との相関係数です。因果ではなく、勝敗・点差と統計的関連が見られる候補指標として扱います。',
+    candidateDriversSampleSize: '対象試合数',
+    candidateDriversSmallSampleWarning:
+      '対象試合数が少ないため、この相関係数は参考値です。勝敗要因の断定には使わず、次に確認すべき候補指標として扱ってください。',
     scatterTitle: 'クリーンブレイク数と点差',
     nextImplementation: '次の実装予定',
 
