@@ -2,10 +2,13 @@ const ja = {
   appTitle: 'SVNS Stats Analyzer',
   appKicker: 'Unofficial SVNS analytics platform',
 
-  homeDescription:
+    homeDescription:
     'SVNSの試合スタッツを、シーズン・大会・男女区分・チーム・対戦相手・試合数を明示して分析・検証するためのプラットフォームです。',
 
-      statsAnalysis: {
+  unofficialNotice:
+    '本アプリは非公式のSVNSスタッツ分析アプリです。データ出典: Rugby.com.au / SVNS Match Centre',
+
+  statsAnalysis: {
     sampleWarning:
       '⚠ SAMPLE DATA / DEMO MODE：現在表示されている試合結果・スタッツは画面確認用の仮データです。実際の公式結果・公式スタッツではありません。',
     subtitle:
