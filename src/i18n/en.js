@@ -21,7 +21,7 @@ const en = {
     winLossComparison: 'Win/Loss Comparison',
     winLossNote:
       'Compares average values for wins and losses while keeping the analysis scope fixed.',
-        candidateDrivers: 'Candidate Drivers',
+    candidateDrivers: 'Candidate Drivers',
     candidateDriversNote:
       'Correlation with point difference. Treat these as candidate indicators, not causal factors.',
     candidateDriversSampleSize: 'Sample size',
@@ -87,6 +87,7 @@ const en = {
       note:
         'Rugby.com.au Match Stats is the primary high-detail source candidate, but confirmed SVNS detailed match stats are available from the 2022-23 season onward. Earlier seasons should be treated as Limited Data / Results Only and must not be mixed into detailed-stat comparisons without warning.',
     },
+
     dataCoverage: {
       label: 'Data coverage',
       sourceLabel: 'Primary stats source',
@@ -98,6 +99,7 @@ const en = {
         unknown: 'Unknown',
       },
     },
+
     mixedSeasonWarning:
       'This analysis combines multiple seasons. Be careful about squad changes and tournament-format differences.',
 
