@@ -3,16 +3,18 @@ const en = {
   appKicker: 'Unofficial SVNS analytics platform',
 
   homeDescription:
-    'Built for analysis, not live scoring. This platform helps users examine SVNS match statistics with clear season, tournament, gender, team, opponent, and match-count context.',
+    'This platform helps users examine and analyze SVNS match statistics with clear season, tournament, gender, team, opponent, and match-count context.',
 
   unofficialNotice:
     'This is an unofficial SVNS statistics and analytics app. Data sources: Rugby.com.au / SVNS Match Centre',
   statsAnalysis: {
+      statsAnalysis: {
     sampleWarning:
       '⚠ SAMPLE DATA / DEMO MODE: The match results and statistics shown here are sample data for screen testing. They are not official results or official statistics.',
     subtitle:
       'A prototype SVNS analytics PWA for keeping season, tournament, gender, and match-level traceability explicit.',
     badge: 'SVNS Analytics',
+
     dataScope: 'Data Scope',
     matchList: 'Match List',
     matchDetail: 'Match Detail',
@@ -24,12 +26,74 @@ const en = {
       'Correlation with point difference. Treat these as candidate indicators, not causal factors.',
     scatterTitle: 'Clean Breaks vs Point Difference',
     nextImplementation: 'Next Implementation',
+
     noSampleData: 'No sample data is available for this condition.',
     traceability: 'Traceability',
     internalMatchId: 'Internal Match ID',
     rugbyComAuId: 'Rugby.com.au ID',
     svnsId: 'SVNS ID',
     lastFetched: 'Last fetched',
+
+    filters: {
+      season: 'Season',
+      gender: 'Gender',
+      team: 'Team',
+      tournament: 'Tournament',
+      all: 'All',
+      women: 'Women',
+      men: 'Men',
+    },
+
+    scopeLabels: {
+      season: 'Season',
+      gender: 'Gender',
+      tournament: 'Tournament',
+      matches: 'Matches',
+    },
+
+    results: {
+      win: 'Win',
+      loss: 'Loss',
+      winsAvg: 'Wins avg',
+      lossesAvg: 'Losses avg',
+    },
+
+    metrics: {
+      pointsFor: 'Points For',
+      pointsAgainst: 'Points Against',
+      cleanBreaks: 'Clean Breaks',
+      defendersBeaten: 'Defenders Beaten',
+      turnoversWon: 'Turnovers Won',
+      turnoversConceded: 'Turnovers Conceded',
+      tackleSuccess: 'Tackle Success',
+      possession: 'Possession',
+      pointDiff: 'Point Difference',
+      tackles: 'Tackles',
+      missedTackles: 'Missed Tackles',
+    },
+
+    scatter: {
+      xAxis: 'Clean Breaks',
+      yAxis: 'Point Difference',
+      matches: 'Matches',
+    },
+
+    dataAvailability: {
+      title: 'Data Availability',
+      fullStatsEra: 'Full team match stats: 2022-23 season onward',
+      note:
+        'Rugby.com.au Match Stats is the primary high-detail source candidate, but confirmed SVNS detailed match stats are available from the 2022-23 season onward. Earlier seasons should be treated as Limited Data / Results Only and must not be mixed into detailed-stat comparisons without warning.',
+    },
+
+    mixedSeasonWarning:
+      'This analysis combines multiple seasons. Be careful about squad changes and tournament-format differences.',
+
+    nextImplementationItems: [
+      'Create Supabase tables for seasons / tournaments / matches / match_team_stats / sources.',
+      'Add CSV import and validate the workflow with manually prepared data.',
+      'Add Rugby.com.au / SVNS data import through a scheduled import service or serverless functions.',
+      'Store source HTML/JSON as raw_data so analysis values can be checked against source data.',
+    ],
   },
   menu: {
     analysis: {
