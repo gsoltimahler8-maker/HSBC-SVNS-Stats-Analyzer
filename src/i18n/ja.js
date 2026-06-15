@@ -61,18 +61,18 @@ const ja = {
       lossesAvg: '敗戦平均',
     },
 
-    metrics: {
-      pointsFor: 'Points For',
-      pointsAgainst: 'Points Against',
-      cleanBreaks: 'Clean breaks',
-      defendersBeaten: 'Defenders beaten',
-      turnoversWon: 'Turnovers won',
-      turnoversConceded: 'Turnovers conceded',
-      tackleSuccess: 'Tackle success',
-      possession: 'Possession',
-      pointDiff: 'Point diff',
-      tackles: 'Tackles',
-      missedTackles: 'Missed tackles',
+        metrics: {
+      pointsFor: '得点',
+      pointsAgainst: '失点',
+      cleanBreaks: 'クリーンブレイク',
+      defendersBeaten: 'ディフェンダー突破',
+      turnoversWon: 'ターンオーバー獲得',
+      turnoversConceded: 'ターンオーバー喪失',
+      tackleSuccess: 'タックル成功率',
+      possession: 'ポゼッション',
+      pointDiff: '点差',
+      tackles: 'タックル数',
+      missedTackles: 'ミスタックル数',
     },
 
     scatter: {
