@@ -21,7 +21,7 @@ const ja = {
     winLossComparison: '勝敗比較',
     winLossNote:
       '分析条件を固定した上で、勝利試合と敗戦試合の平均値を比較します。',
-        candidateDrivers: '関連候補指標',
+    candidateDrivers: '関連候補指標',
     candidateDriversNote:
       '点差との相関係数です。因果ではなく、勝敗・点差と統計的関連が見られる候補指標として扱います。',
     candidateDriversSampleSize: '対象試合数',
@@ -81,11 +81,11 @@ const ja = {
       matches: 'Matches',
     },
 
-        dataAvailability: {
+    dataAvailability: {
       title: 'データ利用可能範囲',
       fullStatsEra: '詳細チームスタッツ標準対象：2022-23シーズン以降',
       note:
-        'Rugby.com.au Match Statsは高粒度の主データソース候補ですが...',
+        'Rugby.com.au Match Statsは高粒度の主データソース候補ですが、確認できるSVNS詳細スタッツは2022-23シーズン以降です。それ以前のシーズンはLimited Data / Results Onlyとして扱い、無警告で詳細スタッツ比較に混ぜません。',
     },
 
     dataCoverage: {
@@ -99,8 +99,6 @@ const ja = {
         unknown: '未確認',
       },
     },
-
-    mixedSeasonWarning:
 
     mixedSeasonWarning:
       '複数シーズンの統合分析です。選手構成・大会形式の差に注意してください。',
