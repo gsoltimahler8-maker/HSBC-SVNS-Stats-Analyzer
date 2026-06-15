@@ -291,12 +291,23 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
           <h2>{labels.winLossComparison}</h2>
           <p className="note">{labels.winLossNote}</p>
 
-          <div className="chart">
-            <ResponsiveContainer width="100%" height={320}>
-              <BarChart data={analysisRows}>
+                    <div className="chart">
+            <ResponsiveContainer width="100%" height={390}>
+              <BarChart
+                data={analysisRows}
+                layout="vertical"
+                margin={{ top: 8, right: 20, bottom: 8, left: 12 }}
+              >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="metricLabel" />
-                <YAxis />
+                <XAxis type="number" />
+                <YAxis
+                  type="category"
+                  dataKey="metricLabel"
+                  width={150}
+                  interval={0}
+                  tickLine={false}
+                  tick={{ fontSize: 12 }}
+                />
                 <Tooltip />
                 <Legend />
                 <Bar dataKey="wins" name={labels.results.winsAvg} fill="#22c55e" />
