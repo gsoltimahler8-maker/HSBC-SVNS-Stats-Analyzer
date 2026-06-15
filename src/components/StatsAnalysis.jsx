@@ -163,12 +163,13 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
           </label>
         </div>
 
-        <div className="scopeGrid">
+                <div className="scopeGrid">
           <span>
             {labels.scopeLabels.season}: <b>{season}</b>
           </span>
           <span>
-            {labels.scopeLabels.gender}: <b>{gender === 'Women' ? labels.filters.women : labels.filters.men}</b>
+            {labels.scopeLabels.gender}:{' '}
+            <b>{gender === 'Women' ? labels.filters.women : labels.filters.men}</b>
           </span>
           <span>
             {labels.scopeLabels.tournament}: <b>{tournamentLabel(tournament)}</b>
@@ -177,13 +178,13 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
             {labels.scopeLabels.matches}: <b>{filtered.length}</b>
           </span>
         </div>
-        
+
         <div className="dataAvailabilityNotice">
           <b>{labels.dataAvailability.title}</b>
           <span>{labels.dataAvailability.fullStatsEra}</span>
           <small>{labels.dataAvailability.note}</small>
         </div>
-        
+
         {mixedSeasonWarning && (
           <div className="warn">
             <ShieldAlert /> {labels.mixedSeasonWarning}
