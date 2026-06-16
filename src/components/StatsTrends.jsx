@@ -79,8 +79,18 @@ export default function StatsTrends({ onBackHome, t = ja }) {
     tournamentCards: isJapanese ? '大会別平均値' : 'Tournament averages',
     opponentCards: isJapanese ? '対戦相手別平均値' : 'Opponent averages',
     next: isJapanese ? '今後の追加予定' : 'Next implementation',
-    matches: isJapanese ? '試合' : 'matches',
-    noData: isJapanese ? 'この条件のサンプルデータはありません。' : 'No sample data is available for this condition.',
+        matches: isJapanese ? '試合' : 'matches',
+    noData: isJapanese ? 'この条件に一致する試合はありません。' : 'No matches are available for this condition.',
+    noDataTitle: isJapanese ? '該当する試合データがありません' : 'No matching match data',
+    noDataBody: isJapanese
+      ? '現在の Season / Gender / Team / Tournament / Opponent の組み合わせでは、表示できる試合がありません。'
+      : 'There are no matches available for the current Season / Gender / Team / Tournament / Opponent combination.',
+    noDataHint: isJapanese
+      ? '条件を変更するか、今後のデータ追加後に再確認してください。'
+      : 'Change the filters or check again after more data has been added.',
+    noDataCoverageStatus: isJapanese
+      ? '表示対象の試合がないため、データ粒度は判定できません。'
+      : 'Data coverage cannot be evaluated because no matches are currently displayed.',
   };
 
   const seasons = [...new Set(sampleMatches.map((match) => match.season))];
@@ -137,6 +147,7 @@ export default function StatsTrends({ onBackHome, t = ja }) {
 
   const selectedMetric = metricOptions.find((item) => item.key === metric) || metricOptions[0];
   const metricLabel = isJapanese ? selectedMetric.labelJa : selectedMetric.labelEn;
+    const hasNoMatches = filtered.length === 0;
     const coverageLevels = [
     ...new Set(filtered.map((match) => match.dataCoverageLevel || 'unknown')),
   ];
@@ -151,8 +162,9 @@ export default function StatsTrends({ onBackHome, t = ja }) {
           .join(' / ')
       : labels.coverageLevels.unknown;
 
-  const coverageStatusText =
-    hasMixedCoverage || hasNonFullCoverage
+  const coverageStatusText = hasNoMatches
+    ? labels.noDataCoverageStatus
+    : hasMixedCoverage || hasNonFullCoverage
       ? labels.coverageMixedWarning
       : labels.coverageAllFull;
   const selectedTournamentText =
@@ -340,7 +352,7 @@ export default function StatsTrends({ onBackHome, t = ja }) {
           </small>
           <small
             className={
-              hasMixedCoverage || hasNonFullCoverage
+              hasNoMatches || hasMixedCoverage || hasNonFullCoverage
                 ? 'coverageWarningText'
                 : 'coverageOkText'
             }
@@ -411,45 +423,63 @@ export default function StatsTrends({ onBackHome, t = ja }) {
               </ResponsiveContainer>
             </div>
           ) : (
-            <p className="empty">{labels.noData}</p>
+            <div className="emptyState">
+              <b>{labels.noDataTitle}</b>
+              <p>{labels.noDataBody}</p>
+              <small>{labels.noDataHint}</small>
+            </div>
           )}
         </section>
 
         <section className="panel wide">
           <h2>{labels.tournamentCards}</h2>
 
-          <div className="cards">
-            {tournamentAverages.map((item) => (
-              <div className="corr" key={item.tournament}>
-                <span>{item.tournament}</span>
-                <b>
-                  {item.average.toFixed(1)}
-                  {selectedMetric.suffix}
-                </b>
-                <small>
-                  n={item.matches} / {metricLabel}
-                </small>
-              </div>
-            ))}
-          </div>
+          {tournamentAverages.length > 0 ? (
+            <div className="cards">
+              {tournamentAverages.map((item) => (
+                <div className="corr" key={item.tournament}>
+                  <span>{item.tournament}</span>
+                  <b>
+                    {item.average.toFixed(1)}
+                    {selectedMetric.suffix}
+                  </b>
+                  <small>
+                    n={item.matches} / {metricLabel}
+                  </small>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="emptyState compact">
+              <b>{labels.noDataTitle}</b>
+              <p>{labels.noData}</p>
+            </div>
+          )}
         </section>
                 <section className="panel wide">
           <h2>{labels.opponentCards}</h2>
 
-          <div className="cards">
-            {opponentAverages.map((item) => (
-              <div className="corr" key={item.opponent}>
-                <span>{item.opponent}</span>
-                <b>
-                  {item.average.toFixed(1)}
-                  {selectedMetric.suffix}
-                </b>
-                <small>
-                  n={item.matches} / {metricLabel}
-                </small>
-              </div>
-            ))}
-          </div>
+          {opponentAverages.length > 0 ? (
+            <div className="cards">
+              {opponentAverages.map((item) => (
+                <div className="corr" key={item.opponent}>
+                  <span>{item.opponent}</span>
+                  <b>
+                    {item.average.toFixed(1)}
+                    {selectedMetric.suffix}
+                  </b>
+                  <small>
+                    n={item.matches} / {metricLabel}
+                  </small>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="emptyState compact">
+              <b>{labels.noDataTitle}</b>
+              <p>{labels.noData}</p>
+            </div>
+          )}
         </section>
 
         <section className="panel wide">
