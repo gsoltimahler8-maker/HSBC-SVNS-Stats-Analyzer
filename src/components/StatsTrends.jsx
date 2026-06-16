@@ -489,18 +489,23 @@ export default function StatsTrends({ onBackHome, t = ja }) {
           <ol>
             <li>
               {isJapanese
-                ? '対戦相手別の平均値比較を追加する。'
-                : 'Add opponent-level average comparisons.'}
-            </li>
-            <li>
-              {isJapanese
-                ? 'データ粒度が異なるシーズンを比較する場合の警告を追加する。'
-                : 'Add warnings when comparing seasons with different data coverage levels.'}
-            </li>
-            <li>
-              {isJapanese
                 ? '複数指標を同時に比較できる表示を検討する。'
                 : 'Consider a view for comparing multiple metrics at once.'}
+            </li>
+            <li>
+              {isJapanese
+                ? 'Rugby.com.au Match Stats 形式の実データ取り込みに対応する。'
+                : 'Add support for importing real data in the Rugby.com.au Match Stats format.'}
+            </li>
+            <li>
+              {isJapanese
+                ? 'データ管理画面と接続し、管理者が試合データを追加・更新できる構造を検討する。'
+                : 'Connect this screen with the data management area so administrators can add and update match data.'}
+            </li>
+            <li>
+              {isJapanese
+                ? '試合検索・動画ライブラリと連動し、スタッツ推移から対象試合を確認できる導線を検討する。'
+                : 'Consider linking stats trends with match search and the video library so users can review the relevant matches.'}
             </li>
           </ol>
         </section>
