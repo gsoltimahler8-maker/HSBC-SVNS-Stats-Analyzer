@@ -1024,3 +1024,34 @@
   font-weight: 800;
   word-break: break-word;
 }
+/* Version 0.3: stats trends empty state */
+.emptyState {
+  padding: 18px 20px;
+  border: 1px dashed rgba(148, 163, 184, 0.38);
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.52);
+  color: #e5e7eb;
+}
+
+.emptyState.compact {
+  padding: 14px 16px;
+}
+
+.emptyState b {
+  display: block;
+  margin-bottom: 8px;
+  color: #f8fafc;
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.emptyState p {
+  margin: 0 0 6px;
+  color: #cbd5e1;
+  line-height: 1.6;
+}
+
+.emptyState small {
+  color: #94a3b8;
+  font-weight: 700;
+}
