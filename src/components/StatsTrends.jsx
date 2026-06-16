@@ -52,6 +52,8 @@ export default function StatsTrends({ onBackHome, t = ja }) {
     metric: isJapanese ? '指標' : 'Metric',
     allTournaments: isJapanese ? 'すべて' : 'All',
     allOpponents: isJapanese ? 'すべて' : 'All',
+    currentScope: isJapanese ? '現在の表示条件' : 'Current View',
+    matchCount: isJapanese ? '対象試合数' : 'Match Count',
     women: isJapanese ? '女子' : 'Women',
     men: isJapanese ? '男子' : 'Men',
     dataAvailability: isJapanese ? 'データ利用可能範囲' : 'Data Availability',
@@ -153,7 +155,24 @@ export default function StatsTrends({ onBackHome, t = ja }) {
     hasMixedCoverage || hasNonFullCoverage
       ? labels.coverageMixedWarning
       : labels.coverageAllFull;
+  const selectedTournamentText =
+    tournament === 'All' ? labels.allTournaments : tournament;
 
+  const selectedOpponentText =
+    opponent === 'All' ? labels.allOpponents : opponent;
+
+  const selectedGenderText =
+    gender === 'Women' ? labels.women : labels.men;
+
+  const currentScopeItems = [
+    { label: labels.season, value: season },
+    { label: labels.gender, value: selectedGenderText },
+    { label: labels.team, value: team },
+    { label: labels.tournament, value: selectedTournamentText },
+    { label: labels.opponent, value: selectedOpponentText },
+    { label: labels.metric, value: metricLabel },
+    { label: labels.matchCount, value: filtered.length },
+  ];
   const trendRows = useMemo(
     () =>
       filtered
@@ -328,6 +347,18 @@ export default function StatsTrends({ onBackHome, t = ja }) {
           >
             {coverageStatusText}
           </small>
+        </div>
+                <div className="scopeSummary">
+          <b>{labels.currentScope}</b>
+
+          <div className="scopeSummaryGrid">
+            {currentScopeItems.map((item) => (
+              <div className="scopeSummaryItem" key={item.label}>
+                <span>{item.label}</span>
+                <strong>{item.value}</strong>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
