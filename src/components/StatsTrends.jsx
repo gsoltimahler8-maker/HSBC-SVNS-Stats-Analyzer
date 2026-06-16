@@ -348,13 +348,13 @@ export default function StatsTrends({ onBackHome, t = ja }) {
             {coverageStatusText}
           </small>
         </div>
-                <div className="scopeSummary">
+        <div className="scopeSummary">
           <b>{labels.currentScope}</b>
 
           <div className="scopeSummaryGrid">
             {currentScopeItems.map((item) => (
               <div className="scopeSummaryItem" key={item.label}>
-                <span>{item.label}</span>
+                <span>{item.label}:</span>
                 <strong>{item.value}</strong>
               </div>
             ))}
