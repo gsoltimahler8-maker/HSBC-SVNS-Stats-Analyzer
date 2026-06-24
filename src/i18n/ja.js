@@ -36,6 +36,8 @@ const ja = {
     rugbyComAuId: 'Rugby.com.au ID',
     svnsId: 'SVNS ID',
     lastFetched: '最終取得日時',
+    sourceProvider: '主ソース',
+statDefinitionVersion: 'スタッツ定義',
 
     filters: {
       season: 'シーズン',
