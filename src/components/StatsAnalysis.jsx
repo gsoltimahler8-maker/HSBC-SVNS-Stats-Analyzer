@@ -1,5 +1,16 @@
 import { useMemo, useState } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ScatterChart, Scatter, Legend } from 'recharts';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  ScatterChart,
+  Scatter,
+  Legend,
+} from 'recharts';
 import { ShieldAlert, Database, Trophy, Filter, Info, RefreshCcw } from 'lucide-react';
 import { sampleMatches } from '../data/sampleMatches.js';
 import { pct, avg, corr } from '../utils/statistics.js';
@@ -41,7 +52,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
   const wins = filtered.filter((m) => m.result === 'W');
   const losses = filtered.filter((m) => m.result === 'L');
 
-    const metricLabels = labels.metrics;
+  const metricLabels = labels.metrics;
 
   const chartMetricLabels = {
     pointsFor: 'PF',
@@ -61,13 +72,14 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
     'turnoversWon',
     'turnoversConceded',
     'possession',
-    ].map((k) => ({
+  ].map((k) => ({
     metric: k,
     metricLabel: metricLabels[k] || k,
     chartMetricLabel: chartMetricLabels[k] || metricLabels[k] || k,
     wins: +avg(wins, k).toFixed(1),
     losses: +avg(losses, k).toFixed(1),
   }));
+
   const corrData = filtered.map((m) => ({
     ...m,
     pointDiff: m.pointsFor - m.pointsAgainst,
@@ -93,13 +105,16 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
   const mixedSeasonWarning = false;
 
   const tournamentLabel = (name) => (name === 'All' ? labels.filters.all : name);
+
   const resultLabel = (result) => (result === 'W' ? labels.results.win : labels.results.loss);
+
   const coverageLevelLabel = (level) =>
     labels.dataCoverage?.levels?.[level] ||
     labels.dataCoverage?.levels?.unknown ||
     level ||
     labels.dataCoverage?.unknownSource;
-    const chartTooltipStyle = {
+
+  const chartTooltipStyle = {
     backgroundColor: '#0f172a',
     border: '1px solid rgba(148, 163, 184, 0.45)',
     borderRadius: '10px',
@@ -115,7 +130,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
   const chartTooltipItemStyle = {
     color: '#e5e7eb',
   };
-  
+
   return (
     <div className="app">
       {onBackHome && (
@@ -189,7 +204,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
           </label>
         </div>
 
-                <div className="scopeGrid">
+        <div className="scopeGrid">
           <span>
             {labels.scopeLabels.season}: <b>{season}</b>
           </span>
@@ -243,9 +258,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
               </button>
             ))}
 
-            {filtered.length === 0 && (
-              <p className="empty">{labels.noSampleData}</p>
-            )}
+            {filtered.length === 0 && <p className="empty">{labels.noSampleData}</p>}
           </div>
         </section>
 
@@ -254,87 +267,90 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
             <Info size={18} /> {labels.matchDetail}
           </h2>
 
-{selectedMatch && (
-  <div className="detail">
-    <h3>
-      {selectedMatch.team} vs {selectedMatch.opponent}
-    </h3>
+          {selectedMatch && (
+            <div className="detail">
+              <h3>
+                {selectedMatch.team} vs {selectedMatch.opponent}
+              </h3>
 
-    <div className="scoreLine">
-      <b>
-        {selectedMatch.pointsFor} - {selectedMatch.pointsAgainst}
-      </b>
-      <span>
-        {selectedMatch.tournament} / {selectedMatch.stage} / {selectedMatch.date}
-      </span>
-    </div>
+              <div className="scoreLine">
+                <b>
+                  {selectedMatch.pointsFor} - {selectedMatch.pointsAgainst}
+                </b>
+                <span>
+                  {selectedMatch.tournament} / {selectedMatch.stage} / {selectedMatch.date}
+                </span>
+              </div>
 
-    <div className="metricGrid">
-      <span>
-        {metricLabels.tries}
-        <b>{selectedMatch.tries}</b>
-      </span>
-      <span>
-        {metricLabels.cleanBreaks}
-        <b>{selectedMatch.cleanBreaks}</b>
-      </span>
-      <span>
-        {metricLabels.defendersBeaten}
-        <b>{selectedMatch.defendersBeaten}</b>
-      </span>
-      <span>
-        {metricLabels.turnoversWon}
-        <b>{selectedMatch.turnoversWon}</b>
-      </span>
-      <span>
-        {metricLabels.turnoversConceded}
-        <b>{selectedMatch.turnoversConceded}</b>
-      </span>
-      <span>
-        {metricLabels.tackles}
-        <b>{selectedMatch.tackles}</b>
-      </span>
-      <span>
-        {metricLabels.missedTackles}
-        <b>{selectedMatch.missedTackles}</b>
-      </span>
-      <span>
-        {metricLabels.possession}
-        <b>{pct(selectedMatch.possession)}</b>
-      </span>
-      <span>
-        {metricLabels.pointDiff}
-        <b>{selectedMatch.pointsFor - selectedMatch.pointsAgainst}</b>
-      </span>
-    </div>
+              <div className="metricGrid">
+                <span>
+                  {metricLabels.tries}
+                  <b>{selectedMatch.tries}</b>
+                </span>
+                <span>
+                  {metricLabels.cleanBreaks}
+                  <b>{selectedMatch.cleanBreaks}</b>
+                </span>
+                <span>
+                  {metricLabels.defendersBeaten}
+                  <b>{selectedMatch.defendersBeaten}</b>
+                </span>
+                <span>
+                  {metricLabels.turnoversWon}
+                  <b>{selectedMatch.turnoversWon}</b>
+                </span>
+                <span>
+                  {metricLabels.turnoversConceded}
+                  <b>{selectedMatch.turnoversConceded}</b>
+                </span>
+                <span>
+                  {metricLabels.tackles}
+                  <b>{selectedMatch.tackles}</b>
+                </span>
+                <span>
+                  {metricLabels.missedTackles}
+                  <b>{selectedMatch.missedTackles}</b>
+                </span>
+                <span>
+                  {metricLabels.possession}
+                  <b>{pct(selectedMatch.possession)}</b>
+                </span>
+                <span>
+                  {metricLabels.pointDiff}
+                  <b>{selectedMatch.pointsFor - selectedMatch.pointsAgainst}</b>
+                </span>
+              </div>
 
-    <div className="sourceBox">
-      <b>{labels.traceability}</b>
-      <br />
-      {labels.internalMatchId}: {selectedMatch.id}
-      <br />
-      {labels.rugbyComAuId}: {selectedMatch.external?.rugbyComAu || 'Unknown'}
-      <br />
-      {labels.svnsId}: {selectedMatch.external?.svns || 'Unknown'}
-      <br />
-      {labels.lastFetched}: {selectedMatch.fetchedAt || selectedMatch.lastFetched || 'Unknown'}
-      <br />
-      {labels.sourceProvider}: {selectedMatch.sourceProvider || 'Unknown'}
-      <br />
-      {labels.statDefinitionVersion}: {selectedMatch.statDefinitionVersion || 'Unknown'}
-      <br />
-      {labels.dataCoverage.label}: {coverageLevelLabel(selectedMatch.dataCoverageLevel)}
-      <br />
-      {labels.dataCoverage.sourceLabel}:{' '}
-      {selectedMatch.dataCoverageSource || labels.dataCoverage.unknownSource}
-    </div>
-  </div>
-)}
+              <div className="sourceBox">
+                <b>{labels.traceability}</b>
+                <br />
+                {labels.internalMatchId}: {selectedMatch.id}
+                <br />
+                {labels.rugbyComAuId}: {selectedMatch.external?.rugbyComAu || 'Unknown'}
+                <br />
+                {labels.svnsId}: {selectedMatch.external?.svns || 'Unknown'}
+                <br />
+                {labels.lastFetched}:{' '}
+                {selectedMatch.fetchedAt || selectedMatch.lastFetched || 'Unknown'}
+                <br />
+                {labels.sourceProvider}: {selectedMatch.sourceProvider || 'Unknown'}
+                <br />
+                {labels.statDefinitionVersion}: {selectedMatch.statDefinitionVersion || 'Unknown'}
+                <br />
+                {labels.dataCoverage.label}: {coverageLevelLabel(selectedMatch.dataCoverageLevel)}
+                <br />
+                {labels.dataCoverage.sourceLabel}:{' '}
+                {selectedMatch.dataCoverageSource || labels.dataCoverage.unknownSource}
+              </div>
+            </div>
+          )}
+        </section>
+
         <section className="panel wide">
           <h2>{labels.winLossComparison}</h2>
           <p className="note">{labels.winLossNote}</p>
 
-                    <div className="chart">
+          <div className="chart">
             <ResponsiveContainer width="100%" height={390}>
               <BarChart
                 data={analysisRows}
@@ -343,7 +359,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis type="number" />
-                                <YAxis
+                <YAxis
                   type="category"
                   dataKey="chartMetricLabel"
                   width={92}
@@ -352,14 +368,14 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
                   tick={{ fontSize: 11 }}
                 />
                 <Tooltip
-  cursor={false}
-  labelFormatter={(value, payload) =>
-    payload?.[0]?.payload?.metricLabel || value
-  }
-  contentStyle={chartTooltipStyle}
-  labelStyle={chartTooltipLabelStyle}
-  itemStyle={chartTooltipItemStyle}
-/>
+                  cursor={false}
+                  labelFormatter={(value, payload) =>
+                    payload?.[0]?.payload?.metricLabel || value
+                  }
+                  contentStyle={chartTooltipStyle}
+                  labelStyle={chartTooltipLabelStyle}
+                  itemStyle={chartTooltipItemStyle}
+                />
                 <Legend />
                 <Bar dataKey="wins" name={labels.results.winsAvg} fill="#22c55e" />
                 <Bar dataKey="losses" name={labels.results.lossesAvg} fill="#ef4444" />
@@ -368,7 +384,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
           </div>
         </section>
 
-                <section className="panel wide">
+        <section className="panel wide">
           <h2>{labels.candidateDrivers}</h2>
           <p className="note">{labels.candidateDriversNote}</p>
           <p className="note sampleSizeNote">
@@ -398,18 +414,18 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
         <section className="panel wide">
           <h2>{labels.scatterTitle}</h2>
 
-                             <div className="chart">
+          <div className="chart">
             <ResponsiveContainer width="100%" height={300}>
               <ScatterChart>
                 <CartesianGrid />
                 <XAxis type="number" dataKey="cleanBreaks" name={labels.scatter.xAxis} />
                 <YAxis type="number" dataKey="pointDiff" name={labels.scatter.yAxis} />
                 <Tooltip
-  cursor={false}
-  contentStyle={chartTooltipStyle}
-  labelStyle={chartTooltipLabelStyle}
-  itemStyle={chartTooltipItemStyle}
-/>
+                  cursor={false}
+                  contentStyle={chartTooltipStyle}
+                  labelStyle={chartTooltipLabelStyle}
+                  itemStyle={chartTooltipItemStyle}
+                />
                 <Scatter data={corrData} name={labels.scatter.matches} fill="#38bdf8" />
               </ScatterChart>
             </ResponsiveContainer>
