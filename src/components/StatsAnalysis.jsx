@@ -300,15 +300,18 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
                 <br />
                 {labels.rugbyComAuId}: {selectedMatch.external.rugbyComAu}
                 <br />
-                {labels.svnsId}: {selectedMatch.external.svns}
-                <br />
-                {labels.lastFetched}: {selectedMatch.lastFetched}
-                <br />
-                {labels.dataCoverage.label}: {coverageLevelLabel(selectedMatch.dataCoverageLevel)}
-                <br />
-                {labels.dataCoverage.sourceLabel}:{' '}
-                {selectedMatch.dataCoverageSource || labels.dataCoverage.unknownSource}
-              </div>
+              {labels.svnsId}: {selectedMatch.external?.svns || 'Unknown'}
+<br />
+{labels.lastFetched}: {selectedMatch.fetchedAt || selectedMatch.lastFetched || 'Unknown'}
+<br />
+{isJapanese ? '主ソース' : 'Primary source'}: {selectedMatch.sourceProvider || 'Unknown'}
+<br />
+{isJapanese ? 'スタッツ定義' : 'Stats definition'}: {selectedMatch.statDefinitionVersion || 'Unknown'}
+<br />
+{labels.dataCoverage.label}: {coverageLevelLabel(selectedMatch.dataCoverageLevel)}
+<br />
+{labels.dataCoverage.sourceLabel}:{' '}
+{selectedMatch.dataCoverageSource || labels.dataCoverage.unknownSource}
             </div>
           )}
         </section>
