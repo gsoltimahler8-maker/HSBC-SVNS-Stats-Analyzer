@@ -24,7 +24,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
   const [gender, setGender] = useState('Women');
   const [team, setTeam] = useState('Japan');
   const [tournament, setTournament] = useState('All');
-  const [selected, setSelected] = useState(sampleMatches[0].id);
+  const [selected, setSelected] = useState(sampleMatches[0]?.id || '');
 
   const filtered = useMemo(
     () =>
@@ -47,7 +47,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
     ),
   ];
 
-  const selectedMatch = sampleMatches.find((m) => m.id === selected) || filtered[0];
+  const selectedMatch = filtered.find((m) => m.id === selected) || filtered[0];
 
   const wins = filtered.filter((m) => m.result === 'W');
   const losses = filtered.filter((m) => m.result === 'L');
@@ -80,11 +80,17 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
     losses: +avg(losses, k).toFixed(1),
   }));
 
-  const corrData = filtered.map((m) => ({
-    ...m,
-    pointDiff: m.pointsFor - m.pointsAgainst,
-    tackleSuccess: (100 * m.tackles) / (m.tackles + m.missedTackles),
-  }));
+  const corrData = filtered.map((m) => {
+    const tackles = Number(m.tackles || 0);
+    const missedTackles = Number(m.missedTackles || 0);
+    const tackleTotal = tackles + missedTackles;
+
+    return {
+      ...m,
+      pointDiff: m.pointsFor - m.pointsAgainst,
+      tackleSuccess: tackleTotal > 0 ? (100 * tackles) / tackleTotal : 0,
+    };
+  });
 
   const correlations = [
     'cleanBreaks',
@@ -267,7 +273,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
             <Info size={18} /> {labels.matchDetail}
           </h2>
 
-          {selectedMatch && (
+          {selectedMatch ? (
             <div className="detail">
               <h3>
                 {selectedMatch.team} vs {selectedMatch.opponent}
@@ -343,6 +349,8 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
                 {selectedMatch.dataCoverageSource || labels.dataCoverage.unknownSource}
               </div>
             </div>
+          ) : (
+            <p className="empty">{labels.noSampleData}</p>
           )}
         </section>
 
