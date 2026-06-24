@@ -7,10 +7,6 @@ import ja from '../i18n/ja.js';
 
 export default function StatsAnalysis({ onBackHome, t = ja }) {
   const labels = t.statsAnalysis;
-  const isJapanese = t.navigation?.backHome?.includes('ホーム');
-
-  const sourceProviderLabel = isJapanese ? '主ソース' : 'Primary source';
-  const statDefinitionVersionLabel = isJapanese ? 'スタッツ定義' : 'Stats definition';
   const seasons = [...new Set(sampleMatches.map((m) => m.season))];
 
   const [season, setSeason] = useState('2025-26');
@@ -308,9 +304,9 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
 <br />
 {labels.lastFetched}: {selectedMatch.fetchedAt || selectedMatch.lastFetched || 'Unknown'}
 <br />
-{sourceProviderLabel}: {selectedMatch.sourceProvider || 'Unknown'}
+{labels.sourceProvider}: {selectedMatch.sourceProvider || 'Unknown'}
 <br />
-{statDefinitionVersionLabel}: {selectedMatch.statDefinitionVersion || 'Unknown'}
+{labels.statDefinitionVersion}: {selectedMatch.statDefinitionVersion || 'Unknown'}
 <br />
 {labels.dataCoverage.label}: {coverageLevelLabel(selectedMatch.dataCoverageLevel)}
 <br />
