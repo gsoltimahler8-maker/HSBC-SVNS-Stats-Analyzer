@@ -254,69 +254,82 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
             <Info size={18} /> {labels.matchDetail}
           </h2>
 
-          {selectedMatch && (
-            <div className="detail">
-              <h3>
-                {selectedMatch.team} {selectedMatch.pointsFor}-{selectedMatch.pointsAgainst}{' '}
-                {selectedMatch.opponent}
-              </h3>
-              <p>
-                {selectedMatch.season} / {selectedMatch.gender} /{' '}
-                {selectedMatch.tournament} / {selectedMatch.date}
-              </p>
+{selectedMatch && (
+  <div className="detail">
+    <h3>
+      {selectedMatch.team} vs {selectedMatch.opponent}
+    </h3>
 
-              <div className="statGrid">
-                <span>
-                  {metricLabels.cleanBreaks}<b>{selectedMatch.cleanBreaks}</b>
-                </span>
-                <span>
-                  {metricLabels.defendersBeaten}<b>{selectedMatch.defendersBeaten}</b>
-                </span>
-                <span>
-                  {metricLabels.turnoversWon}<b>{selectedMatch.turnoversWon}</b>
-                </span>
-                <span>
-                  {metricLabels.tackleSuccess}
-                  <b>
-                    {pct(
-                      (100 * selectedMatch.tackles) /
-                        (selectedMatch.tackles + selectedMatch.missedTackles)
-                    )}
-                  </b>
-                </span>
-                <span>
-                  {metricLabels.possession}<b>{pct(selectedMatch.possession)}</b>
-                </span>
-                <span>
-                  {metricLabels.pointDiff}
-                  <b>{selectedMatch.pointsFor - selectedMatch.pointsAgainst}</b>
-                </span>
-              </div>
+    <div className="scoreLine">
+      <b>
+        {selectedMatch.pointsFor} - {selectedMatch.pointsAgainst}
+      </b>
+      <span>
+        {selectedMatch.tournament} / {selectedMatch.stage} / {selectedMatch.date}
+      </span>
+    </div>
 
-                            <div className="sourceBox">
-                <b>{labels.traceability}</b>
-                <br />
-                {labels.internalMatchId}: {selectedMatch.id}
-                <br />
-                {labels.rugbyComAuId}: {selectedMatch.external.rugbyComAu}
-                <br />
-              {labels.svnsId}: {selectedMatch.external?.svns || 'Unknown'}
-<br />
-{labels.lastFetched}: {selectedMatch.fetchedAt || selectedMatch.lastFetched || 'Unknown'}
-<br />
-{labels.sourceProvider}: {selectedMatch.sourceProvider || 'Unknown'}
-<br />
-{labels.statDefinitionVersion}: {selectedMatch.statDefinitionVersion || 'Unknown'}
-<br />
-{labels.dataCoverage.label}: {coverageLevelLabel(selectedMatch.dataCoverageLevel)}
-<br />
-{labels.dataCoverage.sourceLabel}:{' '}
-{selectedMatch.dataCoverageSource || labels.dataCoverage.unknownSource}
-              </div>
-            </div>
-          )}
-        </section>
+    <div className="metricGrid">
+      <span>
+        {metricLabels.tries}
+        <b>{selectedMatch.tries}</b>
+      </span>
+      <span>
+        {metricLabels.cleanBreaks}
+        <b>{selectedMatch.cleanBreaks}</b>
+      </span>
+      <span>
+        {metricLabels.defendersBeaten}
+        <b>{selectedMatch.defendersBeaten}</b>
+      </span>
+      <span>
+        {metricLabels.turnoversWon}
+        <b>{selectedMatch.turnoversWon}</b>
+      </span>
+      <span>
+        {metricLabels.turnoversConceded}
+        <b>{selectedMatch.turnoversConceded}</b>
+      </span>
+      <span>
+        {metricLabels.tackles}
+        <b>{selectedMatch.tackles}</b>
+      </span>
+      <span>
+        {metricLabels.missedTackles}
+        <b>{selectedMatch.missedTackles}</b>
+      </span>
+      <span>
+        {metricLabels.possession}
+        <b>{pct(selectedMatch.possession)}</b>
+      </span>
+      <span>
+        {metricLabels.pointDiff}
+        <b>{selectedMatch.pointsFor - selectedMatch.pointsAgainst}</b>
+      </span>
+    </div>
 
+    <div className="sourceBox">
+      <b>{labels.traceability}</b>
+      <br />
+      {labels.internalMatchId}: {selectedMatch.id}
+      <br />
+      {labels.rugbyComAuId}: {selectedMatch.external?.rugbyComAu || 'Unknown'}
+      <br />
+      {labels.svnsId}: {selectedMatch.external?.svns || 'Unknown'}
+      <br />
+      {labels.lastFetched}: {selectedMatch.fetchedAt || selectedMatch.lastFetched || 'Unknown'}
+      <br />
+      {labels.sourceProvider}: {selectedMatch.sourceProvider || 'Unknown'}
+      <br />
+      {labels.statDefinitionVersion}: {selectedMatch.statDefinitionVersion || 'Unknown'}
+      <br />
+      {labels.dataCoverage.label}: {coverageLevelLabel(selectedMatch.dataCoverageLevel)}
+      <br />
+      {labels.dataCoverage.sourceLabel}:{' '}
+      {selectedMatch.dataCoverageSource || labels.dataCoverage.unknownSource}
+    </div>
+  </div>
+)}
         <section className="panel wide">
           <h2>{labels.winLossComparison}</h2>
           <p className="note">{labels.winLossNote}</p>
