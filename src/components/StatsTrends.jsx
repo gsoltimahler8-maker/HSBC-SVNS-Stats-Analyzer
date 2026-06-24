@@ -63,6 +63,9 @@ export default function StatsTrends({ onBackHome, t = ja }) {
             dataCoverageNote: isJapanese
       ? '表示中の試合データの粒度を確認し、比較条件に注意が必要な場合は警告します。'
       : 'This screen checks the data coverage of the displayed matches and warns when comparisons need caution.',
+    sourceProvider: isJapanese ? '主ソース' : 'Primary source',
+    fetchedAt: isJapanese ? '取得日時' : 'Fetched at',
+    statDefinitionVersion: isJapanese ? 'スタッツ定義' : 'Stats definition',
     dataCoverageSummary: isJapanese ? '現在の表示範囲のデータ粒度' : 'Data coverage in current view',
     coverageAllFull: isJapanese
       ? '現在の表示範囲は詳細試合スタッツのみです。'
@@ -167,6 +170,25 @@ export default function StatsTrends({ onBackHome, t = ja }) {
     : hasMixedCoverage || hasNonFullCoverage
       ? labels.coverageMixedWarning
       : labels.coverageAllFull;
+    const sourceProviderText =
+    filtered.length > 0
+      ? [...new Set(filtered.map((match) => match.sourceProvider || 'Unknown'))].join(' / ')
+      : 'Unknown';
+
+  const statDefinitionVersionText =
+    filtered.length > 0
+      ? [...new Set(filtered.map((match) => match.statDefinitionVersion || 'Unknown'))].join(' / ')
+      : 'Unknown';
+
+  const fetchedAtValues = filtered
+    .map((match) => match.fetchedAt || match.lastFetched)
+    .filter(Boolean)
+    .sort();
+
+  const latestFetchedAt =
+    fetchedAtValues.length > 0
+      ? fetchedAtValues[fetchedAtValues.length - 1]
+      : 'Unknown';
   const selectedTournamentText =
     tournament === 'All' ? labels.allTournaments : tournament;
 
@@ -346,6 +368,18 @@ export default function StatsTrends({ onBackHome, t = ja }) {
           <b>{labels.dataAvailability}</b>
           <span>{labels.dataAvailabilityText}</span>
           <small>{labels.dataCoverageNote}</small>
+                    <small>
+            <strong>{labels.sourceProvider}: </strong>
+            {sourceProviderText}
+          </small>
+          <small>
+            <strong>{labels.fetchedAt}: </strong>
+            {latestFetchedAt}
+          </small>
+          <small>
+            <strong>{labels.statDefinitionVersion}: </strong>
+            {statDefinitionVersionText}
+          </small>
           <small>
             <strong>{labels.dataCoverageSummary}: </strong>
             {coverageLevelText}
