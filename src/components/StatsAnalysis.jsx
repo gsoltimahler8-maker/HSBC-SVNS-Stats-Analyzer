@@ -313,7 +313,6 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
 {labels.dataCoverage.sourceLabel}:{' '}
 {selectedMatch.dataCoverageSource || labels.dataCoverage.unknownSource}
             </div>
-          )}
         </section>
 
         <section className="panel wide">
