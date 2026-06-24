@@ -36,6 +36,8 @@ const en = {
     rugbyComAuId: 'Rugby.com.au ID',
     svnsId: 'SVNS ID',
     lastFetched: 'Last fetched',
+    sourceProvider: 'Primary source',
+statDefinitionVersion: 'Stats definition',
 
     filters: {
       season: 'Season',
