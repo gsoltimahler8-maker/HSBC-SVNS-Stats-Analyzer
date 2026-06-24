@@ -6,8 +6,11 @@ import { pct, avg, corr } from '../utils/statistics.js';
 import ja from '../i18n/ja.js';
 
 export default function StatsAnalysis({ onBackHome, t = ja }) {
-  const isJapanese = t.navigation?.backHome?.includes('ホーム');
   const labels = t.statsAnalysis;
+  const isJapanese = t.navigation?.backHome?.includes('ホーム');
+
+  const sourceProviderLabel = isJapanese ? '主ソース' : 'Primary source';
+  const statDefinitionVersionLabel = isJapanese ? 'スタッツ定義' : 'Stats definition';
   const seasons = [...new Set(sampleMatches.map((m) => m.season))];
 
   const [season, setSeason] = useState('2025-26');
@@ -302,17 +305,17 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
                 {labels.rugbyComAuId}: {selectedMatch.external.rugbyComAu}
                 <br />
               {labels.svnsId}: {selectedMatch.external?.svns || 'Unknown'}
-　　　　　　　　　<br />
-　　　　　　　　{labels.lastFetched}: {selectedMatch.fetchedAt || selectedMatch.lastFetched || 'Unknown'}
-　　　　　　　　　<br />
-　　　　　　　　{isJapanese ? '主ソース' : 'Primary source'}: {selectedMatch.sourceProvider || 'Unknown'}
-　　　　　　　　　<br />
-　　　　　　　　{isJapanese ? 'スタッツ定義' : 'Stats definition'}: {selectedMatch.statDefinitionVersion || 'Unknown'}
-　　　　　　　　　<br />
-　　　　　　　　{labels.dataCoverage.label}: {coverageLevelLabel(selectedMatch.dataCoverageLevel)}
-　　　　　　　　　<br />
-　　　　　　　　{labels.dataCoverage.sourceLabel}:{' '}
-　　　　　　　　{selectedMatch.dataCoverageSource || labels.dataCoverage.unknownSource}
+<br />
+{labels.lastFetched}: {selectedMatch.fetchedAt || selectedMatch.lastFetched || 'Unknown'}
+<br />
+{sourceProviderLabel}: {selectedMatch.sourceProvider || 'Unknown'}
+<br />
+{statDefinitionVersionLabel}: {selectedMatch.statDefinitionVersion || 'Unknown'}
+<br />
+{labels.dataCoverage.label}: {coverageLevelLabel(selectedMatch.dataCoverageLevel)}
+<br />
+{labels.dataCoverage.sourceLabel}:{' '}
+{selectedMatch.dataCoverageSource || labels.dataCoverage.unknownSource}
             </div>
           )}
         </section>
