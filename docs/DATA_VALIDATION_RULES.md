@@ -22,7 +22,7 @@ The current validation flow is:
 
 The build command runs data validation before building the app.
 
-If validation finds blocking errors, the build should fail.
+If validation finds blocking errors, the build should fail.  
 If validation finds only warnings, the build may continue, depending on the validation result.
 
 ---
@@ -43,12 +43,12 @@ node scripts/validateSampleMatches.mjs
 
 The script checks the match records and prints:
 
-* total match count
-* error count
-* warning count
-* validation summary
-* detailed error list
-* detailed warning list
+- total match count
+- error count
+- warning count
+- validation summary
+- detailed error list
+- detailed warning list
 
 ---
 
@@ -62,12 +62,12 @@ An error indicates a blocking data problem.
 
 Examples:
 
-* missing required field
-* invalid enum value
-* invalid date format
-* invalid numeric value
-* duplicate match ID
-* team and opponent are the same
+- missing required field
+- invalid enum value
+- invalid date format
+- invalid numeric value
+- duplicate match ID
+- team and opponent are the same
 
 Errors should be fixed before data is used for analysis.
 
@@ -77,9 +77,9 @@ A warning indicates a non-blocking data quality issue.
 
 Examples:
 
-* missing external match IDs
-* sample URL still using `example.com`
-* source URL does not look like an HTTP or HTTPS URL
+- missing external match IDs
+- sample URL still using `example.com`
+- source URL does not look like an HTTP or HTTPS URL
 
 Warnings do not necessarily mean the app is broken, but they should be reviewed before real-data import.
 
@@ -111,12 +111,12 @@ statDefinitionVersion
 
 These fields are required because they support:
 
-* filtering
-* comparison
-* traceability
-* source review
-* future real-data import
-* reproducible analysis
+- filtering
+- comparison
+- traceability
+- source review
+- future real-data import
+- reproducible analysis
 
 ---
 
@@ -134,7 +134,7 @@ rugbyPass
 
 At least one external ID is preferred.
 
-External IDs are used for traceability and future source reconciliation.
+External IDs are used for traceability and future source reconciliation.  
 Temporary sample data may contain `null` values, but real imported data should aim to preserve source-specific IDs whenever possible.
 
 ---
@@ -234,8 +234,28 @@ Example:
 2026-06-01T00:00:00Z
 ```
 
-The project uses `fetchedAt` as the preferred field.
-Older compatibility fields such as `lastFetched` should be phased out.
+`fetchedAt` is the official field for the data retrieval timestamp.
+
+The legacy field `lastFetched` is no longer used in the match data schema and should not be added to new records.
+
+---
+
+## Legacy timestamp policy
+
+The project previously used `lastFetched` as a compatibility field while the match data schema was being stabilized.
+
+As of Version 0.4, the app uses `fetchedAt` only.
+
+Current policy:
+
+```text
+Use fetchedAt.
+Do not use lastFetched.
+Do not add lastFetched to new match records.
+Do not rely on lastFetched in UI components.
+```
+
+If old records are imported from earlier experimental versions, they should be migrated to `fetchedAt` before being added to the active dataset.
 
 ---
 
@@ -339,11 +359,11 @@ These fields are essential because the app is intended to support transparent an
 
 The app should distinguish:
 
-* Rugby.com.au Match Stats
-* SVNS official data
-* RugbyPass
-* sample data
-* unknown or limited data
+- Rugby.com.au Match Stats
+- SVNS official data
+- RugbyPass
+- sample data
+- unknown or limited data
 
 Different sources may define or aggregate statistics differently, so the source must remain visible.
 
@@ -373,11 +393,11 @@ Each match record must have a unique `id`.
 
 Duplicate IDs are blocking errors because they can break:
 
-* match selection
-* React rendering keys
-* traceability
-* future update logic
-* source reconciliation
+- match selection
+- React rendering keys
+- traceability
+- future update logic
+- source reconciliation
 
 ---
 
@@ -439,6 +459,7 @@ When in doubt:
 - data coverage should be visible
 - sample data should not be treated as real data
 - derived metrics should be recalculated, not manually stored
+- retrieval timestamps should use fetchedAt
 ```
 
 The project should prioritize traceability and reproducibility over filling every field.
