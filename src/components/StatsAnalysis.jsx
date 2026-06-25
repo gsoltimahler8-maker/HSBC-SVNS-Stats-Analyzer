@@ -355,7 +355,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
                 {labels.svnsId}: {selectedMatch.external?.svns || 'Unknown'}
                 <br />
                 {labels.lastFetched}:{' '}
-                {selectedMatch.fetchedAt || selectedMatch.lastFetched || 'Unknown'}
+                {selectedMatch.fetchedAt || 'Unknown'}
                 <br />
                 {labels.sourceProvider}: {selectedMatch.sourceProvider || 'Unknown'}
                 <br />
