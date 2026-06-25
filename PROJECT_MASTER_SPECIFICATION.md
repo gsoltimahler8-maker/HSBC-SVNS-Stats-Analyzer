@@ -701,3 +701,414 @@ Version 0.3 では、スタッツ推移画面の分析UI土台を構築した。
 Version 0.3 では、実データ接続・データ管理画面・試合検索・動画ライブラリ本実装は行わない。
 
 次の Version 0.4 以降では、実データ取り込み、複数指標比較、データ管理画面との接続、試合検索・動画ライブラリ連動を検討する。
+
+---
+
+## 30. Version0.4 開始メモ：Real Data Foundation
+
+Version0.4では、Version0.3までに作成した分析UIを前提として、サンプルデータから実データ投入へ移行するための基盤整備を行う。
+
+Version0.4のテーマは以下とする。
+
+```text
+Real Data Foundation
+```
+
+Version0.4は、Rugby.com.au Match Stats などの実データをすぐに大量投入する段階ではない。  
+まず、実データを安全に扱うためのスキーマ、出典管理、検証、運用文書を整備する段階である。
+
+---
+
+### 30.1 Version0.4 の主目的
+
+Version0.4の主目的は以下である。
+
+* 試合データの正式スキーマを定義する。
+* `sampleMatches.js` を正式スキーマに近づける。
+* 出典管理項目を整理する。
+* 取得日時を `fetchedAt` に一本化する。
+* legacy field である `lastFetched` を削除する。
+* データ粒度とスタッツ定義バージョンを明示する。
+* データ検証ユーティリティを追加する。
+* `npm run validate:data` による検証を可能にする。
+* build時にデータ検証を自動実行する。
+* 実データ投入前の運用ルールを文書化する。
+
+Version0.4では、見た目の派手な機能追加よりも、将来の実データ投入で壊れにくい基礎構造を優先する。
+
+---
+
+### 30.2 Version0.4 で完了した主な実装
+
+Version0.4では、以下を完了した。
+
+* `MATCH_DATA_SCHEMA.md` を作成し、1試合分の正式データ形式を定義。
+* `sampleMatches.js` を正式スキーマ寄りに整理。
+* 各試合データに以下を追加。
+
+```text
+external
+sourceProvider
+sourceUrl
+fetchedAt
+dataCoverageLevel
+dataCoverageSource
+statDefinitionVersion
+```
+
+* `lastFetched` を `sampleMatches.js` から削除。
+* `StatsAnalysis.jsx` の取得日時表示を `fetchedAt` に一本化。
+* `StatsTrends.jsx` の取得日時表示を `fetchedAt` に一本化。
+* `StatsAnalysis.jsx` の出典追跡欄に、主ソース・取得日時・スタッツ定義・データ粒度を表示。
+* `StatsTrends.jsx` のデータ利用可能範囲欄に、主ソース・取得日時・スタッツ定義・データ粒度を表示。
+* `src/utils/validateMatches.js` を追加。
+* `scripts/validateSampleMatches.mjs` を追加。
+* `package.json` に `validate:data` コマンドを追加。
+* `npm run build` 実行時に `npm run validate:data` が先に走るように変更。
+* `docs/DATA_VALIDATION_RULES.md` を追加。
+* `docs/REAL_DATA_IMPORT_WORKFLOW.md` を追加。
+* `docs/VERSION_0_4_COMPLETION_CHECKLIST.md` を追加。
+* `docs/VERSION_0_4_COMPLETION_SUMMARY.md` を追加。
+* 試合詳細欄のスタッツ表示を読みやすいリスト風カードへ改善。
+* `tries` など、i18n辞書に存在しない指標名でも空白表示にならないようフォールバックラベルを追加。
+
+---
+
+### 30.3 Match Data Schema
+
+Version0.4では、`MATCH_DATA_SCHEMA.md` により、1試合データの構造を定義した。
+
+基本方針は以下である。
+
+* 1レコード = 1チーム視点の1試合データ。
+* `team` は分析対象チーム。
+* `opponent` は対戦相手。
+* 同一試合の相手側データを扱う場合は、別レコードとして保持可能。
+* 不明値は無理に `0` にせず `null` を使う。
+* 派生指標は保存せず、アプリ側・ユーティリティ側で計算する。
+* Rugby.com.au Match Stats を高粒度チームスタッツの主ソースとする。
+* RugbyPass 等は補助ソースとして扱い、主スタッツへ無警告で混ぜない。
+
+主な必須・重要項目は以下。
+
+```text
+id
+external
+season
+tournament
+date
+gender
+stage
+team
+opponent
+result
+pointsFor
+pointsAgainst
+sourceProvider
+sourceUrl
+fetchedAt
+dataCoverageLevel
+dataCoverageSource
+statDefinitionVersion
+```
+
+---
+
+### 30.4 fetchedAt 一本化
+
+Version0.4では、取得日時フィールドを `fetchedAt` に一本化した。
+
+旧フィールドである `lastFetched` は、過去の互換用フィールドとして扱い、現在の active dataset では使用しない。
+
+現在の方針は以下。
+
+```text
+Use fetchedAt.
+Do not use lastFetched.
+Do not add lastFetched to new match records.
+Do not rely on lastFetched in UI components.
+```
+
+この方針に合わせて、以下を実施した。
+
+* `sampleMatches.js` から `lastFetched` を削除。
+* `StatsAnalysis.jsx` の `lastFetched` フォールバックを削除。
+* `StatsTrends.jsx` の `lastFetched` フォールバックを削除。
+* `DATA_VALIDATION_RULES.md` に legacy timestamp policy を記載。
+* `MATCH_DATA_SCHEMA.md` に legacy timestamp policy を記載。
+
+---
+
+### 30.5 データ検証機能
+
+Version0.4では、`src/utils/validateMatches.js` を追加し、試合データの基本検証を行えるようにした。
+
+追加した主な関数は以下。
+
+```text
+validateMatch
+validateMatches
+summarizeValidation
+```
+
+検証対象は以下。
+
+* 必須項目の有無。
+* 重複 match ID。
+* `external` object の有無。
+* `gender` の許容値。
+* `result` の許容値。
+* `dataCoverageLevel` の許容値。
+* `date` の `YYYY-MM-DD` 形式。
+* `fetchedAt` のISO datetime形式。
+* 数値項目が number または `null` であること。
+* 数値項目が負数でないこと。
+* `possession` / `territory` が0〜100の範囲であること。
+* `team` と `opponent` が同一でないこと。
+* `sourceUrl` の基本形式。
+
+この検証は、試合内容の正誤を公式ソースと照合するものではない。  
+現時点では、構造・型・基本的なデータ品質を守るための検証である。
+
+---
+
+### 30.6 検証スクリプトと build-time validation
+
+Version0.4では、以下の検証スクリプトを追加した。
+
+```text
+scripts/validateSampleMatches.mjs
+```
+
+このスクリプトは、`sampleMatches.js` を読み込み、`validateMatches` によって検証し、以下を出力する。
+
+* total match count
+* error count
+* warning count
+* validation summary
+* detailed errors
+* detailed warnings
+
+`package.json` には以下のコマンドを追加した。
+
+```json
+"validate:data": "node scripts/validateSampleMatches.mjs"
+```
+
+さらに、build時にデータ検証を自動実行するようにした。
+
+```json
+"build": "npm run validate:data && vite build --base=/HSBC-SVNS-Stats-Analyzer/"
+```
+
+これにより、GitHub Actions / GitHub Pages のbuild過程で、ブロッキングなデータ不備を検出できる。
+
+---
+
+### 30.7 データ粒度と出典管理
+
+Version0.4では、データ粒度と出典管理を分析画面上でも明示する方針を強化した。
+
+主な項目は以下。
+
+```text
+sourceProvider
+sourceUrl
+fetchedAt
+dataCoverageLevel
+dataCoverageSource
+statDefinitionVersion
+```
+
+`dataCoverageLevel` の想定値は以下。
+
+```text
+full_match_stats
+limited_data
+results_only
+unknown
+```
+
+`StatsAnalysis.jsx` では、試合詳細の出典追跡欄に、以下を表示する。
+
+* Internal Match ID
+* Rugby.com.au ID
+* SVNS ID
+* 取得日時
+* 主ソース
+* スタッツ定義
+* データ粒度
+* データ粒度ソース
+
+`StatsTrends.jsx` では、表示中の試合範囲に含まれるデータ粒度を確認し、詳細データのみか、混在データか、表示対象なしなのかを示す。
+
+---
+
+### 30.8 試合詳細UI改善
+
+Version0.4の途中で、スタッツ分析画面の試合詳細欄が詰め込まれて読みにくい状態だったため、UI改善を行った。
+
+実施内容は以下。
+
+* `metricGrid` を読みやすいリスト風カードへ改善。
+* スタッツ名と数値を左右に分けて表示。
+* PCでは2〜3列、スマホでは1列で自然に並ぶように調整。
+* `scoreLine` を追加し、スコア表示を整理。
+* `sourceBox` の余白・行間・折り返しを改善。
+* `tries` など、辞書に存在しない項目が空白にならないよう、`StatsAnalysis.jsx` にフォールバックラベルを追加。
+
+---
+
+### 30.9 追加したドキュメント
+
+Version0.4では、以下のドキュメントを追加・更新した。
+
+```text
+MATCH_DATA_SCHEMA.md
+docs/DATA_VALIDATION_RULES.md
+docs/REAL_DATA_IMPORT_WORKFLOW.md
+docs/VERSION_0_4_COMPLETION_CHECKLIST.md
+docs/VERSION_0_4_COMPLETION_SUMMARY.md
+```
+
+各文書の役割は以下。
+
+* `MATCH_DATA_SCHEMA.md`：試合データ形式の定義。
+* `DATA_VALIDATION_RULES.md`：検証ルールと運用方針。
+* `REAL_DATA_IMPORT_WORKFLOW.md`：実データ投入時の手順と注意点。
+* `VERSION_0_4_COMPLETION_CHECKLIST.md`：Version0.4完了前の確認項目。
+* `VERSION_0_4_COMPLETION_SUMMARY.md`：Version0.4の完了内容サマリー。
+
+---
+
+### 30.10 Version0.4ではまだ行わないこと
+
+Version0.4では、以下は実装対象外とした。
+
+* Rugby.com.au からの自動取得。
+* スクレイピング。
+* Supabase接続。
+* データ管理画面の本実装。
+* 管理者認証。
+* RugbyPassとの自動照合。
+* 全試合データの大量投入。
+* source page の数値照合。
+* JSONファイルへの完全移行。
+
+これらはVersion0.5以降の候補とする。
+
+---
+
+### 30.11 Version0.5の推奨方向
+
+Version0.5の推奨方向は以下。
+
+```text
+Data Storage Preparation / JSON Transition
+```
+
+理由は、Version0.4で整えたスキーマ・検証・出典管理を維持しながら、データ保存形式を実データ投入に適した形へ近づけられるためである。
+
+Version0.5候補は以下。
+
+* `sampleMatches.js` をJSON互換構造へ近づける。
+* `matches.json` への移行を検討する。
+* data loading layer を追加する。
+* JSON化後も `validate:data` が機能するようにする。
+* Rugby.com.au Match Stats 形式の実データを入れやすくする。
+* 画面側の `StatsAnalysis` / `StatsTrends` を壊さずにデータ保存層を差し替えられる構造にする。
+
+別案として、データ管理画面プロトタイプへ進む選択肢もある。  
+ただし、安全性を優先するなら、次はJSON/storage transitionが適切である。
+
+---
+
+## 31. Version0.4 完了メモ
+
+Version0.4は、Real Data Foundation の構築フェーズとして完了扱いとする。
+
+### 31.1 完了判定
+
+以下を満たした時点で、Version0.4を完了と判断する。
+
+* GitHub Actions が緑チェックで完了している。
+* GitHub Pages が正常に開く。
+* スタッツ分析画面が開く。
+* スタッツ推移画面が開く。
+* `npm run validate:data` が通る。
+* `npm run build` が通る。
+* `sampleMatches.js` に `lastFetched` が残っていない。
+* `StatsAnalysis.jsx` は `fetchedAt` のみを参照する。
+* `StatsTrends.jsx` は `fetchedAt` のみを参照する。
+* `DATA_VALIDATION_RULES.md` が存在する。
+* `REAL_DATA_IMPORT_WORKFLOW.md` が存在する。
+* `VERSION_0_4_COMPLETION_CHECKLIST.md` が存在する。
+* `VERSION_0_4_COMPLETION_SUMMARY.md` が存在する。
+* `MATCH_DATA_SCHEMA.md` が現在の実装と整合している。
+
+### 31.2 Version0.4で達成したこと
+
+Version0.4では、サンプルデータから実データ投入へ移行するための基盤を整備した。
+
+主な達成内容は以下。
+
+* 試合データスキーマを定義した。
+* サンプルデータを正式スキーマへ近づけた。
+* 取得日時を `fetchedAt` に一本化した。
+* legacy field `lastFetched` を削除した。
+* 出典管理項目を整備した。
+* データ粒度管理を強化した。
+* スタッツ定義バージョンを導入した。
+* データ検証ユーティリティを追加した。
+* サンプルデータ検証スクリプトを追加した。
+* `validate:data` コマンドを追加した。
+* build時の自動データ検証を追加した。
+* 実データ投入ワークフローを文書化した。
+* Version0.4完了チェックリストを追加した。
+* Version0.4完了サマリーを追加した。
+* 試合詳細欄の可読性を改善した。
+
+### 31.3 Version0.4で未完了とする項目
+
+以下はVersion0.4では未完了とする。
+
+* 実データの大量投入。
+* Rugby.com.auからの自動取得。
+* スクレイピング。
+* Supabase接続。
+* データ管理画面の本実装。
+* 管理者認証。
+* RugbyPassとの自動照合。
+* source page の数値照合。
+* JSONファイルへの完全移行。
+* 試合検索画面の本実装。
+* 動画ライブラリの本実装。
+
+これらはVersion0.5以降で検討する。
+
+### 31.4 次フェーズ方針
+
+次フェーズは Version0.5 とする。
+
+推奨テーマは以下。
+
+```text
+Data Storage Preparation / JSON Transition
+```
+
+Version0.5では、以下を検討する。
+
+* `sampleMatches.js` からJSON互換データ構造への移行。
+* `matches.json` の導入。
+* データ読み込みレイヤーの追加。
+* 検証スクリプトのJSON対応。
+* 将来のRugby.com.au実データ投入に向けたデータ保存形式の整理。
+* StatsAnalysis / StatsTrends を壊さずにデータ保存層を差し替えられる設計。
+
+### 31.5 Version0.4 完了コミット
+
+Version0.4完了時の推奨コミットメッセージは以下。
+
+```text
+Mark Version 0.4 as complete
+```
