@@ -18,6 +18,7 @@ import ja from '../i18n/ja.js';
 
 export default function StatsAnalysis({ onBackHome, t = ja }) {
   const labels = t.statsAnalysis;
+  const isJapanese = t.navigation?.backHome?.includes('ホーム');
   const seasons = [...new Set(sampleMatches.map((m) => m.season))];
 
   const [season, setSeason] = useState('2025-26');
@@ -54,6 +55,23 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
 
   const metricLabels = labels.metrics;
 
+  const fallbackMetricLabels = {
+    pointsFor: isJapanese ? '得点' : 'Points For',
+    pointsAgainst: isJapanese ? '失点' : 'Points Against',
+    tries: isJapanese ? 'トライ' : 'Tries',
+    cleanBreaks: isJapanese ? 'クリーンブレイク' : 'Clean Breaks',
+    defendersBeaten: isJapanese ? 'ディフェンダー突破' : 'Defenders Beaten',
+    turnoversWon: isJapanese ? 'ターンオーバー獲得' : 'Turnovers Won',
+    turnoversConceded: isJapanese ? 'ターンオーバー喪失' : 'Turnovers Conceded',
+    tackles: isJapanese ? 'タックル' : 'Tackles',
+    missedTackles: isJapanese ? 'ミスタックル' : 'Missed Tackles',
+    possession: isJapanese ? 'ポゼッション' : 'Possession',
+    pointDiff: isJapanese ? '得失点差' : 'Point Differential',
+    tackleSuccess: isJapanese ? 'タックル成功率' : 'Tackle Success',
+  };
+
+  const getMetricLabel = (key) => metricLabels[key] || fallbackMetricLabels[key] || key;
+
   const chartMetricLabels = {
     pointsFor: 'PF',
     pointsAgainst: 'PA',
@@ -74,8 +92,8 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
     'possession',
   ].map((k) => ({
     metric: k,
-    metricLabel: metricLabels[k] || k,
-    chartMetricLabel: chartMetricLabels[k] || metricLabels[k] || k,
+    metricLabel: getMetricLabel(k),
+    chartMetricLabel: chartMetricLabels[k] || getMetricLabel(k),
     wins: +avg(wins, k).toFixed(1),
     losses: +avg(losses, k).toFixed(1),
   }));
@@ -102,7 +120,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
   ]
     .map((k) => ({
       metric: k,
-      metricLabel: metricLabels[k] || k,
+      metricLabel: getMetricLabel(k),
       correlation: corr(corrData, k, 'pointDiff'),
     }))
     .filter((x) => x.correlation !== null)
@@ -290,39 +308,39 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
 
               <div className="metricGrid">
                 <span>
-                  {metricLabels.tries}
+                  {getMetricLabel('tries')}
                   <b>{selectedMatch.tries}</b>
                 </span>
                 <span>
-                  {metricLabels.cleanBreaks}
+                  {getMetricLabel('cleanBreaks')}
                   <b>{selectedMatch.cleanBreaks}</b>
                 </span>
                 <span>
-                  {metricLabels.defendersBeaten}
+                  {getMetricLabel('defendersBeaten')}
                   <b>{selectedMatch.defendersBeaten}</b>
                 </span>
                 <span>
-                  {metricLabels.turnoversWon}
+                  {getMetricLabel('turnoversWon')}
                   <b>{selectedMatch.turnoversWon}</b>
                 </span>
                 <span>
-                  {metricLabels.turnoversConceded}
+                  {getMetricLabel('turnoversConceded')}
                   <b>{selectedMatch.turnoversConceded}</b>
                 </span>
                 <span>
-                  {metricLabels.tackles}
+                  {getMetricLabel('tackles')}
                   <b>{selectedMatch.tackles}</b>
                 </span>
                 <span>
-                  {metricLabels.missedTackles}
+                  {getMetricLabel('missedTackles')}
                   <b>{selectedMatch.missedTackles}</b>
                 </span>
                 <span>
-                  {metricLabels.possession}
+                  {getMetricLabel('possession')}
                   <b>{pct(selectedMatch.possession)}</b>
                 </span>
                 <span>
-                  {metricLabels.pointDiff}
+                  {getMetricLabel('pointDiff')}
                   <b>{selectedMatch.pointsFor - selectedMatch.pointsAgainst}</b>
                 </span>
               </div>
