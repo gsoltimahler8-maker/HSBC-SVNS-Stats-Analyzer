@@ -181,7 +181,7 @@ export default function StatsTrends({ onBackHome, t = ja }) {
       : 'Unknown';
 
   const fetchedAtValues = filtered
-    .map((match) => match.fetchedAt || match.lastFetched)
+    .map((match) => match.fetchedAt)
     .filter(Boolean)
     .sort();
 
