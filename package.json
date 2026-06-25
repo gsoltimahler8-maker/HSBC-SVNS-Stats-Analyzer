@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build --base=/HSBC-SVNS-Stats-Analyzer/",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "validate:data": "node scripts/validateSampleMatches.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
