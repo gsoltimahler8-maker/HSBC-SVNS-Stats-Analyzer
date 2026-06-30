@@ -42,17 +42,17 @@ function getMenuItems(t) {
 }
 
 export default function HomeMenu({ onNavigate, t = ja }) {
-  const heroImage = `${import.meta.env.BASE_URL}assets/home-hero.png`;
-const mobileHeroImage = `${import.meta.env.BASE_URL}assets/home-hero-mobile.png`;
-const menuItems = getMenuItems(t);
+  const heroImage = `${import.meta.env.BASE_URL}assets/home-hero-v041.png`;
+  const mobileHeroImage = `${import.meta.env.BASE_URL}assets/home-hero-mobile-v041.png`;
+  const menuItems = getMenuItems(t);
 
   return (
     <div
       className="homeMenu"
       style={{
-  '--home-hero-image': `url(${heroImage})`,
-  '--home-hero-mobile-image': `url(${mobileHeroImage})`,
-}}
+        '--home-hero-image': `url(${heroImage})`,
+        '--home-hero-mobile-image': `url(${mobileHeroImage})`,
+      }}
     >
       <div className="homeOverlay">
         <header className="homeHeader">
