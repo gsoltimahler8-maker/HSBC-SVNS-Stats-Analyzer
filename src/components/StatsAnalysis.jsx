@@ -12,7 +12,7 @@ import {
   Legend,
 } from 'recharts';
 import { ShieldAlert, Database, Trophy, Filter, Info, RefreshCcw } from 'lucide-react';
-import { sampleMatches } from '../data/sampleMatches.js';
+import { matchData as sampleMatches } from '../data/loadMatches.js';
 import { pct, avg, corr } from '../utils/statistics.js';
 import ja from '../i18n/ja.js';
 
