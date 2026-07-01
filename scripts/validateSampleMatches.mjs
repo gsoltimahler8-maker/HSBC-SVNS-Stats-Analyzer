@@ -1,5 +1,9 @@
-import { matchData as sampleMatches } from '../src/data/loadMatches.js';
+import { readFileSync } from 'node:fs';
 import { validateMatches, summarizeValidation } from '../src/utils/validateMatches.js';
+
+const sampleMatches = JSON.parse(
+  readFileSync(new URL('../src/data/matches.json', import.meta.url), 'utf8')
+);
 
 function printIssue(issue) {
   const label = issue.severity === 'error' ? 'ERROR' : 'WARNING';
@@ -16,7 +20,7 @@ function printSection(title) {
 
 const result = validateMatches(sampleMatches);
 
-printSection('SVNS Stats Analyzer: Sample Match Data Validation');
+printSection('SVNS Stats Analyzer: Match Data Validation');
 
 console.log(`Total matches: ${result.totalMatches}`);
 console.log(`Errors: ${result.errorCount}`);
