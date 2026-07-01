@@ -31,9 +31,30 @@ function LanguageToggle({ language, onChangeLanguage }) {
   );
 }
 
-function ComingSoon({ title, description, notice, onBackHome, backHomeLabel }) {
+function ComingSoon({
+  title,
+  description,
+  notice,
+  onBackHome,
+  backHomeLabel,
+  screenClassName = '',
+  backgroundImage,
+  mobileBackgroundImage,
+}) {
+  const appClassName = screenClassName
+    ? `app screenBackground ${screenClassName}`
+    : 'app';
+
+  const backgroundStyle =
+    backgroundImage && mobileBackgroundImage
+      ? {
+          '--screen-bg-image': `url(${backgroundImage})`,
+          '--screen-bg-mobile-image': `url(${mobileBackgroundImage})`,
+        }
+      : undefined;
+
   return (
-    <div className="app">
+    <div className={appClassName} style={backgroundStyle}>
       <button type="button" className="backHomeButton" onClick={onBackHome}>
         {backHomeLabel}
       </button>
@@ -55,10 +76,15 @@ export default function App() {
 
   const backHome = () => setScreen('home');
 
+  const matchSearchBgImage = `${import.meta.env.BASE_URL}assets/bg-match-search.png`;
+  const matchSearchMobileBgImage = `${import.meta.env.BASE_URL}assets/bg-match-search-mobile.png`;
+  const videoLibraryBgImage = `${import.meta.env.BASE_URL}assets/bg-video-library.png`;
+  const videoLibraryMobileBgImage = `${import.meta.env.BASE_URL}assets/bg-video-library-mobile.png`;
+
   let content;
 
   if (screen === 'analysis') {
-  content = <StatsAnalysis onBackHome={backHome} t={t} />;
+    content = <StatsAnalysis onBackHome={backHome} t={t} />;
   } else if (screen === 'trends') {
     content = <StatsTrends onBackHome={backHome} t={t} />;
   } else if (screen === 'search') {
@@ -69,6 +95,9 @@ export default function App() {
         notice={t.comingSoon.notice}
         backHomeLabel={t.navigation.backHome}
         onBackHome={backHome}
+        screenClassName="matchSearchScreen"
+        backgroundImage={matchSearchBgImage}
+        mobileBackgroundImage={matchSearchMobileBgImage}
       />
     );
   } else if (screen === 'videos') {
@@ -79,6 +108,9 @@ export default function App() {
         notice={t.comingSoon.notice}
         backHomeLabel={t.navigation.backHome}
         onBackHome={backHome}
+        screenClassName="videoLibraryScreen"
+        backgroundImage={videoLibraryBgImage}
+        mobileBackgroundImage={videoLibraryMobileBgImage}
       />
     );
   } else if (screen === 'admin') {
