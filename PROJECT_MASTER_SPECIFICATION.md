@@ -1112,3 +1112,356 @@ Version0.4完了時の推奨コミットメッセージは以下。
 ```text
 Mark Version 0.4 as complete
 ```
+---
+
+## 32. Version0.5 開始メモ：Data Storage Preparation / JSON Transition
+
+Version0.5では、Version0.4で整備した Real Data Foundation を前提として、試合データの保存形式を JavaScript ベースのサンプルデータから JSON ベースのデータ構造へ移行する。
+
+Version0.5のテーマは以下とする。
+
+```text
+Data Storage Preparation / JSON Transition
+```
+
+Version0.5は、実データの大量投入や自動取得を行う段階ではない。  
+主目的は、将来の Rugby.com.au Match Stats 形式の実データ投入に備えて、データ保存層を整理し、画面側が直接サンプルデータに依存しない構造へ移行することである。
+
+---
+
+### 32.1 Version0.5 の主目的
+
+Version0.5の主目的は以下である。
+
+* `sampleMatches.js` 直接依存を整理する。
+* `matches.json` を active data source として追加する。
+* `loadMatches.js` による data loader を追加する。
+* `StatsAnalysis.jsx` を data loader 経由に変更する。
+* `StatsTrends.jsx` を data loader 経由に変更する。
+* `validate:data` を JSON データ検証に対応させる。
+* `sampleMatches.js` を legacy backup として扱う。
+* JSON移行ルールを文書化する。
+* Version0.5完了チェックリストを追加する。
+
+Version0.5では、見た目や分析機能の追加よりも、将来の実データ投入に耐えるデータ保存・読み込み構造を優先する。
+
+---
+
+### 32.2 Version0.5 の作業段階
+
+Version0.5は以下の段階で進めた。
+
+```text
+v0.5-01：Version0.5方針メモ追加
+v0.5-02：現在の sampleMatches.js 依存箇所確認
+v0.5-03：matches.json の基本構造決定
+v0.5-04：src/data/matches.json 作成
+v0.5-05：data loader 追加
+v0.5-06：StatsAnalysis を data loader 経由に変更
+v0.5-07：StatsTrends を data loader 経由に変更
+v0.5-08：validate:data を JSON 対応に変更
+v0.5-09：sampleMatches.js の扱いを整理
+v0.5-10：JSON移行ルール文書追加
+v0.5-11：Version0.5完了チェックリスト追加
+v0.5-12：PROJECT_MASTER_SPECIFICATION.md 更新
+```
+
+---
+
+### 32.3 sampleMatches.js 依存確認
+
+Version0.5開始時点で、`sampleMatches.js` に直接依存していた主なファイルは以下である。
+
+```text
+src/components/StatsAnalysis.jsx
+src/components/StatsTrends.jsx
+scripts/validateSampleMatches.mjs
+```
+
+画面側の依存は、`StatsAnalysis.jsx` と `StatsTrends.jsx` に存在した。  
+検証側の依存は、`scripts/validateSampleMatches.mjs` に存在した。
+
+---
+
+### 32.4 matches.json の追加
+
+Version0.5では、以下を active data source として追加した。
+
+```text
+src/data/matches.json
+```
+
+`matches.json` は、Version0.4で定義した match data schema に沿った JSON 配列である。
+
+主な方針は以下。
+
+* 1レコード = 1チーム視点の1試合データ。
+* `external` object を維持する。
+* `fetchedAt` を取得日時として使用する。
+* `dataCoverageLevel` を保持する。
+* `dataCoverageSource` を保持する。
+* `statDefinitionVersion` を保持する。
+* 不明な数値項目は `0` ではなく `null` とする。
+* `lastFetched` は使用しない。
+
+---
+
+### 32.5 data loader の追加
+
+Version0.5では、以下の data loader を追加した。
+
+```text
+src/data/loadMatches.js
+```
+
+役割は以下である。
+
+* `matches.json` を読み込む。
+* 画面側へ試合データを渡す。
+* 将来データ取得方法が変わっても、画面側の変更を最小限にする。
+
+現在の export は以下。
+
+```js
+export const matchData = loadMatches();
+```
+
+画面側では、移行時の変更量を抑えるため、以下の形で読み込む。
+
+```js
+import { matchData as sampleMatches } from '../data/loadMatches.js';
+```
+
+この alias は暫定的に許容する。  
+将来的には、内部変数名も `matches` や `matchData` に整理してよい。
+
+---
+
+### 32.6 StatsAnalysis の変更
+
+`src/components/StatsAnalysis.jsx` は、`sampleMatches.js` 直接 import から data loader 経由へ変更した。
+
+旧 import：
+
+```js
+import { sampleMatches } from '../data/sampleMatches.js';
+```
+
+新 import：
+
+```js
+import { matchData as sampleMatches } from '../data/loadMatches.js';
+```
+
+内部の `sampleMatches.map(...)` や `sampleMatches.filter(...)` は、そのまま維持した。  
+これは、画面ロジックの変更量を最小限に抑えるためである。
+
+---
+
+### 32.7 StatsTrends の変更
+
+`src/components/StatsTrends.jsx` も、`sampleMatches.js` 直接 import から data loader 経由へ変更した。
+
+旧 import：
+
+```js
+import { sampleMatches } from '../data/sampleMatches.js';
+```
+
+新 import：
+
+```js
+import { matchData as sampleMatches } from '../data/loadMatches.js';
+```
+
+これにより、Stats Trends 画面も `matches.json` を元データとして利用する構造になった。
+
+---
+
+### 32.8 validate:data の JSON 対応
+
+`scripts/validateSampleMatches.mjs` は、`sampleMatches.js` 直接 import から、`matches.json` を Node.js の `fs` で直接読む形へ変更した。
+
+現在の基本形は以下である。
+
+```js
+import { readFileSync } from 'node:fs';
+import { validateMatches, summarizeValidation } from '../src/utils/validateMatches.js';
+
+const sampleMatches = JSON.parse(
+  readFileSync(new URL('../src/data/matches.json', import.meta.url), 'utf8')
+);
+```
+
+当初は `loadMatches.js` 経由で検証スクリプトから JSON を読む案も試したが、Node.js の ES Modules では JSON import に import attribute が必要となり、GitHub Actions でエラーになった。
+
+そのため、検証スクリプトでは `fs` による直接読み込みを採用した。
+
+画面側と検証側の役割は以下の通り整理する。
+
+```text
+画面側：
+StatsAnalysis.jsx / StatsTrends.jsx
+→ loadMatches.js 経由で matches.json を読む
+
+検証側：
+validateSampleMatches.mjs
+→ Node.js fs で matches.json を直接読む
+```
+
+これは、Vite と Node.js で JSON import の扱いが異なるため、妥当な分離である。
+
+---
+
+### 32.9 sampleMatches.js の扱い
+
+Version0.5完了時点では、以下を legacy backup として残す。
+
+```text
+src/data/sampleMatches.js
+```
+
+ただし、active data source ではない。
+
+新しい試合データは以下に追加する。
+
+```text
+src/data/matches.json
+```
+
+`sampleMatches.js` に新規レコードを追加してはならない。
+
+`sampleMatches.js` は、以下が確認できるまでは削除しない。
+
+* GitHub のリポジトリ検索が安定して使える。
+* active UI code からの import が残っていない。
+* `StatsAnalysis` が `matches.json` 由来のデータで動く。
+* `StatsTrends` が `matches.json` 由来のデータで動く。
+* `npm run validate:data` が通る。
+* `npm run build` が通る。
+* GitHub Actions が緑チェックになる。
+
+---
+
+### 32.10 追加したドキュメント
+
+Version0.5では、以下のドキュメントを追加した。
+
+```text
+docs/VERSION_0_5_PLAN.md
+docs/JSON_DATA_TRANSITION.md
+docs/VERSION_0_5_COMPLETION_CHECKLIST.md
+```
+
+各文書の役割は以下。
+
+* `VERSION_0_5_PLAN.md`：Version0.5の目的、作業段階、完了条件を整理。
+* `JSON_DATA_TRANSITION.md`：active data source、data loader、validation、legacy backup方針を整理。
+* `VERSION_0_5_COMPLETION_CHECKLIST.md`：Version0.5完了前の確認項目を整理。
+
+---
+
+### 32.11 Version0.5ではまだ行わないこと
+
+Version0.5では、以下は実装対象外とした。
+
+* Rugby.com.au からの自動取得。
+* スクレイピング。
+* Supabase接続。
+* データ管理画面の本実装。
+* 管理者認証。
+* 全試合データの大量投入。
+* source page の数値照合。
+* 試合検索画面の本実装。
+* 動画ライブラリの本実装。
+* 新しい分析指標の追加。
+
+これらはVersion0.6以降の候補とする。
+
+---
+
+## 33. Version0.5 完了メモ
+
+Version0.5は、Data Storage Preparation / JSON Transition のフェーズとして完了扱いとする。
+
+### 33.1 完了判定
+
+以下を満たした時点で、Version0.5を完了と判断する。
+
+* `src/data/matches.json` が存在する。
+* `src/data/loadMatches.js` が存在する。
+* `StatsAnalysis.jsx` が `loadMatches.js` 経由で match data を読む。
+* `StatsTrends.jsx` が `loadMatches.js` 経由で match data を読む。
+* `scripts/validateSampleMatches.mjs` が `matches.json` を `fs` で直接読む。
+* `npm run validate:data` が通る。
+* `npm run build` が通る。
+* GitHub Actions が緑チェックになる。
+* `docs/VERSION_0_5_PLAN.md` が存在する。
+* `docs/JSON_DATA_TRANSITION.md` が存在する。
+* `docs/VERSION_0_5_COMPLETION_CHECKLIST.md` が存在する。
+* active data source が `matches.json` であることが文書化されている。
+* `sampleMatches.js` が legacy backup 扱いであることが文書化されている。
+
+### 33.2 Version0.5で達成したこと
+
+Version0.5では、試合データを JavaScript ファイル中心の構造から JSON 中心の構造へ移行するための基盤を整備した。
+
+主な達成内容は以下。
+
+* `matches.json` を active data source として追加した。
+* `loadMatches.js` を追加した。
+* `StatsAnalysis.jsx` を data loader 経由に変更した。
+* `StatsTrends.jsx` を data loader 経由に変更した。
+* `validate:data` を JSON 検証に対応させた。
+* Node.js 側では JSON import ではなく `fs` 直接読み込みを採用した。
+* `sampleMatches.js` を legacy backup として整理した。
+* JSON移行ルールを文書化した。
+* Version0.5完了チェックリストを追加した。
+
+### 33.3 Version0.5で未完了とする項目
+
+以下はVersion0.5では未完了とする。
+
+* 実データの大量投入。
+* Rugby.com.auからの自動取得。
+* スクレイピング。
+* Supabase接続。
+* データ管理画面の本実装。
+* 管理者認証。
+* source page の数値照合。
+* 試合検索画面の本実装。
+* 動画ライブラリの本実装。
+* `sampleMatches.js` の完全削除。
+
+これらはVersion0.6以降で検討する。
+
+### 33.4 次フェーズ方針
+
+次フェーズは Version0.6 とする。
+
+推奨テーマは以下。
+
+```text
+Real Data Import Preparation
+```
+
+Version0.6では、以下を検討する。
+
+* Rugby.com.au Match Stats を元にした実データ入力テンプレートの作成。
+* 1試合分の real match record の試験投入。
+* sourceUrl / external ID / fetchedAt / dataCoverageLevel の実運用確認。
+* `matches.json` 編集後の検証手順の固定。
+* source page の数値確認フローの整理。
+* sample data と real data の区別表示。
+
+別案として、Match Search Prototype に進む選択肢もある。  
+ただし、データ基盤の安定性を優先するなら、次は Real Data Import Preparation が適切である。
+
+### 33.5 Version0.5 完了コミット
+
+Version0.5完了時の推奨コミットメッセージは以下。
+
+```text
+Mark Version 0.5 as complete
+```
+
