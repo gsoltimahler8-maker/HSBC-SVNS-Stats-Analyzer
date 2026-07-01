@@ -1185,3 +1185,9 @@
     line-height: 1.75;
   }
 }
+/* Version 0.4.1: adjust desktop home hero crop */
+@media (min-width: 801px) {
+  .homeMenu {
+    background-position: center top !important;
+  }
+}
