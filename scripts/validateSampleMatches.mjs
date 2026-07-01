@@ -1,4 +1,4 @@
-import { sampleMatches } from '../src/data/sampleMatches.js';
+import { matchData as sampleMatches } from '../src/data/loadMatches.js';
 import { validateMatches, summarizeValidation } from '../src/utils/validateMatches.js';
 
 function printIssue(issue) {
