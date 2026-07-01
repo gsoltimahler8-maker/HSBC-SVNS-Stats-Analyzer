@@ -18,6 +18,8 @@ import ja from '../i18n/ja.js';
 
 export default function StatsAnalysis({ onBackHome, t = ja }) {
   const labels = t.statsAnalysis;
+  const screenBgImage = `${import.meta.env.BASE_URL}assets/bg-stats-analysis.png`;
+  const mobileScreenBgImage = `${import.meta.env.BASE_URL}assets/bg-stats-analysis-mobile.png`;
   const isJapanese = t.navigation?.backHome?.includes('ホーム');
   const seasons = [...new Set(sampleMatches.map((m) => m.season))];
 
@@ -156,7 +158,13 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
   };
 
   return (
-    <div className="app">
+    <div
+      className="app screenBackground statsAnalysisScreen"
+      style={{
+        '--screen-bg-image': `url(${screenBgImage})`,
+        '--screen-bg-mobile-image': `url(${mobileScreenBgImage})`,
+      }}
+    >
       {onBackHome && (
         <button type="button" className="backHomeButton" onClick={onBackHome}>
           {t.navigation.backHome}
