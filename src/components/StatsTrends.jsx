@@ -37,6 +37,8 @@ function getMetricValue(match, metric) {
 
 export default function StatsTrends({ onBackHome, t = ja }) {
   const isJapanese = t.navigation?.backHome?.includes('ホーム');
+  const screenBgImage = `${import.meta.env.BASE_URL}assets/bg-stats-trends.png`;
+  const mobileScreenBgImage = `${import.meta.env.BASE_URL}assets/bg-stats-trends-mobile.png`;
 
   const labels = {
     title: isJapanese ? 'スタッツ推移' : 'Stats Trends',
@@ -284,7 +286,13 @@ export default function StatsTrends({ onBackHome, t = ja }) {
   };
 
   return (
-    <div className="app">
+    <div
+      className="app screenBackground statsTrendsScreen"
+      style={{
+        '--screen-bg-image': `url(${screenBgImage})`,
+        '--screen-bg-mobile-image': `url(${mobileScreenBgImage})`,
+      }}
+    >
       {onBackHome && (
         <button type="button" className="backHomeButton" onClick={onBackHome}>
           <ArrowLeft size={16} /> {t.navigation.backHome.replace('← ', '')}
