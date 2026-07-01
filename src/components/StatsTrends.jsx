@@ -9,7 +9,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { ArrowLeft, LineChart as TrendIcon, Filter, Info } from 'lucide-react';
-import { sampleMatches } from '../data/sampleMatches.js';
+import { matchData as sampleMatches } from '../data/loadMatches.js';
 import ja from '../i18n/ja.js';
 
 const metricOptions = [
