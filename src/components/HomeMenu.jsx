@@ -42,8 +42,8 @@ function getMenuItems(t) {
 }
 
 export default function HomeMenu({ onNavigate, t = ja }) {
-  const heroImage = `${import.meta.env.BASE_URL}assets/home-hero.png?v=041`;
-  const mobileHeroImage = `${import.meta.env.BASE_URL}assets/home-hero-mobile.png?v=041`;
+  const heroImage = `${import.meta.env.BASE_URL}assets/home-hero-v041.png`;
+  const mobileHeroImage = `${import.meta.env.BASE_URL}assets/home-hero-mobile-v041.png`;
   const menuItems = getMenuItems(t);
 
   return (
