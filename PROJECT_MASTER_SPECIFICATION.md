@@ -1464,4 +1464,133 @@ Version0.5完了時の推奨コミットメッセージは以下。
 ```text
 Mark Version 0.5 as complete
 ```
-
+---
+34. Version0.5.1 完了メモ：Screen Background Assets
+Version0.5.1では、Version0.6に進む前の小改修として、主要画面に背景画像を追加した。
+Version0.5.1のテーマは以下とする。
+```text
+Screen Background Assets
+```
+この作業は、データ構造や分析ロジックを変更するものではない。  
+目的は、各画面の視覚的な区別を強め、アプリ全体の完成度を上げることである。
+---
+34.1 追加した背景画像
+以下の8枚を `public/assets` に追加した。
+```text
+bg-stats-analysis.png
+bg-stats-analysis-mobile.png
+bg-stats-trends.png
+bg-stats-trends-mobile.png
+bg-match-search.png
+bg-match-search-mobile.png
+bg-video-library.png
+bg-video-library-mobile.png
+```
+横長画像はPC・タブレット横画面向け、`-mobile` 付き画像はスマホ縦画面向けである。
+---
+34.2 CSS追加
+`src/styles.css` に、画面別背景用の共通CSSを追加した。
+追加した主なクラスは以下。
+```text
+screenBackground
+```
+このクラスは、対象画面の一番外側の `div` に付与する。  
+背景画像はCSS変数で受け取る。
+```text
+--screen-bg-image
+--screen-bg-mobile-image
+```
+これにより、GitHub Pages の base path を React 側で処理しつつ、CSS側では共通の背景表示処理を使える。
+---
+34.3 StatsAnalysis 背景適用
+`src/components/StatsAnalysis.jsx` に背景指定を追加した。
+使用画像は以下。
+```text
+bg-stats-analysis.png
+bg-stats-analysis-mobile.png
+```
+主な変更点は以下。
+```text
+- 背景画像URL用の定数を追加
+- 一番外側の div に screenBackground / statsAnalysisScreen を追加
+- CSS変数 --screen-bg-image / --screen-bg-mobile-image を指定
+```
+データ取得、フィルター、グラフ、出典表示などのロジックは変更していない。
+---
+34.4 StatsTrends 背景適用
+`src/components/StatsTrends.jsx` に背景指定を追加した。
+使用画像は以下。
+```text
+bg-stats-trends.png
+bg-stats-trends-mobile.png
+```
+主な変更点は以下。
+```text
+- 背景画像URL用の定数を追加
+- 一番外側の div に screenBackground / statsTrendsScreen を追加
+- CSS変数 --screen-bg-image / --screen-bg-mobile-image を指定
+```
+`loadMatches.js` 経由のデータ読み込みは維持した。
+---
+34.5 Match Search / Video Library 背景適用
+`src/App.jsx` 内の `ComingSoon` 表示に、背景画像を指定できる仕組みを追加した。
+試合検索画面で使用する画像は以下。
+```text
+bg-match-search.png
+bg-match-search-mobile.png
+```
+動画ライブラリ画面で使用する画像は以下。
+```text
+bg-video-library.png
+bg-video-library-mobile.png
+```
+試合検索・動画ライブラリは、現時点では独立コンポーネントではなく、`App.jsx` 内の `ComingSoon` で表示している。
+そのため、Version0.5.1では新規コンポーネントを作らず、`ComingSoon` に以下を渡せるようにした。
+```text
+screenClassName
+backgroundImage
+mobileBackgroundImage
+```
+管理者画面には背景画像を追加していない。
+---
+34.6 Version0.5.1で変更していないこと
+Version0.5.1では、以下は変更していない。
+```text
+- matches.json
+- loadMatches.js
+- validate:data
+- データ検証ルール
+- StatsAnalysis の分析ロジック
+- StatsTrends の分析ロジック
+- 試合検索の本実装
+- 動画ライブラリの本実装
+- 管理者画面の本実装
+```
+Version0.5.1は、あくまで画面背景の追加と視覚的整理のための小改修である。
+---
+34.7 Version0.5.1 完了判定
+以下を満たした時点で、Version0.5.1を完了扱いとする。
+```text
+- 背景画像8枚が public/assets に存在する
+- styles.css に screenBackground CSS が追加されている
+- StatsAnalysis で背景が表示される
+- StatsTrends で背景が表示される
+- Match Search の ComingSoon 画面で背景が表示される
+- Video Library の ComingSoon 画面で背景が表示される
+- GitHub Actions が緑チェックで完了する
+- アプリが正常に開く
+```
+---
+34.8 次フェーズ
+次フェーズは Version0.6 とする。
+推奨テーマは以下。
+```text
+Real Data Import Preparation
+```
+Version0.6では、実データを大量投入する前に、まず1試合分の real match record を安全に `matches.json` へ追加するためのテンプレート、検証手順、出典確認手順を整備する。
+---
+34.9 Version0.5.1 推奨コミット
+Version0.5.1完了時の推奨コミットメッセージは以下。
+```text
+Document Version 0.5.1 screen background update
+```
