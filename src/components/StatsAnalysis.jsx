@@ -11,7 +11,14 @@ import {
   Scatter,
   Legend,
 } from 'recharts';
-import { ShieldAlert, Database, Trophy, Filter, Info, RefreshCcw } from 'lucide-react';
+import {
+  ShieldAlert,
+  Database,
+  Trophy,
+  Filter,
+  Info,
+  RefreshCcw,
+} from 'lucide-react';
 import { matchData as sampleMatches } from '../data/loadMatches.js';
 import { pct, avg, corr } from '../utils/statistics.js';
 import ja from '../i18n/ja.js';
@@ -50,10 +57,16 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
     ),
   ];
 
-  const selectedMatch = filtered.find((m) => m.id === selected) || filtered[0];
+  const selectedMatch =
+    filtered.find((m) => m.id === selected) || filtered[0];
 
-  const wins = filtered.filter((m) => m.result === 'W');
-  const losses = filtered.filter((m) => m.result === 'L');
+  const wins = filtered.filter(
+    (m) => (m.teamResult || m.result) === 'W'
+  );
+
+  const losses = filtered.filter(
+    (m) => (m.teamResult || m.result) === 'L'
+  );
 
   const metricLabels = labels.metrics;
 
@@ -61,18 +74,42 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
     pointsFor: isJapanese ? '得点' : 'Points For',
     pointsAgainst: isJapanese ? '失点' : 'Points Against',
     tries: isJapanese ? 'トライ' : 'Tries',
-    cleanBreaks: isJapanese ? 'クリーンブレイク' : 'Clean Breaks',
-    defendersBeaten: isJapanese ? 'ディフェンダー突破' : 'Defenders Beaten',
-    turnoversWon: isJapanese ? 'ターンオーバー獲得' : 'Turnovers Won',
-    turnoversConceded: isJapanese ? 'ターンオーバー喪失' : 'Turnovers Conceded',
+    metres: isJapanese ? '獲得メートル' : 'Metres',
+    cleanBreaks: isJapanese
+      ? 'クリーンブレイク'
+      : 'Clean Breaks',
+    defendersBeaten: isJapanese
+      ? 'ディフェンダー突破'
+      : 'Defenders Beaten',
+    turnoversWon: isJapanese
+      ? 'ターンオーバー獲得'
+      : 'Turnovers Won',
+    turnoversConceded: isJapanese
+      ? 'ターンオーバー喪失'
+      : 'Turnovers Conceded',
     tackles: isJapanese ? 'タックル' : 'Tackles',
-    missedTackles: isJapanese ? 'ミスタックル' : 'Missed Tackles',
-    possession: isJapanese ? 'ポゼッション' : 'Possession',
-    pointDiff: isJapanese ? '得失点差' : 'Point Differential',
-    tackleSuccess: isJapanese ? 'タックル成功率' : 'Tackle Success',
+    missedTackles: isJapanese
+      ? 'ミスタックル'
+      : 'Missed Tackles',
+    possession: isJapanese
+      ? 'ポゼッション'
+      : 'Possession',
+    pointDiff: isJapanese
+      ? '得失点差'
+      : 'Point Differential',
+    tackleSuccess: isJapanese
+      ? 'タックル成功率'
+      : 'Tackle Success',
   };
 
-  const getMetricLabel = (key) => metricLabels[key] || fallbackMetricLabels[key] || key;
+  const resultFieldLabels = {
+    matchResult: isJapanese ? '試合結果' : 'Match Result',
+    winner: isJapanese ? '勝者' : 'Winner',
+    loser: isJapanese ? '敗者' : 'Loser',
+  };
+
+  const getMetricLabel = (key) =>
+    metricLabels[key] || fallbackMetricLabels[key] || key;
 
   const chartMetricLabels = {
     pointsFor: 'PF',
@@ -95,7 +132,8 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
   ].map((k) => ({
     metric: k,
     metricLabel: getMetricLabel(k),
-    chartMetricLabel: chartMetricLabels[k] || getMetricLabel(k),
+    chartMetricLabel:
+      chartMetricLabels[k] || getMetricLabel(k),
     wins: +avg(wins, k).toFixed(1),
     losses: +avg(losses, k).toFixed(1),
   }));
@@ -108,7 +146,10 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
     return {
       ...m,
       pointDiff: m.pointsFor - m.pointsAgainst,
-      tackleSuccess: tackleTotal > 0 ? (100 * tackles) / tackleTotal : 0,
+      tackleSuccess:
+        tackleTotal > 0
+          ? (100 * tackles) / tackleTotal
+          : 0,
     };
   });
 
@@ -126,13 +167,84 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
       correlation: corr(corrData, k, 'pointDiff'),
     }))
     .filter((x) => x.correlation !== null)
-    .sort((a, b) => Math.abs(b.correlation) - Math.abs(a.correlation));
+    .sort(
+      (a, b) =>
+        Math.abs(b.correlation) -
+        Math.abs(a.correlation)
+    );
 
   const mixedSeasonWarning = false;
 
-  const tournamentLabel = (name) => (name === 'All' ? labels.filters.all : name);
+  const tournamentLabel = (name) =>
+    name === 'All' ? labels.filters.all : name;
 
-  const resultLabel = (result) => (result === 'W' ? labels.results.win : labels.results.loss);
+  const resultLabel = (result) =>
+    result === 'W'
+      ? labels.results.win
+      : labels.results.loss;
+
+  const getWinner = (match) => {
+    if (!match) return '';
+
+    if (match.winner) {
+      return match.winner;
+    }
+
+    const teamResult = match.teamResult || match.result;
+
+    if (teamResult === 'W') {
+      return match.team;
+    }
+
+    if (teamResult === 'L') {
+      return match.opponent;
+    }
+
+    return '';
+  };
+
+  const getLoser = (match) => {
+    if (!match) return '';
+
+    if (match.loser) {
+      return match.loser;
+    }
+
+    const teamResult = match.teamResult || match.result;
+
+    if (teamResult === 'W') {
+      return match.opponent;
+    }
+
+    if (teamResult === 'L') {
+      return match.team;
+    }
+
+    return '';
+  };
+
+  const getMatchResultLabel = (match) => {
+    if (!match) return '';
+
+    const winner = getWinner(match);
+
+    if (winner) {
+      return isJapanese
+        ? `${winner} 勝利`
+        : match.matchResult || `${winner} Win`;
+    }
+
+    if (match.matchResult) {
+      return match.matchResult;
+    }
+
+    return resultLabel(match.teamResult || match.result);
+  };
+
+  const displayValue = (value) =>
+    value === null || value === undefined
+      ? '—'
+      : value;
 
   const coverageLevelLabel = (level) =>
     labels.dataCoverage?.levels?.[level] ||
@@ -166,7 +278,11 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
       }}
     >
       {onBackHome && (
-        <button type="button" className="backHomeButton" onClick={onBackHome}>
+        <button
+          type="button"
+          className="backHomeButton"
+          onClick={onBackHome}
+        >
           {t.navigation.backHome}
         </button>
       )}
@@ -189,6 +305,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
           <h1>{t.appTitle}</h1>
           <p>{labels.subtitle}</p>
         </div>
+
         <div className="badge">
           <Database size={22} /> {labels.badge}
         </div>
@@ -202,7 +319,12 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
         <div className="filters">
           <label>
             {labels.filters.season}
-            <select value={season} onChange={(e) => setSeason(e.target.value)}>
+            <select
+              value={season}
+              onChange={(e) =>
+                setSeason(e.target.value)
+              }
+            >
               {seasons.map((s) => (
                 <option key={s}>{s}</option>
               ))}
@@ -211,24 +333,46 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
 
           <label>
             {labels.filters.gender}
-            <select value={gender} onChange={(e) => setGender(e.target.value)}>
-              <option value="Women">{labels.filters.women}</option>
-              <option value="Men">{labels.filters.men}</option>
+            <select
+              value={gender}
+              onChange={(e) =>
+                setGender(e.target.value)
+              }
+            >
+              <option value="Women">
+                {labels.filters.women}
+              </option>
+              <option value="Men">
+                {labels.filters.men}
+              </option>
             </select>
           </label>
 
           <label>
             {labels.filters.team}
-            <select value={team} onChange={(e) => setTeam(e.target.value)}>
+            <select
+              value={team}
+              onChange={(e) =>
+                setTeam(e.target.value)
+              }
+            >
               <option>Japan</option>
             </select>
           </label>
 
           <label>
             {labels.filters.tournament}
-            <select value={tournament} onChange={(e) => setTournament(e.target.value)}>
+            <select
+              value={tournament}
+              onChange={(e) =>
+                setTournament(e.target.value)
+              }
+            >
               {tournaments.map((tournamentName) => (
-                <option key={tournamentName} value={tournamentName}>
+                <option
+                  key={tournamentName}
+                  value={tournamentName}
+                >
                   {tournamentLabel(tournamentName)}
                 </option>
               ))}
@@ -238,29 +382,44 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
 
         <div className="scopeGrid">
           <span>
-            {labels.scopeLabels.season}: <b>{season}</b>
+            {labels.scopeLabels.season}:{' '}
+            <b>{season}</b>
           </span>
+
           <span>
             {labels.scopeLabels.gender}:{' '}
-            <b>{gender === 'Women' ? labels.filters.women : labels.filters.men}</b>
+            <b>
+              {gender === 'Women'
+                ? labels.filters.women
+                : labels.filters.men}
+            </b>
           </span>
+
           <span>
-            {labels.scopeLabels.tournament}: <b>{tournamentLabel(tournament)}</b>
+            {labels.scopeLabels.tournament}:{' '}
+            <b>{tournamentLabel(tournament)}</b>
           </span>
+
           <span>
-            {labels.scopeLabels.matches}: <b>{filtered.length}</b>
+            {labels.scopeLabels.matches}:{' '}
+            <b>{filtered.length}</b>
           </span>
         </div>
 
         <div className="dataAvailabilityNotice">
           <b>{labels.dataAvailability.title}</b>
-          <span>{labels.dataAvailability.fullStatsEra}</span>
-          <small>{labels.dataAvailability.note}</small>
+          <span>
+            {labels.dataAvailability.fullStatsEra}
+          </span>
+          <small>
+            {labels.dataAvailability.note}
+          </small>
         </div>
 
         {mixedSeasonWarning && (
           <div className="warn">
-            <ShieldAlert /> {labels.mixedSeasonWarning}
+            <ShieldAlert />{' '}
+            {labels.mixedSeasonWarning}
           </div>
         )}
       </section>
@@ -274,23 +433,35 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
           <div className="matches">
             {filtered.map((m) => (
               <button
-                className={m.id === selected ? 'match active' : 'match'}
+                className={
+                  m.id === selected
+                    ? 'match active'
+                    : 'match'
+                }
                 key={m.id}
                 onClick={() => setSelected(m.id)}
               >
                 <b>
-                  {m.team} {m.pointsFor}-{m.pointsAgainst} {m.opponent}
+                  {m.team} {m.pointsFor}-
+                  {m.pointsAgainst} {m.opponent}
                 </b>
+
                 <span>
-                  {m.date} / {m.tournament} / {m.stage}
+                  {m.date} / {m.tournament} /{' '}
+                  {m.stage}
                 </span>
+
                 <em>
-                  {resultLabel(m.result)} · {m.id}
+                  {getMatchResultLabel(m)} · {m.id}
                 </em>
               </button>
             ))}
 
-            {filtered.length === 0 && <p className="empty">{labels.noSampleData}</p>}
+            {filtered.length === 0 && (
+              <p className="empty">
+                {labels.noSampleData}
+              </p>
+            )}
           </div>
         </section>
 
@@ -302,96 +473,218 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
           {selectedMatch ? (
             <div className="detail">
               <h3>
-                {selectedMatch.team} vs {selectedMatch.opponent}
+                {selectedMatch.team} vs{' '}
+                {selectedMatch.opponent}
               </h3>
 
               <div className="scoreLine">
                 <b>
-                  {selectedMatch.pointsFor} - {selectedMatch.pointsAgainst}
+                  {selectedMatch.pointsFor} -{' '}
+                  {selectedMatch.pointsAgainst}
                 </b>
+
                 <span>
-                  {selectedMatch.tournament} / {selectedMatch.stage} / {selectedMatch.date}
+                  {selectedMatch.tournament} /{' '}
+                  {selectedMatch.stage} /{' '}
+                  {selectedMatch.date}
+                </span>
+              </div>
+
+              <div className="metricGrid">
+                <span>
+                  {resultFieldLabels.matchResult}
+                  <b>
+                    {getMatchResultLabel(
+                      selectedMatch
+                    )}
+                  </b>
+                </span>
+
+                <span>
+                  {resultFieldLabels.winner}
+                  <b>
+                    {getWinner(selectedMatch) || '—'}
+                  </b>
+                </span>
+
+                <span>
+                  {resultFieldLabels.loser}
+                  <b>
+                    {getLoser(selectedMatch) || '—'}
+                  </b>
                 </span>
               </div>
 
               <div className="metricGrid">
                 <span>
                   {getMetricLabel('tries')}
-                  <b>{selectedMatch.tries}</b>
+                  <b>
+                    {displayValue(
+                      selectedMatch.tries
+                    )}
+                  </b>
                 </span>
+
+                <span>
+                  {getMetricLabel('metres')}
+                  <b>
+                    {displayValue(
+                      selectedMatch.metres
+                    )}
+                  </b>
+                </span>
+
                 <span>
                   {getMetricLabel('cleanBreaks')}
-                  <b>{selectedMatch.cleanBreaks}</b>
+                  <b>
+                    {displayValue(
+                      selectedMatch.cleanBreaks
+                    )}
+                  </b>
                 </span>
+
                 <span>
-                  {getMetricLabel('defendersBeaten')}
-                  <b>{selectedMatch.defendersBeaten}</b>
+                  {getMetricLabel(
+                    'defendersBeaten'
+                  )}
+                  <b>
+                    {displayValue(
+                      selectedMatch.defendersBeaten
+                    )}
+                  </b>
                 </span>
+
                 <span>
                   {getMetricLabel('turnoversWon')}
-                  <b>{selectedMatch.turnoversWon}</b>
+                  <b>
+                    {displayValue(
+                      selectedMatch.turnoversWon
+                    )}
+                  </b>
                 </span>
+
                 <span>
-                  {getMetricLabel('turnoversConceded')}
-                  <b>{selectedMatch.turnoversConceded}</b>
+                  {getMetricLabel(
+                    'turnoversConceded'
+                  )}
+                  <b>
+                    {displayValue(
+                      selectedMatch.turnoversConceded
+                    )}
+                  </b>
                 </span>
+
                 <span>
                   {getMetricLabel('tackles')}
-                  <b>{selectedMatch.tackles}</b>
+                  <b>
+                    {displayValue(
+                      selectedMatch.tackles
+                    )}
+                  </b>
                 </span>
+
                 <span>
-                  {getMetricLabel('missedTackles')}
-                  <b>{selectedMatch.missedTackles}</b>
+                  {getMetricLabel(
+                    'missedTackles'
+                  )}
+                  <b>
+                    {displayValue(
+                      selectedMatch.missedTackles
+                    )}
+                  </b>
                 </span>
+
                 <span>
                   {getMetricLabel('possession')}
-                  <b>{pct(selectedMatch.possession)}</b>
+                  <b>
+                    {selectedMatch.possession ===
+                      null ||
+                    selectedMatch.possession ===
+                      undefined
+                      ? '—'
+                      : pct(
+                          selectedMatch.possession
+                        )}
+                  </b>
                 </span>
+
                 <span>
                   {getMetricLabel('pointDiff')}
-                  <b>{selectedMatch.pointsFor - selectedMatch.pointsAgainst}</b>
+                  <b>
+                    {selectedMatch.pointsFor -
+                      selectedMatch.pointsAgainst}
+                  </b>
                 </span>
               </div>
 
               <div className="sourceBox">
                 <b>{labels.traceability}</b>
                 <br />
-                {labels.internalMatchId}: {selectedMatch.id}
+                {labels.internalMatchId}:{' '}
+                {selectedMatch.id}
                 <br />
-                {labels.rugbyComAuId}: {selectedMatch.external?.rugbyComAu || 'Unknown'}
+                {labels.rugbyComAuId}:{' '}
+                {selectedMatch.external
+                  ?.rugbyComAu || 'Unknown'}
                 <br />
-                {labels.svnsId}: {selectedMatch.external?.svns || 'Unknown'}
+                {labels.svnsId}:{' '}
+                {selectedMatch.external?.svns ||
+                  'Unknown'}
                 <br />
                 {labels.lastFetched}:{' '}
-                {selectedMatch.fetchedAt || 'Unknown'}
+                {selectedMatch.fetchedAt ||
+                  'Unknown'}
                 <br />
-                {labels.sourceProvider}: {selectedMatch.sourceProvider || 'Unknown'}
+                {labels.sourceProvider}:{' '}
+                {selectedMatch.sourceProvider ||
+                  'Unknown'}
                 <br />
-                {labels.statDefinitionVersion}: {selectedMatch.statDefinitionVersion || 'Unknown'}
+                {labels.statDefinitionVersion}:{' '}
+                {selectedMatch.statDefinitionVersion ||
+                  'Unknown'}
                 <br />
-                {labels.dataCoverage.label}: {coverageLevelLabel(selectedMatch.dataCoverageLevel)}
+                {labels.dataCoverage.label}:{' '}
+                {coverageLevelLabel(
+                  selectedMatch.dataCoverageLevel
+                )}
                 <br />
                 {labels.dataCoverage.sourceLabel}:{' '}
-                {selectedMatch.dataCoverageSource || labels.dataCoverage.unknownSource}
+                {selectedMatch.dataCoverageSource ||
+                  labels.dataCoverage
+                    .unknownSource}
               </div>
             </div>
           ) : (
-            <p className="empty">{labels.noSampleData}</p>
+            <p className="empty">
+              {labels.noSampleData}
+            </p>
           )}
         </section>
 
         <section className="panel wide">
           <h2>{labels.winLossComparison}</h2>
-          <p className="note">{labels.winLossNote}</p>
+          <p className="note">
+            {labels.winLossNote}
+          </p>
 
           <div className="chart">
-            <ResponsiveContainer width="100%" height={390}>
+            <ResponsiveContainer
+              width="100%"
+              height={390}
+            >
               <BarChart
                 data={analysisRows}
                 layout="vertical"
-                margin={{ top: 8, right: 20, bottom: 8, left: 12 }}
+                margin={{
+                  top: 8,
+                  right: 20,
+                  bottom: 8,
+                  left: 12,
+                }}
               >
-                <CartesianGrid strokeDasharray="3 3" />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                />
                 <XAxis type="number" />
                 <YAxis
                   type="category"
@@ -403,16 +696,34 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
                 />
                 <Tooltip
                   cursor={false}
-                  labelFormatter={(value, payload) =>
-                    payload?.[0]?.payload?.metricLabel || value
+                  labelFormatter={(
+                    value,
+                    payload
+                  ) =>
+                    payload?.[0]?.payload
+                      ?.metricLabel || value
                   }
-                  contentStyle={chartTooltipStyle}
-                  labelStyle={chartTooltipLabelStyle}
-                  itemStyle={chartTooltipItemStyle}
+                  contentStyle={
+                    chartTooltipStyle
+                  }
+                  labelStyle={
+                    chartTooltipLabelStyle
+                  }
+                  itemStyle={
+                    chartTooltipItemStyle
+                  }
                 />
                 <Legend />
-                <Bar dataKey="wins" name={labels.results.winsAvg} fill="#22c55e" />
-                <Bar dataKey="losses" name={labels.results.lossesAvg} fill="#ef4444" />
+                <Bar
+                  dataKey="wins"
+                  name={labels.results.winsAvg}
+                  fill="#22c55e"
+                />
+                <Bar
+                  dataKey="losses"
+                  name={labels.results.lossesAvg}
+                  fill="#ef4444"
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -420,25 +731,42 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
 
         <section className="panel wide">
           <h2>{labels.candidateDrivers}</h2>
-          <p className="note">{labels.candidateDriversNote}</p>
-          <p className="note sampleSizeNote">
-            {labels.candidateDriversSampleSize}: n={corrData.length}
+          <p className="note">
+            {labels.candidateDriversNote}
           </p>
 
-          {corrData.length > 0 && corrData.length < 6 && (
-            <div className="smallSampleWarning">
-              <ShieldAlert size={16} />
-              <span>{labels.candidateDriversSmallSampleWarning}</span>
-            </div>
-          )}
+          <p className="note sampleSizeNote">
+            {labels.candidateDriversSampleSize}: n=
+            {corrData.length}
+          </p>
+
+          {corrData.length > 0 &&
+            corrData.length < 6 && (
+              <div className="smallSampleWarning">
+                <ShieldAlert size={16} />
+                <span>
+                  {
+                    labels.candidateDriversSmallSampleWarning
+                  }
+                </span>
+              </div>
+            )}
 
           <div className="cards">
             {correlations.map((c) => (
-              <div className="corr" key={c.metric}>
+              <div
+                className="corr"
+                key={c.metric}
+              >
                 <span>{c.metricLabel}</span>
-                <b>{c.correlation.toFixed(2)}</b>
+                <b>
+                  {c.correlation.toFixed(2)}
+                </b>
                 <small>
-                  {labels.candidateDriversSampleSize}: n={corrData.length}
+                  {
+                    labels.candidateDriversSampleSize
+                  }
+                  : n={corrData.length}
                 </small>
               </div>
             ))}
@@ -449,18 +777,39 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
           <h2>{labels.scatterTitle}</h2>
 
           <div className="chart">
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer
+              width="100%"
+              height={300}
+            >
               <ScatterChart>
                 <CartesianGrid />
-                <XAxis type="number" dataKey="cleanBreaks" name={labels.scatter.xAxis} />
-                <YAxis type="number" dataKey="pointDiff" name={labels.scatter.yAxis} />
+                <XAxis
+                  type="number"
+                  dataKey="cleanBreaks"
+                  name={labels.scatter.xAxis}
+                />
+                <YAxis
+                  type="number"
+                  dataKey="pointDiff"
+                  name={labels.scatter.yAxis}
+                />
                 <Tooltip
                   cursor={false}
-                  contentStyle={chartTooltipStyle}
-                  labelStyle={chartTooltipLabelStyle}
-                  itemStyle={chartTooltipItemStyle}
+                  contentStyle={
+                    chartTooltipStyle
+                  }
+                  labelStyle={
+                    chartTooltipLabelStyle
+                  }
+                  itemStyle={
+                    chartTooltipItemStyle
+                  }
                 />
-                <Scatter data={corrData} name={labels.scatter.matches} fill="#38bdf8" />
+                <Scatter
+                  data={corrData}
+                  name={labels.scatter.matches}
+                  fill="#38bdf8"
+                />
               </ScatterChart>
             </ResponsiveContainer>
           </div>
@@ -468,13 +817,16 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
 
         <section className="panel wide">
           <h2>
-            <RefreshCcw size={18} /> {labels.nextImplementation}
+            <RefreshCcw size={18} />{' '}
+            {labels.nextImplementation}
           </h2>
 
           <ol>
-            {labels.nextImplementationItems.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
+            {labels.nextImplementationItems.map(
+              (item) => (
+                <li key={item}>{item}</li>
+              )
+            )}
           </ol>
         </section>
       </main>
