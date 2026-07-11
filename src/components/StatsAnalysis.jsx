@@ -56,6 +56,8 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
   const [team, setTeam] = useState('Japan');
   const [tournament, setTournament] = useState('All');
   const [selected, setSelected] = useState(sampleMatches[0]?.id || '');
+  const [scatterX, setScatterX] = useState('metres');
+  const [scatterY, setScatterY] = useState('pointDiff');
 
   const filtered = useMemo(
     () =>
@@ -99,6 +101,9 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
     pointsAgainst: isJapanese ? '失点' : 'Points Against',
     tries: isJapanese ? 'トライ' : 'Tries',
     metres: isJapanese ? '獲得メートル' : 'Metres',
+    carries: isJapanese ? 'キャリー' : 'Carries',
+    passes: isJapanese ? 'パス' : 'Passes',
+    offloads: isJapanese ? 'オフロード' : 'Offloads',
     cleanBreaks: isJapanese
       ? 'クリーンブレイク'
       : 'Clean Breaks',
@@ -115,6 +120,11 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
     missedTackles: isJapanese
       ? 'ミスタックル'
       : 'Missed Tackles',
+    rucksWon: isJapanese ? 'ラック獲得' : 'Rucks Won',
+    rucksLost: isJapanese ? 'ラック喪失' : 'Rucks Lost',
+    penaltiesConceded: isJapanese
+      ? '反則数'
+      : 'Penalties Conceded',
     possession: isJapanese
       ? 'ポゼッション'
       : 'Possession',
@@ -132,8 +142,65 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
     loser: isJapanese ? '敗者' : 'Loser',
   };
 
+  const scatterUiLabels = {
+    xAxis: isJapanese ? 'X軸' : 'X Axis',
+    yAxis: isJapanese ? 'Y軸' : 'Y Axis',
+    availablePoints: isJapanese ? '有効プロット数' : 'Available Points',
+    totalMatches: isJapanese ? '対象試合数' : 'Matches',
+    description: isJapanese
+      ? 'X軸とY軸の指標を選択し、試合ごとのばらつきを確認できます。'
+      : 'Select the X- and Y-axis metrics to review match-level variation.',
+    smallSampleWarning: isJapanese
+      ? 'サンプル数が少ないため、相関や因果関係は断定できません。この図は試合ごとのばらつきを確認するためのものです。'
+      : 'The sample is too small to establish correlation or causation. Use this chart to review match-level variation.',
+    missingDataNote: isJapanese
+      ? '選択した両指標の値がそろっている試合だけを表示しています。'
+      : 'Only matches with valid values for both selected metrics are plotted.',
+    sameAxisWarning: isJapanese
+      ? 'X軸とY軸に同じ指標が選択されています。'
+      : 'The same metric is selected for both axes.',
+    noData: isJapanese
+      ? '選択した指標の組み合わせで表示できる試合データがありません。'
+      : 'No matches have valid data for this metric combination.',
+  };
+
   const getMetricLabel = (key) =>
     metricLabels[key] || fallbackMetricLabels[key] || key;
+
+  const scatterMetricKeys = [
+    'pointsFor',
+    'pointsAgainst',
+    'pointDiff',
+    'tries',
+    'metres',
+    'carries',
+    'passes',
+    'offloads',
+    'cleanBreaks',
+    'defendersBeaten',
+    'tackles',
+    'missedTackles',
+    'turnoversWon',
+    'turnoversConceded',
+    'rucksWon',
+    'rucksLost',
+    'possession',
+    'tackleSuccess',
+    'penaltiesConceded',
+  ];
+
+  const scatterMetricOptions = scatterMetricKeys.map((key) => ({
+    key,
+    label: getMetricLabel(key),
+  }));
+
+  const scatterXLabel =
+    scatterMetricOptions.find((item) => item.key === scatterX)?.label ||
+    scatterX;
+
+  const scatterYLabel =
+    scatterMetricOptions.find((item) => item.key === scatterY)?.label ||
+    scatterY;
 
   const chartMetricLabels = {
     pointsFor: 'PF',
@@ -270,6 +337,88 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
       ? '—'
       : value;
 
+  const getScatterMetricValue = (match, key) => {
+    if (key === 'pointDiff') {
+      if (
+        match.pointsFor === null ||
+        match.pointsFor === undefined ||
+        match.pointsAgainst === null ||
+        match.pointsAgainst === undefined
+      ) {
+        return null;
+      }
+
+      return Number(match.pointsFor) - Number(match.pointsAgainst);
+    }
+
+    if (key === 'tackleSuccess') {
+      const hasTackles =
+        match.tackles !== null && match.tackles !== undefined;
+      const hasMissedTackles =
+        match.missedTackles !== null &&
+        match.missedTackles !== undefined;
+
+      if (!hasTackles && !hasMissedTackles) {
+        return null;
+      }
+
+      const tackles = Number(match.tackles ?? 0);
+      const missedTackles = Number(match.missedTackles ?? 0);
+      const tackleTotal = tackles + missedTackles;
+
+      return tackleTotal > 0 ? (100 * tackles) / tackleTotal : 0;
+    }
+
+    const rawValue = match[key];
+
+    if (
+      rawValue === null ||
+      rawValue === undefined ||
+      rawValue === ''
+    ) {
+      return null;
+    }
+
+    const numericValue = Number(rawValue);
+
+    return Number.isFinite(numericValue) ? numericValue : null;
+  };
+
+  const formatScatterValue = (key, value) => {
+    if (value === null || value === undefined) {
+      return '—';
+    }
+
+    const formattedValue = Number.isInteger(value)
+      ? value
+      : Number(value.toFixed(1));
+
+    const suffix =
+      key === 'possession' || key === 'tackleSuccess'
+        ? '%'
+        : '';
+
+    return `${formattedValue}${suffix}`;
+  };
+
+  const scatterData = filtered
+    .map((match) => {
+      const xValue = getScatterMetricValue(match, scatterX);
+      const yValue = getScatterMetricValue(match, scatterY);
+
+      return {
+        ...match,
+        xValue,
+        yValue,
+        matchResultLabel: getMatchResultLabel(match),
+      };
+    })
+    .filter(
+      (match) =>
+        match.xValue !== null &&
+        match.yValue !== null
+    );
+
   const coverageLevelLabel = (level) =>
     labels.dataCoverage?.levels?.[level] ||
     labels.dataCoverage?.levels?.unknown ||
@@ -291,6 +440,43 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
 
   const chartTooltipItemStyle = {
     color: '#e5e7eb',
+  };
+
+  const renderScatterTooltip = ({ active, payload }) => {
+    if (!active || !payload?.length) {
+      return null;
+    }
+
+    const point = payload[0].payload;
+
+    return (
+      <div
+        style={{
+          ...chartTooltipStyle,
+          padding: '10px 12px',
+          minWidth: '220px',
+        }}
+      >
+        <div style={chartTooltipLabelStyle}>
+          {point.team} {point.pointsFor}-{point.pointsAgainst}{' '}
+          {point.opponent}
+        </div>
+        <div style={chartTooltipItemStyle}>
+          {point.date} / {point.tournament} / {point.stage}
+        </div>
+        <div style={chartTooltipItemStyle}>
+          {point.matchResultLabel}
+        </div>
+        <div style={chartTooltipItemStyle}>
+          {scatterUiLabels.xAxis} · {scatterXLabel}:{' '}
+          <b>{formatScatterValue(scatterX, point.xValue)}</b>
+        </div>
+        <div style={chartTooltipItemStyle}>
+          {scatterUiLabels.yAxis} · {scatterYLabel}:{' '}
+          <b>{formatScatterValue(scatterY, point.yValue)}</b>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -798,45 +984,122 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
         </section>
 
         <section className="panel wide">
-          <h2>{labels.scatterTitle}</h2>
+          <h2>
+            {labels.scatterTitle}: {scatterXLabel} × {scatterYLabel}
+          </h2>
 
-          <div className="chart">
-            <ResponsiveContainer
-              width="100%"
-              height={300}
-            >
-              <ScatterChart>
-                <CartesianGrid />
-                <XAxis
-                  type="number"
-                  dataKey="cleanBreaks"
-                  name={labels.scatter.xAxis}
-                />
-                <YAxis
-                  type="number"
-                  dataKey="pointDiff"
-                  name={labels.scatter.yAxis}
-                />
-                <Tooltip
-                  cursor={false}
-                  contentStyle={
-                    chartTooltipStyle
-                  }
-                  labelStyle={
-                    chartTooltipLabelStyle
-                  }
-                  itemStyle={
-                    chartTooltipItemStyle
-                  }
-                />
-                <Scatter
-                  data={corrData}
-                  name={labels.scatter.matches}
-                  fill="#38bdf8"
-                />
-              </ScatterChart>
-            </ResponsiveContainer>
+          <p className="note">{scatterUiLabels.description}</p>
+
+          <div className="filters">
+            <label>
+              {scatterUiLabels.xAxis}
+              <select
+                value={scatterX}
+                onChange={(event) =>
+                  setScatterX(event.target.value)
+                }
+              >
+                {scatterMetricOptions.map((item) => (
+                  <option key={item.key} value={item.key}>
+                    {item.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label>
+              {scatterUiLabels.yAxis}
+              <select
+                value={scatterY}
+                onChange={(event) =>
+                  setScatterY(event.target.value)
+                }
+              >
+                {scatterMetricOptions.map((item) => (
+                  <option key={item.key} value={item.key}>
+                    {item.label}
+                  </option>
+                ))}
+              </select>
+            </label>
           </div>
+
+          <p className="note sampleSizeNote">
+            {scatterUiLabels.availablePoints}: n={scatterData.length} /{' '}
+            {scatterUiLabels.totalMatches}: {filtered.length}
+          </p>
+
+          {scatterData.length < filtered.length && (
+            <p className="note">
+              {scatterUiLabels.missingDataNote}
+            </p>
+          )}
+
+          {scatterX === scatterY && (
+            <div className="smallSampleWarning">
+              <ShieldAlert size={16} />
+              <span>{scatterUiLabels.sameAxisWarning}</span>
+            </div>
+          )}
+
+          {scatterData.length > 0 &&
+            scatterData.length < 10 && (
+              <div className="smallSampleWarning">
+                <ShieldAlert size={16} />
+                <span>
+                  {scatterUiLabels.smallSampleWarning}
+                </span>
+              </div>
+            )}
+
+          {scatterData.length > 0 ? (
+            <div className="chart">
+              <ResponsiveContainer
+                width="100%"
+                height={340}
+              >
+                <ScatterChart
+                  margin={{
+                    top: 16,
+                    right: 24,
+                    bottom: 24,
+                    left: 12,
+                  }}
+                >
+                  <CartesianGrid />
+                  <XAxis
+                    type="number"
+                    dataKey="xValue"
+                    name={scatterXLabel}
+                    tickFormatter={(value) =>
+                      formatScatterValue(scatterX, value)
+                    }
+                  />
+                  <YAxis
+                    type="number"
+                    dataKey="yValue"
+                    name={scatterYLabel}
+                    tickFormatter={(value) =>
+                      formatScatterValue(scatterY, value)
+                    }
+                  />
+                  <Tooltip
+                    cursor={false}
+                    content={renderScatterTooltip}
+                  />
+                  <Scatter
+                    data={scatterData}
+                    name={labels.scatter.matches}
+                    fill="#38bdf8"
+                  />
+                </ScatterChart>
+              </ResponsiveContainer>
+            </div>
+          ) : (
+            <p className="empty">
+              {scatterUiLabels.noData}
+            </p>
+          )}
         </section>
 
         <section className="panel wide">
