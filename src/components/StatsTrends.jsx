@@ -15,6 +15,7 @@ import ja from '../i18n/ja.js';
 const metricOptions = [
   { key: 'pointsFor', labelJa: '得点', labelEn: 'Points For', suffix: '' },
   { key: 'pointsAgainst', labelJa: '失点', labelEn: 'Points Against', suffix: '' },
+  { key: 'metres', labelJa: '獲得メートル', labelEn: 'Metres', suffix: '' },
   { key: 'cleanBreaks', labelJa: 'クリーンブレイク', labelEn: 'Clean Breaks', suffix: '' },
   { key: 'defendersBeaten', labelJa: 'ディフェンダー突破', labelEn: 'Defenders Beaten', suffix: '' },
   { key: 'turnoversWon', labelJa: 'ターンオーバー獲得', labelEn: 'Turnovers Won', suffix: '' },
@@ -23,16 +24,96 @@ const metricOptions = [
   { key: 'tackleSuccess', labelJa: 'タックル成功率', labelEn: 'Tackle Success', suffix: '%' },
 ];
 
+function isMissingValue(value) {
+  return value === null || value === undefined || value === '';
+}
+
 function getMetricValue(match, metric) {
   if (metric === 'tackleSuccess') {
-    const tackles = Number(match.tackles || 0);
-    const missedTackles = Number(match.missedTackles || 0);
+    const hasTackles = !isMissingValue(match.tackles);
+    const hasMissedTackles = !isMissingValue(match.missedTackles);
+
+    if (!hasTackles && !hasMissedTackles) {
+      return null;
+    }
+
+    const tackles = Number(match.tackles ?? 0);
+    const missedTackles = Number(match.missedTackles ?? 0);
     const total = tackles + missedTackles;
 
     return total > 0 ? (100 * tackles) / total : 0;
   }
 
-  return Number(match[metric] || 0);
+  const rawValue = match[metric];
+
+  if (isMissingValue(rawValue)) {
+    return null;
+  }
+
+  const numericValue = Number(rawValue);
+
+  return Number.isFinite(numericValue) ? numericValue : null;
+}
+
+function getWinner(match) {
+  if (match.winner) {
+    return match.winner;
+  }
+
+  const teamResult = match.teamResult || match.result;
+
+  if (teamResult === 'W') {
+    return match.team;
+  }
+
+  if (teamResult === 'L') {
+    return match.opponent;
+  }
+
+  return '';
+}
+
+function getMatchResultLabel(match, isJapanese) {
+  const winner = getWinner(match);
+
+  if (winner) {
+    return isJapanese ? `${winner} 勝利` : match.matchResult || `${winner} Win`;
+  }
+
+  return match.matchResult || '';
+}
+
+function getDataType(match) {
+  if (match.dataType === 'real') {
+    return 'real';
+  }
+
+  if (match.dataType === 'sample') {
+    return 'sample';
+  }
+
+  return match.sourceProvider === 'Sample data' ? 'sample' : 'real';
+}
+
+function compareMatchesChronologically(a, b) {
+  const dateDifference = new Date(a.date) - new Date(b.date);
+
+  if (dateDifference !== 0) {
+    return dateDifference;
+  }
+
+  const aRugbyComAuId = Number(a.external?.rugbyComAu);
+  const bRugbyComAuId = Number(b.external?.rugbyComAu);
+
+  if (
+    Number.isFinite(aRugbyComAuId) &&
+    Number.isFinite(bRugbyComAuId) &&
+    aRugbyComAuId !== bRugbyComAuId
+  ) {
+    return aRugbyComAuId - bRugbyComAuId;
+  }
+
+  return String(a.id).localeCompare(String(b.id));
 }
 
 export default function StatsTrends({ onBackHome, t = ja }) {
@@ -48,7 +129,7 @@ export default function StatsTrends({ onBackHome, t = ja }) {
     filters: isJapanese ? '分析条件' : 'Analysis Scope',
     season: isJapanese ? 'シーズン' : 'Season',
     gender: isJapanese ? '男女区分' : 'Gender',
-        team: isJapanese ? 'チーム' : 'Team',
+    team: isJapanese ? 'チーム' : 'Team',
     tournament: isJapanese ? '大会' : 'Tournament',
     opponent: isJapanese ? '対戦相手' : 'Opponent',
     metric: isJapanese ? '指標' : 'Metric',
@@ -56,46 +137,73 @@ export default function StatsTrends({ onBackHome, t = ja }) {
     allOpponents: isJapanese ? 'すべて' : 'All',
     currentScope: isJapanese ? '現在の表示条件' : 'Current View',
     matchCount: isJapanese ? '対象試合数' : 'Match Count',
+    availableDataPoints: isJapanese ? '有効データ数' : 'Available Data Points',
     women: isJapanese ? '女子' : 'Women',
     men: isJapanese ? '男子' : 'Men',
     dataAvailability: isJapanese ? 'データ利用可能範囲' : 'Data Availability',
     dataAvailabilityText: isJapanese
       ? '詳細チームスタッツの標準対象は2022-23シーズン以降です。'
       : 'Full team match stats are treated as standard from the 2022-23 season onward.',
-            dataCoverageNote: isJapanese
-      ? '表示中の試合データの粒度を確認し、比較条件に注意が必要な場合は警告します。'
-      : 'This screen checks the data coverage of the displayed matches and warns when comparisons need caution.',
+    dataCoverageNote: isJapanese
+      ? '表示中の試合データの粒度とデータ種別を確認し、比較条件に注意が必要な場合は警告します。'
+      : 'This screen checks the data coverage and data type of displayed matches and warns when comparisons need caution.',
     sourceProvider: isJapanese ? '主ソース' : 'Primary source',
     fetchedAt: isJapanese ? '取得日時' : 'Fetched at',
     statDefinitionVersion: isJapanese ? 'スタッツ定義' : 'Stats definition',
-    dataCoverageSummary: isJapanese ? '現在の表示範囲のデータ粒度' : 'Data coverage in current view',
+    dataCoverageSummary: isJapanese
+      ? '現在の表示範囲のデータ粒度'
+      : 'Data coverage in current view',
+    dataTypeSummary: isJapanese ? '現在の表示範囲のデータ種別' : 'Data type in current view',
     coverageAllFull: isJapanese
       ? '現在の表示範囲は詳細試合スタッツのみです。'
       : 'The current view contains full match stats only.',
     coverageMixedWarning: isJapanese
       ? 'データ粒度の異なる試合が含まれています。比較結果の解釈に注意してください。'
       : 'This view includes matches with different data coverage levels. Interpret comparisons carefully.',
+    dataTypeRealOnly: isJapanese
+      ? '現在の表示範囲は実データのみです。'
+      : 'The current view contains real data only.',
+    dataTypeSampleWarning: isJapanese
+      ? 'サンプルデータが含まれています。実データとの比較結果を確定的に解釈しないでください。'
+      : 'Sample data is included. Do not treat comparisons with real data as conclusive.',
+    dataTypeMixedWarning: isJapanese
+      ? '実データとサンプルデータが混在しています。平均値や推移の解釈に注意してください。'
+      : 'Real and sample data are mixed. Interpret averages and trends carefully.',
     coverageLevels: {
       full_match_stats: isJapanese ? '詳細試合スタッツ' : 'Full match stats',
       limited_data: isJapanese ? '限定データ' : 'Limited data',
       results_only: isJapanese ? '結果のみ' : 'Results only',
       unknown: isJapanese ? '未確認' : 'Unknown',
     },
+    dataTypes: {
+      real: isJapanese ? '実データ' : 'Real data',
+      sample: isJapanese ? 'サンプルデータ' : 'Sample data',
+    },
     tournamentCards: isJapanese ? '大会別平均値' : 'Tournament averages',
     opponentCards: isJapanese ? '対戦相手別平均値' : 'Opponent averages',
     next: isJapanese ? '今後の追加予定' : 'Next implementation',
-        matches: isJapanese ? '試合' : 'matches',
-    noData: isJapanese ? 'この条件に一致する試合はありません。' : 'No matches are available for this condition.',
-    noDataTitle: isJapanese ? '該当する試合データがありません' : 'No matching match data',
+    matches: isJapanese ? '試合' : 'matches',
+    noData: isJapanese
+      ? 'この条件に一致する試合はありません。'
+      : 'No matches are available for this condition.',
+    noDataTitle: isJapanese
+      ? '該当する試合データがありません'
+      : 'No matching match data',
     noDataBody: isJapanese
       ? '現在の Season / Gender / Team / Tournament / Opponent の組み合わせでは、表示できる試合がありません。'
       : 'There are no matches available for the current Season / Gender / Team / Tournament / Opponent combination.',
+    noMetricDataBody: isJapanese
+      ? '対象試合はありますが、選択した指標の有効な値がありません。'
+      : 'Matching games exist, but the selected metric has no valid values.',
     noDataHint: isJapanese
-      ? '条件を変更するか、今後のデータ追加後に再確認してください。'
-      : 'Change the filters or check again after more data has been added.',
+      ? '条件または指標を変更するか、今後のデータ追加後に再確認してください。'
+      : 'Change the filters or metric, or check again after more data has been added.',
     noDataCoverageStatus: isJapanese
       ? '表示対象の試合がないため、データ粒度は判定できません。'
       : 'Data coverage cannot be evaluated because no matches are currently displayed.',
+    noDataTypeStatus: isJapanese
+      ? '表示対象の試合がないため、データ種別は判定できません。'
+      : 'Data type cannot be evaluated because no matches are currently displayed.',
   };
 
   const seasons = [...new Set(sampleMatches.map((match) => match.season))];
@@ -107,10 +215,13 @@ export default function StatsTrends({ onBackHome, t = ja }) {
   const [opponent, setOpponent] = useState('All');
   const [metric, setMetric] = useState('cleanBreaks');
 
-      const baseFiltered = useMemo(
+  const baseFiltered = useMemo(
     () =>
       sampleMatches.filter(
-        (match) => match.season === season && match.gender === gender && match.team === team
+        (match) =>
+          match.season === season &&
+          match.gender === gender &&
+          match.team === team
       ),
     [season, gender, team]
   );
@@ -150,15 +261,25 @@ export default function StatsTrends({ onBackHome, t = ja }) {
     [tournamentFiltered, opponent]
   );
 
-  const selectedMetric = metricOptions.find((item) => item.key === metric) || metricOptions[0];
-  const metricLabel = isJapanese ? selectedMetric.labelJa : selectedMetric.labelEn;
-    const hasNoMatches = filtered.length === 0;
-    const coverageLevels = [
-    ...new Set(filtered.map((match) => match.dataCoverageLevel || 'unknown')),
+  const selectedMetric =
+    metricOptions.find((item) => item.key === metric) || metricOptions[0];
+
+  const metricLabel = isJapanese
+    ? selectedMetric.labelJa
+    : selectedMetric.labelEn;
+
+  const hasNoMatches = filtered.length === 0;
+
+  const coverageLevels = [
+    ...new Set(
+      filtered.map((match) => match.dataCoverageLevel || 'unknown')
+    ),
   ];
 
   const hasMixedCoverage = coverageLevels.length > 1;
-  const hasNonFullCoverage = coverageLevels.some((level) => level !== 'full_match_stats');
+  const hasNonFullCoverage = coverageLevels.some(
+    (level) => level !== 'full_match_stats'
+  );
 
   const coverageLevelText =
     coverageLevels.length > 0
@@ -172,14 +293,42 @@ export default function StatsTrends({ onBackHome, t = ja }) {
     : hasMixedCoverage || hasNonFullCoverage
       ? labels.coverageMixedWarning
       : labels.coverageAllFull;
-    const sourceProviderText =
+
+  const dataTypes = [...new Set(filtered.map((match) => getDataType(match)))];
+  const hasSampleData = dataTypes.includes('sample');
+  const hasMixedDataTypes = dataTypes.length > 1;
+
+  const dataTypeText =
+    dataTypes.length > 0
+      ? dataTypes.map((type) => labels.dataTypes[type] || type).join(' / ')
+      : labels.noDataTypeStatus;
+
+  const dataTypeStatusText = hasNoMatches
+    ? labels.noDataTypeStatus
+    : hasMixedDataTypes
+      ? labels.dataTypeMixedWarning
+      : hasSampleData
+        ? labels.dataTypeSampleWarning
+        : labels.dataTypeRealOnly;
+
+  const sourceProviderText =
     filtered.length > 0
-      ? [...new Set(filtered.map((match) => match.sourceProvider || 'Unknown'))].join(' / ')
+      ? [
+          ...new Set(
+            filtered.map((match) => match.sourceProvider || 'Unknown')
+          ),
+        ].join(' / ')
       : 'Unknown';
 
   const statDefinitionVersionText =
     filtered.length > 0
-      ? [...new Set(filtered.map((match) => match.statDefinitionVersion || 'Unknown'))].join(' / ')
+      ? [
+          ...new Set(
+            filtered.map(
+              (match) => match.statDefinitionVersion || 'Unknown'
+            )
+          ),
+        ].join(' / ')
       : 'Unknown';
 
   const fetchedAtValues = filtered
@@ -191,6 +340,7 @@ export default function StatsTrends({ onBackHome, t = ja }) {
     fetchedAtValues.length > 0
       ? fetchedAtValues[fetchedAtValues.length - 1]
       : 'Unknown';
+
   const selectedTournamentText =
     tournament === 'All' ? labels.allTournaments : tournament;
 
@@ -200,6 +350,41 @@ export default function StatsTrends({ onBackHome, t = ja }) {
   const selectedGenderText =
     gender === 'Women' ? labels.women : labels.men;
 
+  const trendRows = useMemo(
+    () =>
+      filtered
+        .slice()
+        .sort(compareMatchesChronologically)
+        .map((match, index) => {
+          const metricValue = getMetricValue(match, metric);
+          const matchResultLabel = getMatchResultLabel(match, isJapanese);
+
+          return {
+            matchIndex: index + 1,
+            matchLabel: `M${index + 1}`,
+            matchDescription: [
+              match.date,
+              match.tournament,
+              `${match.team} ${match.pointsFor}-${match.pointsAgainst} ${match.opponent}`,
+              matchResultLabel,
+            ]
+              .filter(Boolean)
+              .join(' / '),
+            value:
+              metricValue === null
+                ? null
+                : Number(metricValue.toFixed(1)),
+          };
+        }),
+    [filtered, metric, isJapanese]
+  );
+
+  const availableDataPoints = trendRows.filter(
+    (row) => row.value !== null
+  ).length;
+
+  const hasMetricData = availableDataPoints > 0;
+
   const currentScopeItems = [
     { label: labels.season, value: season },
     { label: labels.gender, value: selectedGenderText },
@@ -208,20 +393,8 @@ export default function StatsTrends({ onBackHome, t = ja }) {
     { label: labels.opponent, value: selectedOpponentText },
     { label: labels.metric, value: metricLabel },
     { label: labels.matchCount, value: filtered.length },
+    { label: labels.availableDataPoints, value: availableDataPoints },
   ];
-  const trendRows = useMemo(
-    () =>
-      filtered
-        .slice()
-        .sort((a, b) => new Date(a.date) - new Date(b.date))
-        .map((match, index) => ({
-          matchIndex: index + 1,
-          matchLabel: `M${index + 1}`,
-          matchDescription: `${match.date} / ${match.tournament} / ${match.team} ${match.pointsFor}-${match.pointsAgainst} ${match.opponent}`,
-          value: Number(getMetricValue(match, metric).toFixed(1)),
-        })),
-    [filtered, metric]
-  );
 
   const tournamentAverages = useMemo(() => {
     const groups = new Map();
@@ -230,41 +403,61 @@ export default function StatsTrends({ onBackHome, t = ja }) {
       if (!groups.has(match.tournament)) {
         groups.set(match.tournament, []);
       }
+
       groups.get(match.tournament).push(match);
     });
 
-    return [...groups.entries()].map(([tournament, matches]) => {
-      const total = matches.reduce((sum, match) => sum + getMetricValue(match, metric), 0);
-      const average = matches.length > 0 ? total / matches.length : 0;
+    return [...groups.entries()]
+      .map(([tournamentName, matches]) => {
+        const values = matches
+          .map((match) => getMetricValue(match, metric))
+          .filter((value) => value !== null);
 
-      return {
-        tournament,
-        matches: matches.length,
-        average,
-      };
-    });
+        if (values.length === 0) {
+          return null;
+        }
+
+        const total = values.reduce((sum, value) => sum + value, 0);
+
+        return {
+          tournament: tournamentName,
+          matches: values.length,
+          average: total / values.length,
+        };
+      })
+      .filter(Boolean);
   }, [filtered, metric]);
-    const opponentAverages = useMemo(() => {
+
+  const opponentAverages = useMemo(() => {
     const groups = new Map();
 
     filtered.forEach((match) => {
       if (!groups.has(match.opponent)) {
         groups.set(match.opponent, []);
       }
+
       groups.get(match.opponent).push(match);
     });
 
     return [...groups.entries()]
-      .map(([opponent, matches]) => {
-        const total = matches.reduce((sum, match) => sum + getMetricValue(match, metric), 0);
-        const average = matches.length > 0 ? total / matches.length : 0;
+      .map(([opponentName, matches]) => {
+        const values = matches
+          .map((match) => getMetricValue(match, metric))
+          .filter((value) => value !== null);
+
+        if (values.length === 0) {
+          return null;
+        }
+
+        const total = values.reduce((sum, value) => sum + value, 0);
 
         return {
-          opponent,
-          matches: matches.length,
-          average,
+          opponent: opponentName,
+          matches: values.length,
+          average: total / values.length,
         };
       })
+      .filter(Boolean)
       .sort((a, b) => b.average - a.average);
   }, [filtered, metric]);
 
@@ -294,8 +487,13 @@ export default function StatsTrends({ onBackHome, t = ja }) {
       }}
     >
       {onBackHome && (
-        <button type="button" className="backHomeButton" onClick={onBackHome}>
-          <ArrowLeft size={16} /> {t.navigation.backHome.replace('← ', '')}
+        <button
+          type="button"
+          className="backHomeButton"
+          onClick={onBackHome}
+        >
+          <ArrowLeft size={16} />{' '}
+          {t.navigation.backHome.replace('← ', '')}
         </button>
       )}
 
@@ -304,8 +502,9 @@ export default function StatsTrends({ onBackHome, t = ja }) {
           <h1>{labels.title}</h1>
           <p>{labels.subtitle}</p>
         </div>
+
         <div className="badge">
-          <TrendIcon size={22} /> v0.3
+          <TrendIcon size={22} /> v0.7
         </div>
       </header>
 
@@ -317,7 +516,10 @@ export default function StatsTrends({ onBackHome, t = ja }) {
         <div className="filters">
           <label>
             {labels.season}
-            <select value={season} onChange={(event) => setSeason(event.target.value)}>
+            <select
+              value={season}
+              onChange={(event) => setSeason(event.target.value)}
+            >
               {seasons.map((seasonName) => (
                 <option key={seasonName} value={seasonName}>
                   {seasonName}
@@ -328,7 +530,10 @@ export default function StatsTrends({ onBackHome, t = ja }) {
 
           <label>
             {labels.gender}
-            <select value={gender} onChange={(event) => setGender(event.target.value)}>
+            <select
+              value={gender}
+              onChange={(event) => setGender(event.target.value)}
+            >
               <option value="Women">{labels.women}</option>
               <option value="Men">{labels.men}</option>
             </select>
@@ -336,33 +541,52 @@ export default function StatsTrends({ onBackHome, t = ja }) {
 
           <label>
             {labels.team}
-            <select value={team} onChange={(event) => setTeam(event.target.value)}>
+            <select
+              value={team}
+              onChange={(event) => setTeam(event.target.value)}
+            >
               <option value="Japan">Japan</option>
             </select>
           </label>
-                    <label>
+
+          <label>
             {labels.tournament}
-            <select value={tournament} onChange={(event) => setTournament(event.target.value)}>
+            <select
+              value={tournament}
+              onChange={(event) => setTournament(event.target.value)}
+            >
               {tournaments.map((tournamentName) => (
                 <option key={tournamentName} value={tournamentName}>
-                  {tournamentName === 'All' ? labels.allTournaments : tournamentName}
+                  {tournamentName === 'All'
+                    ? labels.allTournaments
+                    : tournamentName}
                 </option>
               ))}
             </select>
           </label>
+
           <label>
             {labels.opponent}
-            <select value={opponent} onChange={(event) => setOpponent(event.target.value)}>
+            <select
+              value={opponent}
+              onChange={(event) => setOpponent(event.target.value)}
+            >
               {opponents.map((opponentName) => (
                 <option key={opponentName} value={opponentName}>
-                  {opponentName === 'All' ? labels.allOpponents : opponentName}
+                  {opponentName === 'All'
+                    ? labels.allOpponents
+                    : opponentName}
                 </option>
               ))}
             </select>
           </label>
+
           <label>
             {labels.metric}
-            <select value={metric} onChange={(event) => setMetric(event.target.value)}>
+            <select
+              value={metric}
+              onChange={(event) => setMetric(event.target.value)}
+            >
               {metricOptions.map((item) => (
                 <option key={item.key} value={item.key}>
                   {isJapanese ? item.labelJa : item.labelEn}
@@ -372,26 +596,31 @@ export default function StatsTrends({ onBackHome, t = ja }) {
           </label>
         </div>
 
-                <div className="dataAvailabilityNotice">
+        <div className="dataAvailabilityNotice">
           <b>{labels.dataAvailability}</b>
           <span>{labels.dataAvailabilityText}</span>
           <small>{labels.dataCoverageNote}</small>
-                    <small>
+
+          <small>
             <strong>{labels.sourceProvider}: </strong>
             {sourceProviderText}
           </small>
+
           <small>
             <strong>{labels.fetchedAt}: </strong>
             {latestFetchedAt}
           </small>
+
           <small>
             <strong>{labels.statDefinitionVersion}: </strong>
             {statDefinitionVersionText}
           </small>
+
           <small>
             <strong>{labels.dataCoverageSummary}: </strong>
             {coverageLevelText}
           </small>
+
           <small
             className={
               hasNoMatches || hasMixedCoverage || hasNonFullCoverage
@@ -401,7 +630,23 @@ export default function StatsTrends({ onBackHome, t = ja }) {
           >
             {coverageStatusText}
           </small>
+
+          <small>
+            <strong>{labels.dataTypeSummary}: </strong>
+            {dataTypeText}
+          </small>
+
+          <small
+            className={
+              hasNoMatches || hasSampleData
+                ? 'coverageWarningText'
+                : 'coverageOkText'
+            }
+          >
+            {dataTypeStatusText}
+          </small>
         </div>
+
         <div className="scopeSummary">
           <b>{labels.currentScope}</b>
 
@@ -423,10 +668,11 @@ export default function StatsTrends({ onBackHome, t = ja }) {
           </h2>
 
           <p className="note">
-            {metricLabel} / n={trendRows.length}
+            {metricLabel} / n={availableDataPoints} / {labels.matches}=
+            {trendRows.length}
           </p>
 
-          {trendRows.length > 0 ? (
+          {hasMetricData ? (
             <div className="chart">
               <ResponsiveContainer width="100%" height={320}>
                 <RechartsLineChart
@@ -437,7 +683,9 @@ export default function StatsTrends({ onBackHome, t = ja }) {
                   <XAxis dataKey="matchLabel" interval={0} />
                   <YAxis
                     width={48}
-                    tickFormatter={(value) => `${value}${selectedMetric.suffix}`}
+                    tickFormatter={(value) =>
+                      `${value}${selectedMetric.suffix}`
+                    }
                   />
                   <Tooltip
                     cursor={false}
@@ -460,6 +708,7 @@ export default function StatsTrends({ onBackHome, t = ja }) {
                     strokeWidth={3}
                     dot={{ r: 4 }}
                     activeDot={{ r: 6 }}
+                    connectNulls={false}
                   />
                 </RechartsLineChart>
               </ResponsiveContainer>
@@ -467,7 +716,9 @@ export default function StatsTrends({ onBackHome, t = ja }) {
           ) : (
             <div className="emptyState">
               <b>{labels.noDataTitle}</b>
-              <p>{labels.noDataBody}</p>
+              <p>
+                {hasNoMatches ? labels.noDataBody : labels.noMetricDataBody}
+              </p>
               <small>{labels.noDataHint}</small>
             </div>
           )}
@@ -498,7 +749,8 @@ export default function StatsTrends({ onBackHome, t = ja }) {
             </div>
           )}
         </section>
-                <section className="panel wide">
+
+        <section className="panel wide">
           <h2>{labels.opponentCards}</h2>
 
           {opponentAverages.length > 0 ? (
@@ -528,6 +780,7 @@ export default function StatsTrends({ onBackHome, t = ja }) {
           <h2>
             <Info size={18} /> {labels.next}
           </h2>
+
           <ol>
             <li>
               {isJapanese
@@ -536,8 +789,8 @@ export default function StatsTrends({ onBackHome, t = ja }) {
             </li>
             <li>
               {isJapanese
-                ? 'Rugby.com.au Match Stats 形式の実データ取り込みに対応する。'
-                : 'Add support for importing real data in the Rugby.com.au Match Stats format.'}
+                ? 'Rugby.com.au Match Stats 形式の実データ対象を拡大する。'
+                : 'Expand real-data coverage in the Rugby.com.au Match Stats format.'}
             </li>
             <li>
               {isJapanese
