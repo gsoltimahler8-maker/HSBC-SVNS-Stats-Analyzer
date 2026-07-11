@@ -23,6 +23,27 @@ import { matchData as sampleMatches } from '../data/loadMatches.js';
 import { pct, avg, corr } from '../utils/statistics.js';
 import ja from '../i18n/ja.js';
 
+function compareMatchesChronologically(a, b) {
+  const dateDifference = new Date(a.date) - new Date(b.date);
+
+  if (dateDifference !== 0) {
+    return dateDifference;
+  }
+
+  const aRugbyComAuId = Number(a.external?.rugbyComAu);
+  const bRugbyComAuId = Number(b.external?.rugbyComAu);
+
+  if (
+    Number.isFinite(aRugbyComAuId) &&
+    Number.isFinite(bRugbyComAuId) &&
+    aRugbyComAuId !== bRugbyComAuId
+  ) {
+    return aRugbyComAuId - bRugbyComAuId;
+  }
+
+  return String(a.id).localeCompare(String(b.id));
+}
+
 export default function StatsAnalysis({ onBackHome, t = ja }) {
   const labels = t.statsAnalysis;
   const screenBgImage = `${import.meta.env.BASE_URL}assets/bg-stats-analysis.png`;
@@ -38,13 +59,16 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
 
   const filtered = useMemo(
     () =>
-      sampleMatches.filter(
-        (m) =>
-          m.season === season &&
-          m.gender === gender &&
-          m.team === team &&
-          (tournament === 'All' || m.tournament === tournament)
-      ),
+      sampleMatches
+        .filter(
+          (m) =>
+            m.season === season &&
+            m.gender === gender &&
+            m.team === team &&
+            (tournament === 'All' || m.tournament === tournament)
+        )
+        .slice()
+        .sort(compareMatchesChronologically),
     [season, gender, team, tournament]
   );
 
