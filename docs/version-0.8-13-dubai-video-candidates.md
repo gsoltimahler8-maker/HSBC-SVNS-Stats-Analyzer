@@ -3,52 +3,64 @@
 # Version0.8 Dubai Video Candidate Check
 
 Version: v0.8-13  
+Revision: v0.8-15 correction  
 Scope: Dubai SVNS 2025-26 / Japan Women 7s  
-Status: Partially Completed
+Status: Completed
 
 ---
 
 ## 1. 動画ソース方針
 
-Version0.8以降は、以下の優先順位で動画を確認する。
-
 ### サクラセブンズ
 
 1. ワールドラグビー 日本チャンネル
 2. World Rugby Women
-3. HSBC SVNS / RugbyPass TV 等の公式配信
+3. HSBC SVNS / RugbyPass TV等の公式配信
 
 ### 女子SVNS一般
 
 1. World Rugby Women
 2. ワールドラグビー 日本チャンネル（日本戦）
-3. HSBC SVNS / RugbyPass TV 等の公式配信
+3. HSBC SVNS / RugbyPass TV等の公式配信
 
 ### 男子SVNS一般
 
 1. World Rugby
 2. HSBC SVNS
-3. RugbyPass TV 等の公式配信
+3. RugbyPass TV等の公式配信
 
-全試合でフルマッチとハイライトが両方存在するとは限らない。動画ごとに存在・URL・公開状態を確認して登録する。
+全試合でフルマッチとハイライトが両方公開されるとは限らない。動画ごとに存在、URL、公開状態を確認して登録する。
 
 ---
 
-## 2. 今回確認した試合
+## 2. ドバイ大会の確認結果
 
-| Match ID | Opponent | Full match | Highlights | Current status |
+ワールドラグビー 日本チャンネルで公開されたサクラセブンズのドバイ大会フルマッチリプレーは、3位決定戦の日本対フィジーのみだった。
+
+したがって、次の4試合について、日本チャンネル版フルマッチは存在しない。
+
+- Australia戦
+- Great Britain戦
+- Canada戦
+- New Zealand戦
+
+---
+
+## 3. 登録済み動画
+
+| Match ID | Opponent | Full match | Highlights | Status |
 |---|---|---|---|---|
-| 949542 | Australia | 日本チャンネル版のURL未取得 | 日本チャンネル版を確認 | Partial |
-| 949546 | Great Britain | 日本チャンネル版のURL未取得 | 日本チャンネル版を確認 | Partial |
-| 949550 | Canada | World Rugby Women版を確認／日本チャンネル版URL未取得 | 日本チャンネル版を確認 | Partial |
-| 949554 | New Zealand | 日本チャンネル版のURL未取得 | World Rugby Women版を確認 | Partial |
-| 949558 | Fiji | 日本チャンネル版を確認 | World Rugby Women版を確認 | Completed |
+| 949542 | Australia | なし | 日本チャンネル版 | Completed |
+| 949546 | Great Britain | なし | 日本チャンネル版 | Completed |
+| 949550 | Canada | World Rugby Women版 | 日本チャンネル版 | Completed |
+| 949554 | New Zealand | なし | World Rugby Women版 | Completed |
+| 949558 | Fiji | 日本チャンネル版 | World Rugby Women版 | Completed |
 
 ---
 
-## 3. `videos.json` 登録内容
+## 4. `videos.json` 登録内容
 
-今回の `videos.json` には、URLを一意に確認できた7件のみを登録した。
+登録件数は7件。
 
 - Australia戦：日本語ハイライト
 - Great Britain戦：日本語ハイライト
@@ -58,27 +70,22 @@ Version0.8以降は、以下の優先順位で動画を確認する。
 - Fiji戦：日本語フルマッチ
 - Fiji戦：英語ハイライト
 
-検索結果や関連動画欄に存在が示されていても、直接URLを一意に確認できなかったフルマッチは登録していない。
+存在しない日本チャンネル版フルマッチを推測で追加しない。
 
 ---
 
-## 4. 未完了項目
+## 5. 訂正内容
 
-以下の日本チャンネル版フルマッチURLを追加確認する。
+旧版には、Australia戦、Great Britain戦、Canada戦、New Zealand戦について、日本チャンネル版フルマッチURLの確認が残っていると記載していた。
 
-- Australia戦
-- Great Britain戦
-- Canada戦
-- New Zealand戦
+これは誤りであり、実際には日本チャンネル版フルマッチは3位決定戦のみだった。
 
-ユーザー確認では、2025-26シーズンのサクラセブンズ全試合フルマッチリプレーがワールドラグビー 日本チャンネルにアップされている。
-
-URL確定後は、同一試合に追加の `full_match` レコードとして登録する。
+`videos.json` の各動画メモも、この事実に合わせて修正した。
 
 ---
 
-## 5. 完了判定
+## 6. 完了判定
 
-現時点では、Dubai 5試合すべてに少なくとも1件の公式動画を関連付けられる状態になった。
+Dubai 5試合について、現時点で確認できた公式動画の登録は完了。
 
-ただし、日本チャンネル版フルマッチ4件のURL確定が残っているため、v0.8-13は `Partially Completed` とする。
+**v0.8-13 Status: Completed**
