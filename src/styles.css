@@ -1829,3 +1829,172 @@ ol{
     width: 100%;
   }
 }
+
+
+/* Version 0.8-14: YouTube embedded player */
+.videoLibraryPlayer {
+  display: grid;
+  gap: 13px;
+  padding: 15px;
+  border: 1px solid rgba(239, 68, 68, 0.34);
+  border-radius: 18px;
+  background:
+    linear-gradient(145deg, rgba(69, 10, 10, 0.45), rgba(15, 23, 42, 0.82));
+  box-shadow: 0 16px 42px rgba(2, 6, 23, 0.28);
+}
+
+.videoLibraryPlayerHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.videoLibraryPlayerHeader > div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.videoLibraryPlayerHeader span,
+.videoLibraryNowPlaying span,
+.videoLibraryPlayerChoices > span {
+  color: #94a3b8;
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.videoLibraryPlayerHeader strong {
+  color: #f8fafc;
+  font-size: 1rem;
+  line-height: 1.42;
+  overflow-wrap: anywhere;
+}
+
+.videoLibraryPlayerFrame {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  border-radius: 15px;
+  background: #000;
+  aspect-ratio: 16 / 9;
+}
+
+.videoLibraryPlayerFrame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.videoLibraryPlayerChoices {
+  display: grid;
+  gap: 8px;
+}
+
+.videoLibraryPlayerChoiceButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.videoLibraryPlayerChoice {
+  padding: 8px 11px;
+  border: 1px solid rgba(148, 163, 184, 0.32);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.72);
+  color: #cbd5e1;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.videoLibraryPlayerChoice:hover {
+  border-color: rgba(248, 113, 113, 0.55);
+  color: #fee2e2;
+}
+
+.videoLibraryPlayerChoice.active {
+  border-color: rgba(248, 113, 113, 0.72);
+  background: rgba(127, 29, 29, 0.62);
+  color: #fff;
+}
+
+.videoLibraryNowPlaying {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.videoLibraryNowPlaying > div {
+  display: grid;
+  gap: 3px;
+}
+
+.videoLibraryNowPlaying strong {
+  color: #f8fafc;
+  font-size: 0.86rem;
+}
+
+.videoLibraryNowPlaying a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  padding: 8px 11px;
+  border: 1px solid rgba(248, 113, 113, 0.42);
+  border-radius: 999px;
+  background: rgba(127, 29, 29, 0.42);
+  color: #fecaca;
+  font-size: 0.8rem;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.videoLibraryNowPlaying a:hover {
+  background: rgba(127, 29, 29, 0.68);
+}
+
+.videoLibraryEmbedFallback {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+.videoLibraryEmbedUnavailable {
+  border-color: rgba(245, 158, 11, 0.35);
+  background: rgba(120, 53, 15, 0.24);
+}
+
+@media (max-width: 800px) {
+  .videoLibraryPlayer {
+    padding: 12px;
+  }
+
+  .videoLibraryPlayerHeader,
+  .videoLibraryNowPlaying {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .videoLibraryNowPlaying a {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .videoLibraryPlayerChoiceButtons {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .videoLibraryPlayerChoice {
+    width: 100%;
+  }
+}
