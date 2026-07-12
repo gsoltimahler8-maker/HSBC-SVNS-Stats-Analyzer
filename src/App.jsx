@@ -3,6 +3,7 @@ import HomeMenu from './components/HomeMenu.jsx';
 import StatsAnalysis from './components/StatsAnalysis.jsx';
 import StatsTrends from './components/StatsTrends.jsx';
 import MatchSearch from './components/MatchSearch.jsx';
+import VideoLibrary from './components/VideoLibrary.jsx';
 import ja from './i18n/ja.js';
 import en from './i18n/en.js';
 
@@ -99,13 +100,9 @@ export default function App() {
     );
   } else if (screen === 'videos') {
     content = (
-      <ComingSoon
-        title={t.comingSoon.videosTitle}
-        description={t.comingSoon.videosDescription}
-        notice={t.comingSoon.notice}
-        backHomeLabel={t.navigation.backHome}
+      <VideoLibrary
         onBackHome={backHome}
-        screenClassName="videoLibraryScreen"
+        t={t}
         backgroundImage={videoLibraryBgImage}
         mobileBackgroundImage={videoLibraryMobileBgImage}
       />
