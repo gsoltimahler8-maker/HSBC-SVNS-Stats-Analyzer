@@ -9,6 +9,11 @@ import {
   Trophy,
 } from 'lucide-react';
 import { matchData } from '../data/loadMatches.js';
+import { videoData } from '../data/loadVideos.js';
+import {
+  getVideoAvailability,
+  sortVideos,
+} from '../utils/videoUtils.js';
 
 const ALL = 'all';
 
@@ -355,6 +360,26 @@ export default function MatchSearch({
   const [matchIdQuery, setMatchIdQuery] = useState('');
   const [selectedMatchId, setSelectedMatchId] = useState(initialSelectedMatchId);
 
+  const videosByMatch = useMemo(() => {
+    const map = new Map();
+
+    videoData.forEach((video) => {
+      if (!video.matchId) {
+        return;
+      }
+
+      const existing = map.get(video.matchId) || [];
+      existing.push(video);
+      map.set(video.matchId, existing);
+    });
+
+    map.forEach((videos, matchId) => {
+      map.set(matchId, sortVideos(videos));
+    });
+
+    return map;
+  }, []);
+
   const seasons = useMemo(
     () =>
       getUniqueOptions(matchData, 'season').sort((a, b) =>
@@ -418,6 +443,30 @@ export default function MatchSearch({
 
   const selectedMatch =
     filteredMatches.find((match) => match.id === selectedMatchId) || null;
+
+  const selectedVideos = selectedMatch
+    ? videosByMatch.get(selectedMatch.id) || []
+    : [];
+  const selectedVideoAvailability = getVideoAvailability(selectedVideos);
+  const preferredVideo = selectedVideos[0] || null;
+  const videoLibraryLabels = t?.videoLibrary || {};
+
+  const selectedVideoStatusLabel = selectedVideos.length
+    ? [
+        videoLibraryLabels.availability?.[selectedVideoAvailability] ||
+          selectedVideoAvailability,
+        isJapanese
+          ? `${selectedVideos.length}件`
+          : `${selectedVideos.length} ${
+              selectedVideos.length === 1 ? 'video' : 'videos'
+            }`,
+        videoLibraryLabels.videoTypes?.[preferredVideo?.videoType] ||
+          preferredVideo?.videoType,
+        preferredVideo?.videoProvider,
+      ]
+        .filter(Boolean)
+        .join(' / ')
+    : labels.videoNotChecked;
 
   const coverageLevels = t?.statsAnalysis?.dataCoverage?.levels || {};
 
@@ -787,7 +836,7 @@ export default function MatchSearch({
                 <div className="matchSearchVideoStatusText">
                   <Film size={18} />
                   <b>{labels.videoStatus}:</b>
-                  <span>{labels.videoNotChecked}</span>
+                  <span>{selectedVideoStatusLabel}</span>
                 </div>
 
                 {onOpenVideoLibrary && (
