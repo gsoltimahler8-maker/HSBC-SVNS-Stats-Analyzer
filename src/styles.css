@@ -1461,3 +1461,321 @@ ol{
     border-radius: 12px;
   }
 }
+
+
+/* Version 0.8: Video Library screen */
+.videoLibraryHero {
+  margin-bottom: 22px;
+}
+
+.videoLibraryHero .badge {
+  flex: 0 0 auto;
+}
+
+.videoLibraryFilters .filters {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.videoLibraryTextInput {
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  background: #0b1220;
+  color: #f8fafc;
+  font: inherit;
+}
+
+.videoLibraryTextInput::placeholder {
+  color: #64748b;
+}
+
+.videoLibraryToolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.videoLibraryToolbar .note {
+  margin: 0;
+}
+
+.videoLibraryResetButton {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.videoLibraryLayout {
+  grid-template-columns: minmax(300px, 0.86fr) minmax(0, 1.14fr);
+  align-items: start;
+}
+
+.videoLibraryResults,
+.videoLibraryDetail {
+  min-width: 0;
+}
+
+.videoLibraryResults .matches {
+  max-height: 74vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.videoLibraryResultCard {
+  display: grid;
+  gap: 3px;
+}
+
+.videoLibraryResultCard strong {
+  color: #f8fafc;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.videoLibraryResultCard em {
+  color: #e2e8f0;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.videoLibraryBadgeRow {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 9px !important;
+}
+
+.videoLibraryBadge {
+  display: inline-flex;
+  align-items: center;
+  width: max-content;
+  padding: 4px 8px;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.72);
+  color: #cbd5e1;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+.videoLibraryDataType-real {
+  border-color: rgba(34, 197, 94, 0.42);
+  background: rgba(20, 83, 45, 0.5);
+  color: #bbf7d0;
+}
+
+.videoLibraryDataType-sample {
+  border-color: rgba(245, 158, 11, 0.45);
+  background: rgba(120, 53, 15, 0.48);
+  color: #fde68a;
+}
+
+.videoLibraryAvailability-available {
+  border-color: rgba(34, 197, 94, 0.42);
+  background: rgba(20, 83, 45, 0.5);
+  color: #bbf7d0;
+}
+
+.videoLibraryAvailability-not_checked,
+.videoLibraryAvailability-unknown {
+  border-color: rgba(148, 163, 184, 0.36);
+  background: rgba(30, 41, 59, 0.72);
+  color: #cbd5e1;
+}
+
+.videoLibraryAvailability-login_required,
+.videoLibraryAvailability-geo_restricted {
+  border-color: rgba(245, 158, 11, 0.45);
+  background: rgba(120, 53, 15, 0.48);
+  color: #fde68a;
+}
+
+.videoLibraryAvailability-not_available,
+.videoLibraryAvailability-removed,
+.videoLibraryAvailability-broken_link {
+  border-color: rgba(248, 113, 113, 0.42);
+  background: rgba(127, 29, 29, 0.46);
+  color: #fecaca;
+}
+
+.videoLibrarySampleNotice {
+  color: #fde68a !important;
+  font-weight: 700;
+}
+
+.videoLibraryMatchMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.videoLibraryMatchMeta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 10px;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 999px;
+  background: rgba(2, 6, 23, 0.38);
+  color: #cbd5e1;
+  font-size: 0.8rem;
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+
+.videoLibrarySection {
+  display: grid;
+  gap: 10px;
+}
+
+.videoLibrarySection > h3 {
+  margin: 0;
+  color: #bae6fd;
+  font-size: 1rem;
+}
+
+.videoLibraryVideoList {
+  display: grid;
+  gap: 12px;
+}
+
+.videoLibraryVideoCard {
+  display: grid;
+  gap: 14px;
+  padding: 15px;
+  border: 1px solid rgba(168, 85, 247, 0.32);
+  border-radius: 16px;
+  background: rgba(30, 27, 75, 0.42);
+}
+
+.videoLibraryVideoCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.videoLibraryVideoCardHeader div {
+  display: grid;
+  gap: 5px;
+}
+
+.videoLibraryVideoCardHeader strong {
+  color: #f8fafc;
+  font-size: 1rem;
+}
+
+.videoLibraryVideoCardHeader span {
+  color: #cbd5e1;
+  font-size: 0.82rem;
+}
+
+.videoLibraryVideoMeta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.videoLibraryVideoMeta div {
+  min-width: 0;
+  padding: 9px 10px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 12px;
+  background: rgba(2, 6, 23, 0.34);
+}
+
+.videoLibraryVideoMeta dt {
+  color: #94a3b8;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.videoLibraryVideoMeta dd {
+  margin: 4px 0 0;
+  color: #f8fafc;
+  font-size: 0.84rem;
+  overflow-wrap: anywhere;
+}
+
+.videoLibraryVideoLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.videoLibraryVideoLinks a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 11px;
+  border: 1px solid rgba(56, 189, 248, 0.34);
+  border-radius: 999px;
+  background: rgba(8, 47, 73, 0.42);
+  color: #7dd3fc;
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.videoLibraryVideoLinks a:hover {
+  background: rgba(8, 47, 73, 0.62);
+}
+
+@media (max-width: 1080px) {
+  .videoLibraryFilters .filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 980px) {
+  .videoLibraryLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .videoLibraryResults .matches {
+    max-height: none;
+  }
+}
+
+@media (max-width: 800px) {
+  .videoLibraryHero {
+    margin-bottom: 16px;
+  }
+
+  .videoLibraryFilters .filters {
+    grid-template-columns: 1fr;
+  }
+
+  .videoLibraryToolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .videoLibraryResetButton {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .videoLibraryMatchMeta,
+  .videoLibraryVideoMeta {
+    grid-template-columns: 1fr;
+  }
+
+  .videoLibraryMatchMeta {
+    display: grid;
+  }
+
+  .videoLibraryMatchMeta span {
+    border-radius: 12px;
+  }
+
+  .videoLibraryVideoCardHeader {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
