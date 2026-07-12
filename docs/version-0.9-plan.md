@@ -2,9 +2,9 @@
 
 # Version0.9 Implementation Plan
 
-Version: v0.9-01  
-Status: Completed  
-Created at: 2026-07-12
+Version: v0.9-01
+Revision: 2026-07-12
+Status: Updated
 
 ---
 
@@ -12,17 +12,56 @@ Created at: 2026-07-12
 
 Version0.9では、Match Searchで試合スタッツを確認しながら、同じ試合の公式動画を同一画面内で再生できる構造を実装する。
 
-Version0.8では、Match SearchとVideo Libraryを相互リンクで接続した。Version0.9では、その連携を一段進め、画面を移動せずに「試合スタッツ」と「動画」を並列または縦並びで確認できるようにする。
+加えて、Video Libraryを「試合一覧の別表示」ではなく、公式映像を探すための独立した動画カタログへ再設計する。
 
 ---
 
-## 2. 中心機能
+## 2. 画面ごとの役割
 
-### Match Search内の動画プレーヤー
+### Match Search
 
-Match Searchの試合詳細に、同じ `matchId` を持つ動画を表示する。
+試合・スタッツ起点。
 
-PC表示：
+- 試合を検索
+- 試合詳細を確認
+- スタッツを確認
+- 同一試合の動画を補助的に再生
+- Video Libraryへ移動
+
+### Video Library
+
+動画起点。
+
+- 視聴可能な公式動画を探す
+- Full matchを探す
+- Highlightsを探す
+- チーム別、大会別、言語別、提供元別に検索
+- 動画を再生
+- 対応するMatch Searchへ移動
+
+---
+
+## 3. Video Libraryの基本単位
+
+Version0.8：
+
+```text
+1試合 = 1カード
+```
+
+Version0.9：
+
+```text
+1動画 = 1カード
+```
+
+同一試合にFull matchとHighlightsがある場合は、別々の動画カードとして表示する。
+
+---
+
+## 4. Match Search内動画表示
+
+PC：
 
 ```text
 ┌──────────────────────────┬──────────────────────────┐
@@ -32,12 +71,10 @@ PC表示：
 │ Result                   │                          │
 │ Metres                   │ 動画切替                  │
 │ Tackles                  │ YouTubeで開く             │
-│ Possession               │                          │
-│ Territory                │                          │
 └──────────────────────────┴──────────────────────────┘
 ```
 
-スマートフォン表示：
+スマートフォン：
 
 ```text
 試合情報
@@ -53,67 +90,32 @@ YouTubeプレーヤー
 
 ---
 
-## 3. Version0.9の実装範囲
+## 5. Video Libraryの検索項目
 
-### 3.1 Match Search動画統合
+- Video Type
+- Gender
+- Team
+- Opponent
+- Tournament
+- Season
+- Language
+- Video Provider
+- Availability
+- Match ID
+- 新着順
+- 試合日順
 
-- `videos.json` をMatch Searchから読み込む
-- 選択中の `matchId` に対応する動画を取得
-- Full matchを優先表示
-- Full matchがなければHighlightsを表示
-- 複数動画を切り替え可能
-- 動画未登録時は「未確認」と表示
-- 埋め込み不可の場合は外部リンクのみ表示
-- Video Libraryへの遷移リンクは維持
-
----
-
-### 3.2 スタッツ・動画並列レイアウト
-
-PC：
-
-- 左側：試合スタッツ詳細
-- 右側：動画プレーヤー
-- 2カラム表示
-- 動画プレーヤーは16:9
-- 画面幅が狭い場合は1カラムへ切替
-
-スマートフォン：
-
-- 1カラム
-- 試合情報の下に動画
-- プレーヤーが画面幅からはみ出さない
-- 動画切替ボタンは縦並び
+初期表示では、動画レコードが存在する試合だけを対象とする。
 
 ---
 
-### 3.3 動画情報表示
-
-Match Search内で最低限、以下を表示する。
-
-- 動画タイトル
-- 動画種別
-- 提供元
-- 公開状態
-- 言語
-- YouTube外部リンク
-- Video Libraryへのリンク
-
----
-
-### 3.4 共通ロジック整理
-
-Version0.8では、YouTube URL解析、動画優先順位、埋め込みURL生成の処理がVideo Library内にある。
-
-Version0.9では、重複実装を避けるため、共通utilityへ分離する。
-
-新規候補：
+## 6. 共通動画utility
 
 ```text
 src/utils/videoUtils.js
 ```
 
-移動対象：
+共通処理：
 
 - `VIDEO_TYPE_PRIORITY`
 - `getYouTubeVideoId`
@@ -125,7 +127,7 @@ Match SearchとVideo Libraryの両方から参照する。
 
 ---
 
-### 3.5 動画データvalidation
+## 7. 動画validation
 
 新規候補：
 
@@ -150,32 +152,13 @@ scripts/validateVideos.mjs
 
 ---
 
-### 3.6 ビルド時validation
-
-`package.json` のbuild前に動画validationを追加する。
-
-想定：
-
-```json
-{
-  "scripts": {
-    "validate:data": "node scripts/validateSampleMatches.mjs && node scripts/validateVideos.mjs"
-  }
-}
-```
-
-既存のmatch validationを壊さず、videos validationを追加する。
-
----
-
-## 4. Version0.9で維持する機能
+## 8. Version0.9で維持する機能
 
 - Match Search一覧
 - Match Detail
 - 各種フィルター
 - Match ID検索
 - 新しい日付順
-- Video Library
 - YouTube埋め込みプレーヤー
 - Match SearchとVideo Libraryの相互リンク
 - 日本語／英語
@@ -184,7 +167,7 @@ scripts/validateVideos.mjs
 
 ---
 
-## 5. Version0.9で行わないこと
+## 9. Version0.9で行わないこと
 
 - 動画とスタッツの自動時間同期
 - 動画タイムコードへのイベント登録
@@ -197,98 +180,25 @@ scripts/validateVideos.mjs
 - 動画の自動ダウンロード
 - 独自動画配信
 
-これらはVersion1.0以降の候補とする。
-
 ---
 
-## 6. 実装タスク
+## 10. 実装タスク
 
 ### v0.9-01：Version0.9計画策定
 
-- Version0.9の目的確定
-- 実装範囲確定
-- 非対象範囲確定
-- タスク分解
-
 Status: Completed
-
----
 
 ### v0.9-02：動画utility分離
 
-対象：
-
-```text
-src/utils/videoUtils.js
-src/components/VideoLibrary.jsx
-```
-
-内容：
-
-- 動画優先順位をutilityへ移動
-- YouTube ID抽出をutilityへ移動
-- embed URL生成をutilityへ移動
-- Video Libraryを共通utility利用へ変更
-
-完了条件：
-
-- Video Libraryの表示・再生動作が変わらない
-- 重複ロジックがない
-
----
+Status: Completed
 
 ### v0.9-03：Match Searchへ動画データ接続
 
-対象：
-
-```text
-src/components/MatchSearch.jsx
-src/data/loadVideos.js
-src/utils/videoUtils.js
-```
-
-内容：
-
-- `videos.json` をMatch Searchから参照
-- 選択試合の動画を取得
-- 優先動画を決定
-- 動画未登録状態を判定
-
-完了条件：
-
-- 選択試合ごとに正しい動画件数を取得
-- Fiji戦とCanada戦でFull matchを優先
-- その他のDubai戦でHighlightsを表示
-
----
+Status: Completed
 
 ### v0.9-04：Match Search内プレーヤー実装
 
-対象：
-
-```text
-src/components/MatchSearch.jsx
-src/styles.css
-src/i18n/ja.js
-src/i18n/en.js
-```
-
-内容：
-
-- Match Search詳細内にYouTubeプレーヤー追加
-- 動画切替
-- 動画タイトル・種別・提供元表示
-- 外部リンク表示
-- Video Libraryリンク維持
-
-完了条件：
-
-- Match Search内で動画再生
-- 複数動画切替
-- 埋め込み不可時の外部リンク
-- 日英対応
-
----
+Status: Completed
 
 ### v0.9-05：スタッツ・動画並列レイアウト
 
@@ -312,9 +222,40 @@ src/styles.css
 - タブレットで崩れない
 - スマートフォンで横スクロールが発生しない
 
----
+### v0.9-06：Video Library動画中心化
 
-### v0.9-06：動画validation実装
+対象：
+
+```text
+src/components/VideoLibrary.jsx
+src/styles.css
+src/i18n/ja.js
+src/i18n/en.js
+```
+
+内容：
+
+- 1動画1カードへ変更
+- 動画が存在するレコードだけを一覧表示
+- Full match / Highlightsを別カード表示
+- Video Typeフィルター
+- Languageフィルター
+- Providerフィルター
+- Availabilityフィルター
+- Team / Opponent / Tournament / Seasonフィルター
+- 動画カードから再生
+- 動画カードからMatch Searchへ移動
+- 試合日順または新着順
+
+完了条件：
+
+- Canada戦とFiji戦が2カードずつ表示
+- その他Dubai戦が1カードずつ表示
+- 登録動画7件が合計7カードとして表示
+- 動画種別、言語、提供元で絞り込み可能
+- Match Searchへの遷移が正しい試合を保持
+
+### v0.9-07：動画validation実装
 
 対象：
 
@@ -338,26 +279,24 @@ package.json
 - 不正データでvalidation失敗
 - エラー内容が特定可能
 
----
-
-### v0.9-07：表示・動作確認
+### v0.9-08：表示・動作確認
 
 確認対象：
 
 - Match Search
-- Video Library
-- 相互リンク
+- スタッツ・動画並列表示
+- Video Library動画カード
+- 動画検索
 - 動画再生
 - 動画切替
 - 外部リンク
+- Match Searchへの遷移
 - 日本語
 - 英語
 - PC
 - スマートフォン
 
----
-
-### v0.9-08：Version0.9完了文書
+### v0.9-09：Version0.9完了文書
 
 新規文書：
 
@@ -365,18 +304,9 @@ package.json
 docs/version-0.9-completion-report.md
 ```
 
-内容：
-
-- 実装内容
-- 更新ファイル
-- データ構造
-- 動作確認
-- 未実装項目
-- Version1.0候補
-
 ---
 
-## 7. 実装順序
+## 11. 実装順序
 
 ```text
 v0.9-01 計画策定
@@ -387,29 +317,33 @@ v0.9-03 Match Searchへ動画データ接続
 ↓
 v0.9-04 Match Search内プレーヤー
 ↓
-v0.9-05 並列レイアウト
+v0.9-05 スタッツ・動画並列レイアウト
 ↓
-v0.9-06 動画validation
+v0.9-06 Video Library動画中心化
 ↓
-v0.9-07 表示・動作確認
+v0.9-07 動画validation
 ↓
-v0.9-08 完了文書
+v0.9-08 表示・動作確認
+↓
+v0.9-09 完了文書
 ```
 
 ---
 
-## 8. Version0.9完了条件
+## 12. Version0.9完了条件
 
-以下をすべて満たした時点でVersion0.9完了とする。
-
-- [ ] Match Searchで選択試合の動画を取得
-- [ ] Match Search内でYouTube再生
-- [ ] Full match優先表示
-- [ ] 複数動画切替
+- [x] Match Searchで選択試合の動画を取得
+- [x] Match Search内でYouTube再生
+- [x] Full match優先表示
+- [x] 複数動画切替
 - [ ] スタッツと動画の並列表示
 - [ ] スマートフォン縦並び
-- [ ] Video Libraryの既存動作維持
-- [ ] 共通動画utility
+- [ ] Video Libraryを1動画1カードへ変更
+- [ ] 動画種別フィルター
+- [ ] 言語フィルター
+- [ ] 提供元フィルター
+- [ ] Video Libraryの既存再生機能維持
+- [x] 共通動画utility
 - [ ] 動画validation
 - [ ] build前validation
 - [ ] 日本語／英語
@@ -419,8 +353,8 @@ v0.9-08 完了文書
 
 ---
 
-## 9. Version0.9開始時点の進捗
+## 13. Version0.9進捗
 
-**Version0.9進捗：10％**
+**Version0.9進捗：約50％**
 
-計画策定完了。次は **v0.9-02：動画utility分離**。
+v0.9-04まで完了。次は **v0.9-05：スタッツ・動画並列レイアウト**。
