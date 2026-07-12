@@ -12,6 +12,7 @@ import { matchData } from '../data/loadMatches.js';
 import { videoData } from '../data/loadVideos.js';
 import {
   getVideoAvailability,
+  getYouTubeEmbedUrl,
   sortVideos,
 } from '../utils/videoUtils.js';
 
@@ -359,6 +360,7 @@ export default function MatchSearch({
   const [dataType, setDataType] = useState(ALL);
   const [matchIdQuery, setMatchIdQuery] = useState('');
   const [selectedMatchId, setSelectedMatchId] = useState(initialSelectedMatchId);
+  const [selectedVideoId, setSelectedVideoId] = useState('');
 
   const videosByMatch = useMemo(() => {
     const map = new Map();
@@ -450,6 +452,69 @@ export default function MatchSearch({
   const selectedVideoAvailability = getVideoAvailability(selectedVideos);
   const preferredVideo = selectedVideos[0] || null;
   const videoLibraryLabels = t?.videoLibrary || {};
+
+  const playableVideos = useMemo(
+    () =>
+      selectedVideos.filter((video) =>
+        Boolean(getYouTubeEmbedUrl(video))
+      ),
+    [selectedVideos]
+  );
+
+  useEffect(() => {
+    if (!playableVideos.length) {
+      setSelectedVideoId('');
+      return;
+    }
+
+    if (!playableVideos.some((video) => video.id === selectedVideoId)) {
+      setSelectedVideoId(playableVideos[0].id);
+    }
+  }, [playableVideos, selectedVideoId]);
+
+  const selectedVideo =
+    playableVideos.find((video) => video.id === selectedVideoId) ||
+    playableVideos[0] ||
+    null;
+  const selectedVideoEmbedUrl = getYouTubeEmbedUrl(selectedVideo);
+
+  const playerLabels = {
+    playerTitle:
+      videoLibraryLabels.playerTitle ||
+      (isJapanese ? 'YouTubeプレーヤー' : 'YouTube Player'),
+    chooseVideo:
+      videoLibraryLabels.chooseVideo ||
+      (isJapanese ? '再生する動画' : 'Choose video'),
+    nowPlaying:
+      videoLibraryLabels.nowPlaying ||
+      (isJapanese ? '再生中' : 'Now playing'),
+    openVideo:
+      videoLibraryLabels.openVideo ||
+      (isJapanese ? '動画を開く' : 'Open video'),
+    embedFallback:
+      videoLibraryLabels.embedFallback ||
+      (isJapanese
+        ? '埋め込み再生できない場合は、YouTubeの外部リンクから視聴してください。'
+        : 'If embedded playback is unavailable, use the external YouTube link.'),
+    embedUnavailableTitle:
+      videoLibraryLabels.embedUnavailableTitle ||
+      (isJapanese
+        ? 'この動画はアプリ内再生に対応していません。'
+        : 'This video cannot be played inside the app.'),
+    embedUnavailableBody:
+      videoLibraryLabels.embedUnavailableBody ||
+      (isJapanese
+        ? '外部リンクから動画提供元のページを開いてください。'
+        : 'Open the external video page using the link below.'),
+    provider:
+      videoLibraryLabels.provider ||
+      (isJapanese ? '提供元' : 'Provider'),
+    videoTypes: videoLibraryLabels.videoTypes || {},
+    availability: videoLibraryLabels.availability || {},
+    unknown:
+      videoLibraryLabels.unknown ||
+      (isJapanese ? '未確認' : 'Unknown'),
+  };
 
   const selectedVideoStatusLabel = selectedVideos.length
     ? [
@@ -850,6 +915,139 @@ export default function MatchSearch({
                   </button>
                 )}
               </div>
+
+              {selectedVideos.length > 0 && (
+                <section className="matchSearchInlinePlayer">
+                  <div className="matchSearchInlinePlayerHeader">
+                    <div>
+                      <span>{playerLabels.playerTitle}</span>
+                      <strong>
+                        {selectedVideo?.title ||
+                          preferredVideo?.title ||
+                          playerLabels.videoTypes[
+                            selectedVideo?.videoType ||
+                              preferredVideo?.videoType
+                          ] ||
+                          playerLabels.unknown}
+                      </strong>
+                    </div>
+
+                    <b
+                      className={`videoLibraryBadge videoLibraryAvailability-${
+                        selectedVideoAvailability || 'unknown'
+                      }`}
+                    >
+                      {playerLabels.availability[
+                        selectedVideoAvailability
+                      ] ||
+                        selectedVideoAvailability ||
+                        playerLabels.unknown}
+                    </b>
+                  </div>
+
+                  {playableVideos.length > 1 && (
+                    <div className="matchSearchInlinePlayerChoices">
+                      <span>{playerLabels.chooseVideo}</span>
+
+                      <div
+                        className="matchSearchInlinePlayerChoiceButtons"
+                        role="tablist"
+                        aria-label={playerLabels.chooseVideo}
+                      >
+                        {playableVideos.map((video) => {
+                          const isSelected = video.id === selectedVideo?.id;
+
+                          return (
+                            <button
+                              key={video.id}
+                              type="button"
+                              role="tab"
+                              aria-selected={isSelected}
+                              className={`matchSearchInlinePlayerChoice${
+                                isSelected ? ' active' : ''
+                              }`}
+                              onClick={() => setSelectedVideoId(video.id)}
+                            >
+                              {playerLabels.videoTypes[video.videoType] ||
+                                video.videoType ||
+                                playerLabels.unknown}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedVideo && selectedVideoEmbedUrl ? (
+                    <>
+                      <div className="matchSearchInlinePlayerFrame">
+                        <iframe
+                          key={selectedVideo.id}
+                          src={selectedVideoEmbedUrl}
+                          title={
+                            selectedVideo.title ||
+                            `${selectedMatch.team} vs ${selectedMatch.opponent}`
+                          }
+                          loading="lazy"
+                          referrerPolicy="strict-origin-when-cross-origin"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowFullScreen
+                        />
+                      </div>
+
+                      <div className="matchSearchInlineNowPlaying">
+                        <div>
+                          <span>{playerLabels.nowPlaying}</span>
+                          <strong>
+                            {playerLabels.videoTypes[
+                              selectedVideo.videoType
+                            ] ||
+                              selectedVideo.videoType ||
+                              playerLabels.unknown}
+                          </strong>
+                          <small>
+                            {playerLabels.provider}:{' '}
+                            {selectedVideo.videoProvider ||
+                              playerLabels.unknown}
+                          </small>
+                        </div>
+
+                        {selectedVideo.videoUrl && (
+                          <a
+                            href={selectedVideo.videoUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            <ExternalLink size={15} />
+                            {playerLabels.openVideo}
+                          </a>
+                        )}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="emptyState compact matchSearchInlinePlayerUnavailable">
+                      <b>{playerLabels.embedUnavailableTitle}</b>
+                      <p>{playerLabels.embedUnavailableBody}</p>
+
+                      {preferredVideo?.videoUrl && (
+                        <a
+                          href={preferredVideo.videoUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="matchSearchInlineExternalLink"
+                        >
+                          <ExternalLink size={15} />
+                          {playerLabels.openVideo}
+                        </a>
+                      )}
+                    </div>
+                  )}
+
+                  <p className="matchSearchInlinePlayerFallback">
+                    {playerLabels.embedFallback}
+                  </p>
+                </section>
+              )}
 
               <div className="sourceBox">
                 <b>{labels.traceability}</b>
