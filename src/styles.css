@@ -2238,3 +2238,34 @@ ol{
     gap: 12px;
   }
 }
+
+
+/* Version 0.9-05a: Improve Match Search stat-label readability */
+@media (min-width: 801px) {
+  .matchSearchStatsColumn .metricGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.matchSearchStatsColumn .metricGrid span {
+  grid-template-columns: minmax(0, 1fr) minmax(32px, auto);
+  gap: 8px;
+  padding: 9px 10px;
+  font-size: 0.82rem;
+  line-height: 1.25;
+}
+
+.matchSearchStatsColumn .metricGrid b {
+  min-width: 32px;
+  font-size: 1rem;
+}
+
+@media (max-width: 800px) {
+  .matchSearchStatsColumn .metricGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .matchSearchStatsColumn .metricGrid span {
+    font-size: 0.84rem;
+  }
+}
