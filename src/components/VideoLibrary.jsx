@@ -208,6 +208,7 @@ function getDefaultLabels(t) {
     no: '不可',
     unknown: '未確認',
     sampleNotice: '画面確認用の仮データ',
+    openInMatchSearch: '試合検索でスタッツ詳細を見る',
   };
 
   const en = {
@@ -279,6 +280,7 @@ function getDefaultLabels(t) {
     no: 'Not allowed',
     unknown: 'Unknown',
     sampleNotice: 'Temporary data for screen testing',
+    openInMatchSearch: 'View stats detail in Match Search',
   };
 
   return {
@@ -324,6 +326,8 @@ function matchesIdQuery(match, query) {
 
 export default function VideoLibrary({
   onBackHome,
+  onOpenMatchSearch,
+  initialSelectedMatchId = '',
   t,
   backgroundImage,
   mobileBackgroundImage,
@@ -338,7 +342,7 @@ export default function VideoLibrary({
   const [availability, setAvailability] = useState(ALL);
   const [matchDataType, setMatchDataType] = useState(ALL);
   const [matchIdQuery, setMatchIdQuery] = useState('');
-  const [selectedMatchId, setSelectedMatchId] = useState('');
+  const [selectedMatchId, setSelectedMatchId] = useState(initialSelectedMatchId);
 
   const videosByMatch = useMemo(() => {
     const map = new Map();
@@ -727,6 +731,19 @@ export default function VideoLibrary({
                 <span>{selectedMatch.gender}</span>
                 <span>{selectedMatch.id}</span>
               </div>
+
+              {onOpenMatchSearch && (
+                <div className="videoLibraryCrossLink">
+                  <button
+                    type="button"
+                    className="crossScreenLinkButton"
+                    onClick={() => onOpenMatchSearch(selectedMatch.id)}
+                  >
+                    <Search size={16} />
+                    {labels.openInMatchSearch}
+                  </button>
+                </div>
+              )}
 
               <div className="videoLibrarySection">
                 <h3>{labels.videoInformation}</h3>
