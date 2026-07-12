@@ -2,6 +2,7 @@ import { useState } from 'react';
 import HomeMenu from './components/HomeMenu.jsx';
 import StatsAnalysis from './components/StatsAnalysis.jsx';
 import StatsTrends from './components/StatsTrends.jsx';
+import MatchSearch from './components/MatchSearch.jsx';
 import ja from './i18n/ja.js';
 import en from './i18n/en.js';
 
@@ -89,13 +90,9 @@ export default function App() {
     content = <StatsTrends onBackHome={backHome} t={t} />;
   } else if (screen === 'search') {
     content = (
-      <ComingSoon
-        title={t.comingSoon.searchTitle}
-        description={t.comingSoon.searchDescription}
-        notice={t.comingSoon.notice}
-        backHomeLabel={t.navigation.backHome}
+      <MatchSearch
         onBackHome={backHome}
-        screenClassName="matchSearchScreen"
+        t={t}
         backgroundImage={matchSearchBgImage}
         mobileBackgroundImage={matchSearchMobileBgImage}
       />
