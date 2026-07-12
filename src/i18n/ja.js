@@ -271,6 +271,15 @@ statDefinitionVersion: 'スタッツ定義',
     unknown: '未確認',
     sampleNotice: '画面確認用の仮データ',
     openInMatchSearch: '試合検索でスタッツ詳細を見る',
+    playerTitle: 'YouTubeプレーヤー',
+    chooseVideo: '再生する動画',
+    nowPlaying: '再生中',
+    playHere: 'この画面で再生',
+    embedFallback:
+      '埋め込み再生できない場合は「動画を開く」からYouTubeで視聴してください。',
+    embedUnavailableTitle: 'この動画はアプリ内再生に対応していません。',
+    embedUnavailableBody:
+      '外部リンクから動画提供元のページを開いてください。',
   },
 
   menu: {
