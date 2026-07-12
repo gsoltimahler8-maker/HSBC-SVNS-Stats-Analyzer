@@ -271,6 +271,15 @@ statDefinitionVersion: 'Stats definition',
     unknown: 'Unknown',
     sampleNotice: 'Temporary data for screen testing',
     openInMatchSearch: 'View stats detail in Match Search',
+    playerTitle: 'YouTube Player',
+    chooseVideo: 'Choose video',
+    nowPlaying: 'Now playing',
+    playHere: 'Play here',
+    embedFallback:
+      'If embedded playback is unavailable, use “Open video” to watch on YouTube.',
+    embedUnavailableTitle: 'This video cannot be played inside the app.',
+    embedUnavailableBody:
+      'Open the external video page using the link below.',
   },
 
   menu: {
