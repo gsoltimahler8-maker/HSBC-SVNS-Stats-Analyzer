@@ -883,218 +883,228 @@ export default function MatchSearch({
                 </span>
               </div>
 
-              {metricGroups.map((group) => (
-                <div key={group.title} className="matchSearchMetricGroup">
-                  <h3>{group.title}</h3>
-                  <div className="metricGrid">
-                    {group.metrics.map(([key, value, suffix = '']) => (
-                      <span key={key}>
-                        {labels.metrics[key] || key}
-                        <b>{displayValue(value, suffix)}</b>
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-
-              <div className="matchSearchVideoStatus">
-                <div className="matchSearchVideoStatusText">
-                  <Film size={18} />
-                  <b>{labels.videoStatus}:</b>
-                  <span>{selectedVideoStatusLabel}</span>
-                </div>
-
-                {onOpenVideoLibrary && (
-                  <button
-                    type="button"
-                    className="crossScreenLinkButton"
-                    onClick={() => onOpenVideoLibrary(selectedMatch.id)}
-                  >
-                    <Film size={16} />
-                    {labels.openInVideoLibrary}
-                  </button>
-                )}
-              </div>
-
-              {selectedVideos.length > 0 && (
-                <section className="matchSearchInlinePlayer">
-                  <div className="matchSearchInlinePlayerHeader">
-                    <div>
-                      <span>{playerLabels.playerTitle}</span>
-                      <strong>
-                        {selectedVideo?.title ||
-                          preferredVideo?.title ||
-                          playerLabels.videoTypes[
-                            selectedVideo?.videoType ||
-                              preferredVideo?.videoType
-                          ] ||
-                          playerLabels.unknown}
-                      </strong>
-                    </div>
-
-                    <b
-                      className={`videoLibraryBadge videoLibraryAvailability-${
-                        selectedVideoAvailability || 'unknown'
-                      }`}
-                    >
-                      {playerLabels.availability[
-                        selectedVideoAvailability
-                      ] ||
-                        selectedVideoAvailability ||
-                        playerLabels.unknown}
-                    </b>
-                  </div>
-
-                  {playableVideos.length > 1 && (
-                    <div className="matchSearchInlinePlayerChoices">
-                      <span>{playerLabels.chooseVideo}</span>
-
-                      <div
-                        className="matchSearchInlinePlayerChoiceButtons"
-                        role="tablist"
-                        aria-label={playerLabels.chooseVideo}
-                      >
-                        {playableVideos.map((video) => {
-                          const isSelected = video.id === selectedVideo?.id;
-
-                          return (
-                            <button
-                              key={video.id}
-                              type="button"
-                              role="tab"
-                              aria-selected={isSelected}
-                              className={`matchSearchInlinePlayerChoice${
-                                isSelected ? ' active' : ''
-                              }`}
-                              onClick={() => setSelectedVideoId(video.id)}
-                            >
-                              {playerLabels.videoTypes[video.videoType] ||
-                                video.videoType ||
-                                playerLabels.unknown}
-                            </button>
-                          );
-                        })}
+              <div className="matchSearchDetailColumns">
+                <div className="matchSearchStatsColumn">
+                  {metricGroups.map((group) => (
+                    <div key={group.title} className="matchSearchMetricGroup">
+                      <h3>{group.title}</h3>
+                      <div className="metricGrid">
+                        {group.metrics.map(([key, value, suffix = '']) => (
+                          <span key={key}>
+                            {labels.metrics[key] || key}
+                            <b>{displayValue(value, suffix)}</b>
+                          </span>
+                        ))}
                       </div>
                     </div>
-                  )}
+                  ))}
 
-                  {selectedVideo && selectedVideoEmbedUrl ? (
-                    <>
-                      <div className="matchSearchInlinePlayerFrame">
-                        <iframe
-                          key={selectedVideo.id}
-                          src={selectedVideoEmbedUrl}
-                          title={
-                            selectedVideo.title ||
-                            `${selectedMatch.team} vs ${selectedMatch.opponent}`
-                          }
-                          loading="lazy"
-                          referrerPolicy="strict-origin-when-cross-origin"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                          allowFullScreen
-                        />
-                      </div>
-
-                      <div className="matchSearchInlineNowPlaying">
-                        <div>
-                          <span>{playerLabels.nowPlaying}</span>
-                          <strong>
-                            {playerLabels.videoTypes[
-                              selectedVideo.videoType
-                            ] ||
-                              selectedVideo.videoType ||
-                              playerLabels.unknown}
-                          </strong>
-                          <small>
-                            {playerLabels.provider}:{' '}
-                            {selectedVideo.videoProvider ||
-                              playerLabels.unknown}
-                          </small>
-                        </div>
-
-                        {selectedVideo.videoUrl && (
-                          <a
-                            href={selectedVideo.videoUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            <ExternalLink size={15} />
-                            {playerLabels.openVideo}
-                          </a>
-                        )}
-                      </div>
-                    </>
-                  ) : (
-                    <div className="emptyState compact matchSearchInlinePlayerUnavailable">
-                      <b>{playerLabels.embedUnavailableTitle}</b>
-                      <p>{playerLabels.embedUnavailableBody}</p>
-
-                      {preferredVideo?.videoUrl && (
+                  <div className="sourceBox">
+                    <b>{labels.traceability}</b>
+                    <br />
+                    {labels.internalMatchId}: {selectedMatch.id || '—'}
+                    <br />
+                    {labels.rugbyComAuId}:{' '}
+                    {selectedMatch.external?.rugbyComAu || '—'}
+                    <br />
+                    {labels.svnsId}: {selectedMatch.external?.svns || '—'}
+                    <br />
+                    {labels.rugbyPassId}:{' '}
+                    {selectedMatch.external?.rugbyPass || '—'}
+                    <br />
+                    {labels.sourceProvider}:{' '}
+                    {selectedMatch.sourceProvider || '—'}
+                    <br />
+                    {labels.lastFetched}: {selectedMatch.fetchedAt || '—'}
+                    <br />
+                    {labels.coverage}:{' '}
+                    {getCoverageLabel(selectedMatch.dataCoverageLevel)}
+                    <br />
+                    {labels.coverageSource}:{' '}
+                    {selectedMatch.dataCoverageSource || '—'}
+                    <br />
+                    {labels.statDefinition}:{' '}
+                    {selectedMatch.statDefinitionVersion || '—'}
+                    <br />
+                    {labels.dataType}:{' '}
+                    {labels.dataTypes[getDataType(selectedMatch)]}
+                    <br />
+                    {labels.sourceUrl}: {selectedMatch.sourceUrl || '—'}
+                    {selectedMatch.sourceUrl && (
+                      <>
+                        <br />
                         <a
-                          href={preferredVideo.videoUrl}
+                          href={selectedMatch.sourceUrl}
                           target="_blank"
                           rel="noreferrer"
-                          className="matchSearchInlineExternalLink"
+                          className="matchSearchSourceLink"
                         >
                           <ExternalLink size={15} />
-                          {playerLabels.openVideo}
+                          {labels.openSource}
                         </a>
-                      )}
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                <aside className="matchSearchVideoColumn">
+                  <div className="matchSearchVideoStatus">
+                    <div className="matchSearchVideoStatusText">
+                      <Film size={18} />
+                      <b>{labels.videoStatus}:</b>
+                      <span>{selectedVideoStatusLabel}</span>
                     </div>
+
+                    {onOpenVideoLibrary && (
+                      <button
+                        type="button"
+                        className="crossScreenLinkButton"
+                        onClick={() => onOpenVideoLibrary(selectedMatch.id)}
+                      >
+                        <Film size={16} />
+                        {labels.openInVideoLibrary}
+                      </button>
+                    )}
+                  </div>
+
+                  {selectedVideos.length > 0 && (
+                    <section className="matchSearchInlinePlayer">
+                      <div className="matchSearchInlinePlayerHeader">
+                        <div>
+                          <span>{playerLabels.playerTitle}</span>
+                          <strong>
+                            {selectedVideo?.title ||
+                              preferredVideo?.title ||
+                              playerLabels.videoTypes[
+                                selectedVideo?.videoType ||
+                                  preferredVideo?.videoType
+                              ] ||
+                              playerLabels.unknown}
+                          </strong>
+                        </div>
+
+                        <b
+                          className={`videoLibraryBadge videoLibraryAvailability-${
+                            selectedVideoAvailability || 'unknown'
+                          }`}
+                        >
+                          {playerLabels.availability[
+                            selectedVideoAvailability
+                          ] ||
+                            selectedVideoAvailability ||
+                            playerLabels.unknown}
+                        </b>
+                      </div>
+
+                      {playableVideos.length > 1 && (
+                        <div className="matchSearchInlinePlayerChoices">
+                          <span>{playerLabels.chooseVideo}</span>
+
+                          <div
+                            className="matchSearchInlinePlayerChoiceButtons"
+                            role="tablist"
+                            aria-label={playerLabels.chooseVideo}
+                          >
+                            {playableVideos.map((video) => {
+                              const isSelected =
+                                video.id === selectedVideo?.id;
+
+                              return (
+                                <button
+                                  key={video.id}
+                                  type="button"
+                                  role="tab"
+                                  aria-selected={isSelected}
+                                  className={`matchSearchInlinePlayerChoice${
+                                    isSelected ? ' active' : ''
+                                  }`}
+                                  onClick={() =>
+                                    setSelectedVideoId(video.id)
+                                  }
+                                >
+                                  {playerLabels.videoTypes[video.videoType] ||
+                                    video.videoType ||
+                                    playerLabels.unknown}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+
+                      {selectedVideo && selectedVideoEmbedUrl ? (
+                        <>
+                          <div className="matchSearchInlinePlayerFrame">
+                            <iframe
+                              key={selectedVideo.id}
+                              src={selectedVideoEmbedUrl}
+                              title={
+                                selectedVideo.title ||
+                                `${selectedMatch.team} vs ${selectedMatch.opponent}`
+                              }
+                              loading="lazy"
+                              referrerPolicy="strict-origin-when-cross-origin"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                              allowFullScreen
+                            />
+                          </div>
+
+                          <div className="matchSearchInlineNowPlaying">
+                            <div>
+                              <span>{playerLabels.nowPlaying}</span>
+                              <strong>
+                                {playerLabels.videoTypes[
+                                  selectedVideo.videoType
+                                ] ||
+                                  selectedVideo.videoType ||
+                                  playerLabels.unknown}
+                              </strong>
+                              <small>
+                                {playerLabels.provider}:{' '}
+                                {selectedVideo.videoProvider ||
+                                  playerLabels.unknown}
+                              </small>
+                            </div>
+
+                            {selectedVideo.videoUrl && (
+                              <a
+                                href={selectedVideo.videoUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                <ExternalLink size={15} />
+                                {playerLabels.openVideo}
+                              </a>
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        <div className="emptyState compact matchSearchInlinePlayerUnavailable">
+                          <b>{playerLabels.embedUnavailableTitle}</b>
+                          <p>{playerLabels.embedUnavailableBody}</p>
+
+                          {preferredVideo?.videoUrl && (
+                            <a
+                              href={preferredVideo.videoUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="matchSearchInlineExternalLink"
+                            >
+                              <ExternalLink size={15} />
+                              {playerLabels.openVideo}
+                            </a>
+                          )}
+                        </div>
+                      )}
+
+                      <p className="matchSearchInlinePlayerFallback">
+                        {playerLabels.embedFallback}
+                      </p>
+                    </section>
                   )}
-
-                  <p className="matchSearchInlinePlayerFallback">
-                    {playerLabels.embedFallback}
-                  </p>
-                </section>
-              )}
-
-              <div className="sourceBox">
-                <b>{labels.traceability}</b>
-                <br />
-                {labels.internalMatchId}: {selectedMatch.id || '—'}
-                <br />
-                {labels.rugbyComAuId}:{' '}
-                {selectedMatch.external?.rugbyComAu || '—'}
-                <br />
-                {labels.svnsId}: {selectedMatch.external?.svns || '—'}
-                <br />
-                {labels.rugbyPassId}:{' '}
-                {selectedMatch.external?.rugbyPass || '—'}
-                <br />
-                {labels.sourceProvider}:{' '}
-                {selectedMatch.sourceProvider || '—'}
-                <br />
-                {labels.lastFetched}: {selectedMatch.fetchedAt || '—'}
-                <br />
-                {labels.coverage}:{' '}
-                {getCoverageLabel(selectedMatch.dataCoverageLevel)}
-                <br />
-                {labels.coverageSource}:{' '}
-                {selectedMatch.dataCoverageSource || '—'}
-                <br />
-                {labels.statDefinition}:{' '}
-                {selectedMatch.statDefinitionVersion || '—'}
-                <br />
-                {labels.dataType}:{' '}
-                {labels.dataTypes[getDataType(selectedMatch)]}
-                <br />
-                {labels.sourceUrl}: {selectedMatch.sourceUrl || '—'}
-                {selectedMatch.sourceUrl && (
-                  <>
-                    <br />
-                    <a
-                      href={selectedMatch.sourceUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="matchSearchSourceLink"
-                    >
-                      <ExternalLink size={15} />
-                      {labels.openSource}
-                    </a>
-                  </>
-                )}
+                </aside>
               </div>
+
             </div>
           )}
         </section>
