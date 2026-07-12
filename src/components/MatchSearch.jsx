@@ -215,6 +215,7 @@ function getDefaultLabels(t) {
     openSource: 'ソースを開く',
     videoStatus: '動画',
     videoNotChecked: '未確認',
+    openInVideoLibrary: '動画ライブラリでこの試合を見る',
     metrics: {
       pointsFor: '得点',
       pointsAgainst: '失点',
@@ -302,6 +303,7 @@ function getDefaultLabels(t) {
     openSource: 'Open source',
     videoStatus: 'Video',
     videoNotChecked: 'Not checked',
+    openInVideoLibrary: 'View this match in Video Library',
     metrics: {
       pointsFor: 'Points For',
       pointsAgainst: 'Points Against',
@@ -334,6 +336,8 @@ function getDefaultLabels(t) {
 
 export default function MatchSearch({
   onBackHome,
+  onOpenVideoLibrary,
+  initialSelectedMatchId = '',
   t,
   backgroundImage,
   mobileBackgroundImage,
@@ -349,7 +353,7 @@ export default function MatchSearch({
   const [result, setResult] = useState(ALL);
   const [dataType, setDataType] = useState(ALL);
   const [matchIdQuery, setMatchIdQuery] = useState('');
-  const [selectedMatchId, setSelectedMatchId] = useState('');
+  const [selectedMatchId, setSelectedMatchId] = useState(initialSelectedMatchId);
 
   const seasons = useMemo(
     () =>
@@ -780,9 +784,22 @@ export default function MatchSearch({
               ))}
 
               <div className="matchSearchVideoStatus">
-                <Film size={18} />
-                <b>{labels.videoStatus}:</b>
-                <span>{labels.videoNotChecked}</span>
+                <div className="matchSearchVideoStatusText">
+                  <Film size={18} />
+                  <b>{labels.videoStatus}:</b>
+                  <span>{labels.videoNotChecked}</span>
+                </div>
+
+                {onOpenVideoLibrary && (
+                  <button
+                    type="button"
+                    className="crossScreenLinkButton"
+                    onClick={() => onOpenVideoLibrary(selectedMatch.id)}
+                  >
+                    <Film size={16} />
+                    {labels.openInVideoLibrary}
+                  </button>
+                )}
               </div>
 
               <div className="sourceBox">
