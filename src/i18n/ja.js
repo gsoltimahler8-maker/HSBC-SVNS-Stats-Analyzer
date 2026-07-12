@@ -176,6 +176,7 @@ statDefinitionVersion: 'スタッツ定義',
     openSource: 'ソースを開く',
     videoStatus: '動画',
     videoNotChecked: '未確認',
+    openInVideoLibrary: '動画ライブラリでこの試合を見る',
     metrics: {
       pointsFor: '得点',
       pointsAgainst: '失点',
@@ -269,6 +270,7 @@ statDefinitionVersion: 'スタッツ定義',
     no: '不可',
     unknown: '未確認',
     sampleNotice: '画面確認用の仮データ',
+    openInMatchSearch: '試合検索でスタッツ詳細を見る',
   },
 
   menu: {
