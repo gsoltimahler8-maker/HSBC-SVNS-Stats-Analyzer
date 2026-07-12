@@ -2175,3 +2175,66 @@ ol{
     width: 100%;
   }
 }
+
+
+/* Version 0.9-05: Match stats and video parallel layout */
+.matchSearchScreen {
+  max-width: 1600px;
+}
+
+.matchSearchLayout {
+  grid-template-columns: minmax(280px, 0.62fr) minmax(0, 1.38fr);
+}
+
+.matchSearchDetailColumns {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.matchSearchStatsColumn,
+.matchSearchVideoColumn {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+.matchSearchVideoColumn {
+  position: sticky;
+  top: 18px;
+  align-self: start;
+}
+
+.matchSearchVideoColumn .matchSearchVideoStatus {
+  margin: 0;
+}
+
+.matchSearchStatsColumn .sourceBox {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1180px) {
+  .matchSearchDetailColumns {
+    grid-template-columns: 1fr;
+  }
+
+  .matchSearchVideoColumn {
+    position: static;
+  }
+}
+
+@media (max-width: 980px) {
+  .matchSearchLayout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 800px) {
+  .matchSearchDetailColumns,
+  .matchSearchStatsColumn,
+  .matchSearchVideoColumn {
+    gap: 12px;
+  }
+}
