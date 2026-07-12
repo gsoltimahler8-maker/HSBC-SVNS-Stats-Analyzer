@@ -176,6 +176,7 @@ statDefinitionVersion: 'Stats definition',
     openSource: 'Open source',
     videoStatus: 'Video',
     videoNotChecked: 'Not checked',
+    openInVideoLibrary: 'View this match in Video Library',
     metrics: {
       pointsFor: 'Points For',
       pointsAgainst: 'Points Against',
@@ -269,6 +270,7 @@ statDefinitionVersion: 'Stats definition',
     no: 'Not allowed',
     unknown: 'Unknown',
     sampleNotice: 'Temporary data for screen testing',
+    openInMatchSearch: 'View stats detail in Match Search',
   },
 
   menu: {
