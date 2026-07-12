@@ -209,6 +209,15 @@ function getDefaultLabels(t) {
     unknown: '未確認',
     sampleNotice: '画面確認用の仮データ',
     openInMatchSearch: '試合検索でスタッツ詳細を見る',
+    playerTitle: 'YouTubeプレーヤー',
+    chooseVideo: '再生する動画',
+    nowPlaying: '再生中',
+    playHere: 'この画面で再生',
+    embedFallback:
+      '埋め込み再生できない場合は「動画を開く」からYouTubeで視聴してください。',
+    embedUnavailableTitle: 'この動画はアプリ内再生に対応していません。',
+    embedUnavailableBody:
+      '外部リンクから動画提供元のページを開いてください。',
   };
 
   const en = {
@@ -281,6 +290,15 @@ function getDefaultLabels(t) {
     unknown: 'Unknown',
     sampleNotice: 'Temporary data for screen testing',
     openInMatchSearch: 'View stats detail in Match Search',
+    playerTitle: 'YouTube Player',
+    chooseVideo: 'Choose video',
+    nowPlaying: 'Now playing',
+    playHere: 'Play here',
+    embedFallback:
+      'If embedded playback is unavailable, use “Open video” to watch on YouTube.',
+    embedUnavailableTitle: 'This video cannot be played inside the app.',
+    embedUnavailableBody:
+      'Open the external video page using the link below.',
   };
 
   return {
@@ -324,6 +342,62 @@ function matchesIdQuery(match, query) {
   );
 }
 
+function getYouTubeVideoId(videoUrl) {
+  if (!videoUrl) {
+    return null;
+  }
+
+  try {
+    const url = new URL(videoUrl);
+    const hostname = url.hostname.replace(/^www\./, '');
+
+    if (hostname === 'youtu.be') {
+      return url.pathname.split('/').filter(Boolean)[0] || null;
+    }
+
+    if (
+      hostname === 'youtube.com' ||
+      hostname === 'm.youtube.com' ||
+      hostname === 'music.youtube.com'
+    ) {
+      if (url.pathname === '/watch') {
+        return url.searchParams.get('v');
+      }
+
+      const pathParts = url.pathname.split('/').filter(Boolean);
+
+      if (
+        ['embed', 'shorts', 'live'].includes(pathParts[0]) &&
+        pathParts[1]
+      ) {
+        return pathParts[1];
+      }
+    }
+  } catch {
+    return null;
+  }
+
+  return null;
+}
+
+function getYouTubeEmbedUrl(video) {
+  if (
+    !video ||
+    video.embedAllowed === false ||
+    video.availability !== 'available'
+  ) {
+    return null;
+  }
+
+  const videoId = getYouTubeVideoId(video.videoUrl);
+
+  if (!videoId) {
+    return null;
+  }
+
+  return `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1`;
+}
+
 export default function VideoLibrary({
   onBackHome,
   onOpenMatchSearch,
@@ -343,6 +417,7 @@ export default function VideoLibrary({
   const [matchDataType, setMatchDataType] = useState(ALL);
   const [matchIdQuery, setMatchIdQuery] = useState('');
   const [selectedMatchId, setSelectedMatchId] = useState(initialSelectedMatchId);
+  const [selectedVideoId, setSelectedVideoId] = useState('');
 
   const videosByMatch = useMemo(() => {
     const map = new Map();
@@ -440,6 +515,27 @@ export default function VideoLibrary({
   const selectedVideos = selectedMatch
     ? videosByMatch.get(selectedMatch.id) || []
     : [];
+
+  const playableVideos = selectedVideos.filter((video) =>
+    Boolean(getYouTubeEmbedUrl(video))
+  );
+
+  useEffect(() => {
+    if (!playableVideos.length) {
+      setSelectedVideoId('');
+      return;
+    }
+
+    if (!playableVideos.some((video) => video.id === selectedVideoId)) {
+      setSelectedVideoId(playableVideos[0].id);
+    }
+  }, [playableVideos, selectedVideoId]);
+
+  const selectedVideo =
+    playableVideos.find((video) => video.id === selectedVideoId) ||
+    playableVideos[0] ||
+    null;
+  const selectedVideoEmbedUrl = getYouTubeEmbedUrl(selectedVideo);
 
   const resetFilters = () => {
     setSeason(ALL);
@@ -747,6 +843,107 @@ export default function VideoLibrary({
 
               <div className="videoLibrarySection">
                 <h3>{labels.videoInformation}</h3>
+
+                {selectedVideo && selectedVideoEmbedUrl && (
+                  <section className="videoLibraryPlayer">
+                    <div className="videoLibraryPlayerHeader">
+                      <div>
+                        <span>{labels.playerTitle}</span>
+                        <strong>
+                          {selectedVideo.title ||
+                            labels.videoTypes[selectedVideo.videoType] ||
+                            selectedVideo.videoType ||
+                            labels.unknown}
+                        </strong>
+                      </div>
+
+                      <b className="videoLibraryBadge videoLibraryAvailability-available">
+                        {labels.availability.available}
+                      </b>
+                    </div>
+
+                    {playableVideos.length > 1 && (
+                      <div className="videoLibraryPlayerChoices">
+                        <span>{labels.chooseVideo}</span>
+
+                        <div
+                          className="videoLibraryPlayerChoiceButtons"
+                          role="tablist"
+                          aria-label={labels.chooseVideo}
+                        >
+                          {playableVideos.map((video) => {
+                            const isSelected = video.id === selectedVideo.id;
+
+                            return (
+                              <button
+                                key={video.id}
+                                type="button"
+                                role="tab"
+                                aria-selected={isSelected}
+                                className={`videoLibraryPlayerChoice${
+                                  isSelected ? ' active' : ''
+                                }`}
+                                onClick={() => setSelectedVideoId(video.id)}
+                              >
+                                {labels.videoTypes[video.videoType] ||
+                                  video.videoType ||
+                                  labels.playHere}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="videoLibraryPlayerFrame">
+                      <iframe
+                        key={selectedVideo.id}
+                        src={selectedVideoEmbedUrl}
+                        title={
+                          selectedVideo.title ||
+                          `${selectedMatch.team} vs ${selectedMatch.opponent}`
+                        }
+                        loading="lazy"
+                        referrerPolicy="strict-origin-when-cross-origin"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                      />
+                    </div>
+
+                    <div className="videoLibraryNowPlaying">
+                      <div>
+                        <span>{labels.nowPlaying}</span>
+                        <strong>
+                          {labels.videoTypes[selectedVideo.videoType] ||
+                            selectedVideo.videoType ||
+                            labels.unknown}
+                        </strong>
+                      </div>
+
+                      {selectedVideo.videoUrl && (
+                        <a
+                          href={selectedVideo.videoUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          <ExternalLink size={15} />
+                          {labels.openVideo}
+                        </a>
+                      )}
+                    </div>
+
+                    <p className="videoLibraryEmbedFallback">
+                      {labels.embedFallback}
+                    </p>
+                  </section>
+                )}
+
+                {selectedVideos.length > 0 && !playableVideos.length && (
+                  <div className="emptyState compact videoLibraryEmbedUnavailable">
+                    <b>{labels.embedUnavailableTitle}</b>
+                    <p>{labels.embedUnavailableBody}</p>
+                  </div>
+                )}
 
                 {!selectedVideos.length ? (
                   <div className="emptyState compact">
