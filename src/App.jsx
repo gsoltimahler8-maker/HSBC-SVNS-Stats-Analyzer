@@ -73,10 +73,29 @@ function ComingSoon({
 export default function App() {
   const [screen, setScreen] = useState('home');
   const [language, setLanguage] = useState('ja');
+  const [selectedMatchId, setSelectedMatchId] = useState('');
 
   const t = dictionaries[language];
 
-  const backHome = () => setScreen('home');
+  const backHome = () => {
+    setSelectedMatchId('');
+    setScreen('home');
+  };
+
+  const navigateFromHome = (nextScreen) => {
+    setSelectedMatchId('');
+    setScreen(nextScreen);
+  };
+
+  const openVideoLibraryForMatch = (matchId) => {
+    setSelectedMatchId(matchId);
+    setScreen('videos');
+  };
+
+  const openMatchSearchForMatch = (matchId) => {
+    setSelectedMatchId(matchId);
+    setScreen('search');
+  };
 
   const matchSearchBgImage = `${import.meta.env.BASE_URL}assets/bg-match-search.png`;
   const matchSearchMobileBgImage = `${import.meta.env.BASE_URL}assets/bg-match-search-mobile.png`;
@@ -93,6 +112,8 @@ export default function App() {
     content = (
       <MatchSearch
         onBackHome={backHome}
+        onOpenVideoLibrary={openVideoLibraryForMatch}
+        initialSelectedMatchId={selectedMatchId}
         t={t}
         backgroundImage={matchSearchBgImage}
         mobileBackgroundImage={matchSearchMobileBgImage}
@@ -102,6 +123,8 @@ export default function App() {
     content = (
       <VideoLibrary
         onBackHome={backHome}
+        onOpenMatchSearch={openMatchSearchForMatch}
+        initialSelectedMatchId={selectedMatchId}
         t={t}
         backgroundImage={videoLibraryBgImage}
         mobileBackgroundImage={videoLibraryMobileBgImage}
@@ -118,7 +141,7 @@ export default function App() {
       />
     );
   } else {
-    content = <HomeMenu onNavigate={setScreen} t={t} />;
+    content = <HomeMenu onNavigate={navigateFromHome} t={t} />;
   }
 
   return (
