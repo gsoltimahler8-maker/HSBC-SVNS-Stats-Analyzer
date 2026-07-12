@@ -1779,3 +1779,53 @@ ol{
     flex-direction: column;
   }
 }
+
+
+/* Version 0.8-12: Match Search / Video Library cross navigation */
+.matchSearchVideoStatus {
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.matchSearchVideoStatusText {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.videoLibraryCrossLink {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.crossScreenLinkButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 9px 13px;
+  border: 1px solid rgba(56, 189, 248, 0.42);
+  border-radius: 999px;
+  background: rgba(8, 47, 73, 0.68);
+  color: #e0f2fe;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.crossScreenLinkButton:hover {
+  background: rgba(7, 89, 133, 0.78);
+  border-color: rgba(125, 211, 252, 0.62);
+}
+
+@media (max-width: 800px) {
+  .matchSearchVideoStatus {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .crossScreenLinkButton {
+    width: 100%;
+  }
+}
