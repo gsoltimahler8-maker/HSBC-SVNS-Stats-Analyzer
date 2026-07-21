@@ -33,6 +33,16 @@ function LanguageToggle({ language, onChangeLanguage }) {
   );
 }
 
+
+function BrandNotice({ notice }) {
+  return (
+    <footer className="brandNotice" aria-label={notice.ariaLabel}>
+      <strong>{notice.title}</strong>
+      <p>{notice.body}</p>
+    </footer>
+  );
+}
+
 function ComingSoon({
   title,
   description,
@@ -148,6 +158,7 @@ export default function App() {
     <>
       <LanguageToggle language={language} onChangeLanguage={setLanguage} />
       {content}
+      {screen !== 'home' && <BrandNotice notice={t.brandNotice} />}
     </>
   );
 }
