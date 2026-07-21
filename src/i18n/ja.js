@@ -6,7 +6,14 @@ const ja = {
     'SVNSの試合スタッツを、シーズン・大会・男女区分・チーム・対戦相手・試合数を明示して分析・検証するためのプラットフォームです。',
 
   unofficialNotice:
-    '本アプリは非公式のSVNSスタッツ分析アプリです。データ出典: Rugby.com.au / SVNS Match Centre',
+    '独立した非公式の分析ツールです。World Rugby、HSBC、Rugby Australia、YouTube等による公認・提携・提供を受けていません。',
+
+  brandNotice: {
+    ariaLabel: '非公式・非提携に関する表示',
+    title: '独立した非公式分析ツール',
+    body:
+      'SVNS Stats Analyzerは独立した非公式の分析ツールです。World Rugby、HSBC、Rugby Australia、YouTubeその他の権利者による公認・提携・提供を受けたものではありません。大会名、商標、試合データ、動画その他のコンテンツに関する権利は、それぞれの権利者に帰属します。',
+  },
 
   statsAnalysis: {
     sampleWarning:
