@@ -294,6 +294,53 @@ statDefinitionVersion: 'スタッツ定義',
     matchResult: '試合結果',
   },
 
+
+  about: {
+    homeButton: 'このアプリについて',
+    kicker: 'About this project',
+    title: 'SVNS Stats Analyzerについて',
+    subtitle:
+      'SVNSの公開試合情報、チームスタッツ、公式映像を、検索・比較・検証しやすい形で整理する独立した分析ツールです。',
+    versionLabel: '開発段階',
+    version: 'Version 1.0',
+    statusLabel: '状態',
+    status: '初期MVP開発中',
+    purposeTitle: '目的',
+    purposeBody:
+      '速報や公式記録の代替ではなく、試合単位のスタッツを出典まで遡りながら比較し、数値と映像の両面から競技内容を検証できる環境を作ることを目的としています。',
+    featuresTitle: '主な機能',
+    features: [
+      '条件を指定したスタッツ分析と勝敗比較',
+      'シーズン内・大会別・対戦相手別のスタッツ推移',
+      'Match IDを使った試合検索と出典追跡',
+      '公式YouTube映像を動画単位で探せるVideo Library',
+      '試合スタッツと対応映像の相互移動',
+      '日本語・英語、PC・スマートフォン対応',
+    ],
+    analysisPolicyTitle: '分析方針',
+    analysisPolicyBody:
+      '表示する数値は、対象シーズン、大会、チーム、対戦相手、試合数、データ粒度を明示して扱います。相関や平均値は勝敗原因の断定ではなく、次に確認すべき候補指標として提示します。',
+    dataPolicyTitle: 'データ運用',
+    dataPolicyBody:
+      '現在は公開情報を確認し、少数試合を中心に手作業で登録・検証しています。元サイトの画面や文章を複製するのではなく、事実としての試合数値を独自のデータ構造とUIで整理しています。',
+    dataPolicyItems: [
+      'REAL DATAとSAMPLE DATAを区別',
+      'dataCoverageLevelでデータ粒度を明示',
+      '主ソース、取得日時、外部Match IDを記録',
+      'データ追加時にvalidationを実施',
+    ],
+    videoPolicyTitle: '動画の扱い',
+    videoPolicyBody:
+      '動画ファイルは保存・再配布せず、YouTubeが提供する公式埋め込み機能と外部リンクを使用します。投稿者による削除、埋め込み制限、地域制限がある場合は再生できないことがあります。',
+    independenceTitle: '独立性と非公式性',
+    independenceBody:
+      '本プロジェクトは個人によって開発・維持される独立した非公式プロジェクトです。World Rugby、HSBC、Rugby Australia、YouTubeその他の権利者による公認・提携・提供を受けたものではありません。現在は非商用の初期MVPとして開発しています。',
+    contactKicker: 'Contact',
+    contactTitle: '問い合わせ',
+    contactBody:
+      'データの誤り、動画リンクの不具合、表示上の問題、その他の連絡は次のメールアドレスで受け付けます。',
+  },
+
   menu: {
     analysis: {
       label: 'スタッツ分析',
