@@ -4,6 +4,7 @@ import StatsAnalysis from './components/StatsAnalysis.jsx';
 import StatsTrends from './components/StatsTrends.jsx';
 import MatchSearch from './components/MatchSearch.jsx';
 import VideoLibrary from './components/VideoLibrary.jsx';
+import AboutPage from './components/AboutPage.jsx';
 import ja from './i18n/ja.js';
 import en from './i18n/en.js';
 
@@ -140,6 +141,8 @@ export default function App() {
         mobileBackgroundImage={videoLibraryMobileBgImage}
       />
     );
+  } else if (screen === 'about') {
+    content = <AboutPage onBackHome={backHome} t={t} />;
   } else if (screen === 'admin') {
     content = (
       <ComingSoon
@@ -151,7 +154,18 @@ export default function App() {
       />
     );
   } else {
-    content = <HomeMenu onNavigate={navigateFromHome} t={t} />;
+    content = (
+      <>
+        <HomeMenu onNavigate={navigateFromHome} t={t} />
+        <button
+          type="button"
+          className="homeAboutButton"
+          onClick={() => navigateFromHome('about')}
+        >
+          {t.about.homeButton}
+        </button>
+      </>
+    );
   }
 
   return (
