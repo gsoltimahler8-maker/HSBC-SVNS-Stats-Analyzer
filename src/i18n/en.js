@@ -6,7 +6,14 @@ const en = {
     'Built for analysis, not live scoring. This platform helps users examine SVNS match statistics with clear season, tournament, gender, team, opponent, and match-count context.',
 
   unofficialNotice:
-    'This is an unofficial SVNS statistics and analytics app. Data sources: Rugby.com.au / SVNS Match Centre',
+    'This is an independent, unofficial analytics tool. It is not affiliated with, endorsed by, sponsored by, or provided by World Rugby, HSBC, Rugby Australia, YouTube, or other rights holders.',
+
+  brandNotice: {
+    ariaLabel: 'Unofficial and non-affiliation notice',
+    title: 'Independent, unofficial analytics tool',
+    body:
+      'SVNS Stats Analyzer is an independent, unofficial analytics tool. It is not affiliated with, endorsed by, sponsored by, or provided by World Rugby, HSBC, Rugby Australia, YouTube, or other rights holders. Tournament names, trademarks, match data, videos, and other content remain the property of their respective owners.',
+  },
 
   statsAnalysis: {
     sampleWarning:
