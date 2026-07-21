@@ -2452,3 +2452,42 @@ ol{
     flex-direction: column;
   }
 }
+
+
+/* Version 1.0-02: Brand and non-affiliation notice */
+.brandNotice {
+  display: grid;
+  gap: 6px;
+  width: min(calc(100% - 32px), 1600px);
+  margin: 16px auto 24px;
+  padding: 14px 16px;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.9);
+  color: #cbd5e1;
+  box-shadow: 0 10px 24px rgba(2, 6, 23, 0.18);
+}
+
+.brandNotice strong {
+  color: #f8fafc;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+}
+
+.brandNotice p {
+  margin: 0;
+  font-size: 0.76rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 800px) {
+  .brandNotice {
+    width: min(calc(100% - 24px), 1600px);
+    margin: 12px auto 18px;
+    padding: 12px 13px;
+  }
+
+  .brandNotice p {
+    font-size: 0.74rem;
+  }
+}
