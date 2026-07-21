@@ -294,6 +294,53 @@ statDefinitionVersion: 'Stats definition',
     matchResult: 'Match result',
   },
 
+
+  about: {
+    homeButton: 'About this app',
+    kicker: 'About this project',
+    title: 'About SVNS Stats Analyzer',
+    subtitle:
+      'An independent analytics tool that organizes publicly available SVNS match information, team statistics, and official video for easier search, comparison, and verification.',
+    versionLabel: 'Development stage',
+    version: 'Version 1.0',
+    statusLabel: 'Status',
+    status: 'Initial MVP in development',
+    purposeTitle: 'Purpose',
+    purposeBody:
+      'The project is not intended to replace live coverage or official records. Its purpose is to make match-level statistics traceable to their sources and to support verification through both numerical data and match video.',
+    featuresTitle: 'Core features',
+    features: [
+      'Filtered statistics analysis and win/loss comparison',
+      'Season, tournament, and opponent-specific statistics trends',
+      'Match search and source traceability using Match IDs',
+      'A video-centered catalog of official YouTube content',
+      'Cross-navigation between match statistics and related video',
+      'Japanese and English support on desktop and mobile',
+    ],
+    analysisPolicyTitle: 'Analysis policy',
+    analysisPolicyBody:
+      'Statistics are presented with the relevant season, tournament, team, opponent, match count, and data coverage. Correlations and averages are treated as candidate indicators for further review, not as proof of causation.',
+    dataPolicyTitle: 'Data operations',
+    dataPolicyBody:
+      'The current dataset is built through manual review and entry of a limited number of matches from publicly available sources. The project does not reproduce source-site layouts or articles; it organizes factual match values in an original data structure and interface.',
+    dataPolicyItems: [
+      'Separate REAL DATA from SAMPLE DATA',
+      'Declare data granularity through dataCoverageLevel',
+      'Record the primary source, retrieval time, and external Match IDs',
+      'Run validation when data is added or updated',
+    ],
+    videoPolicyTitle: 'Video policy',
+    videoPolicyBody:
+      'Video files are not downloaded, stored, or redistributed. The app uses official YouTube embedding and external links. Playback may become unavailable when a publisher removes a video or applies embedding, login, or regional restrictions.',
+    independenceTitle: 'Independence and unofficial status',
+    independenceBody:
+      'This project is independently developed and maintained as a personal, unofficial project. It is not affiliated with, endorsed by, sponsored by, or provided by World Rugby, HSBC, Rugby Australia, YouTube, or other rights holders. It is currently being developed as a non-commercial initial MVP.',
+    contactKicker: 'Contact',
+    contactTitle: 'Contact',
+    contactBody:
+      'Use the following email address to report data errors, broken video links, display issues, or other project-related matters.',
+  },
+
   menu: {
     analysis: {
       label: 'Stats Analysis',
