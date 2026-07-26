@@ -2,13 +2,49 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0b1220" />
-    <link rel="manifest" href="/manifest.webmanifest" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta
+      name="description"
+      content="SVNSの公開試合情報、チームスタッツ、公式動画を検索・比較・検証する独立した非公式分析ツール。"
+    />
+    <meta name="theme-color" content="#111827" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta
+      name="apple-mobile-web-app-title"
+      content="SVNS Stats"
+    />
+
+    <link
+      rel="manifest"
+      href="%BASE_URL%manifest.webmanifest"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="192x192"
+      href="%BASE_URL%icons/icon-192.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="%BASE_URL%icons/apple-touch-icon.png"
+    />
+
     <title>SVNS Stats Analyzer</title>
   </head>
   <body>
+    <noscript>
+      SVNS Stats Analyzerを利用するにはJavaScriptを有効にしてください。
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
