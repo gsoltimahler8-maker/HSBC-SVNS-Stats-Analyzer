@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run validate:data && vite build --base=/HSBC-SVNS-Stats-Analyzer/",
+    "build": "npm run validate:release && vite build --base=/HSBC-SVNS-Stats-Analyzer/",
     "preview": "vite preview",
     "validate:matches": "node scripts/validateSampleMatches.mjs",
     "validate:videos": "node scripts/validateVideos.mjs",
-    "validate:data": "npm run validate:matches && npm run validate:videos"
+    "validate:data": "npm run validate:matches && npm run validate:videos",
+    "validate:release": "npm run validate:data && node scripts/validateRelease.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
