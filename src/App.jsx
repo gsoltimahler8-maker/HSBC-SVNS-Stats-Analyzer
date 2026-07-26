@@ -19,6 +19,58 @@ const dictionaries = {
   en,
 };
 
+
+const FALLBACK_ACCESSIBILITY_LABELS = {
+  ja: {
+    skipToContent: '本文へ移動',
+    languageSelector: '表示言語',
+    japanese: '日本語',
+    english: 'English',
+    pageLoaded: 'ページを表示しました',
+  },
+  en: {
+    skipToContent: 'Skip to main content',
+    languageSelector: 'Display language',
+    japanese: '日本語',
+    english: 'English',
+    pageLoaded: 'page loaded',
+  },
+};
+
+const FALLBACK_BRAND_NOTICE = {
+  ja: {
+    ariaLabel: '非公式・非提携に関する表示',
+    title: '独立した非公式分析ツール',
+    body:
+      'SVNS Stats Analyzerは独立した非公式の分析ツールです。公式、公認、提携、スポンサー提供を受けたものではありません。',
+  },
+  en: {
+    ariaLabel: 'Unofficial and non-affiliation notice',
+    title: 'Independent, unofficial analytics tool',
+    body:
+      'SVNS Stats Analyzer is an independent, unofficial analytics tool. It is not an official, endorsed, affiliated, or sponsored service.',
+  },
+};
+
+function getAccessibilityLabels(labels, language = 'ja') {
+  const fallback =
+    FALLBACK_ACCESSIBILITY_LABELS[language] ||
+    FALLBACK_ACCESSIBILITY_LABELS.en;
+
+  return {
+    ...fallback,
+    ...(labels || {}),
+  };
+}
+
+function getBrandNotice(notice, language = 'ja') {
+  return (
+    notice ||
+    FALLBACK_BRAND_NOTICE[language] ||
+    FALLBACK_BRAND_NOTICE.en
+  );
+}
+
 function LanguageToggle({
   language,
   onChangeLanguage,
@@ -141,10 +193,18 @@ export default function App() {
     t?.appNavigation,
     language
   );
+  const accessibilityLabels = getAccessibilityLabels(
+    t?.accessibility,
+    language
+  );
+  const brandNotice = getBrandNotice(
+    t?.brandNotice,
+    language
+  );
 
   const pageTitle =
     screen === 'admin'
-      ? t.comingSoon.adminTitle
+      ? t?.comingSoon?.adminTitle || 'Data Management'
       : navigationLabels.items[screen] || 'SVNS Stats Analyzer';
 
   useEffect(() => {
@@ -241,13 +301,13 @@ export default function App() {
   return (
     <>
       <a className="skipLink" href="#main-content">
-        {t.accessibility.skipToContent}
+        {accessibilityLabels.skipToContent}
       </a>
 
       <LanguageToggle
         language={language}
         onChangeLanguage={setLanguage}
-        labels={t.accessibility}
+        labels={accessibilityLabels}
       />
 
       <AppNavigation
@@ -257,7 +317,7 @@ export default function App() {
       />
 
       <p className="srOnly" aria-live="polite">
-        {pageTitle} — {t.accessibility.pageLoaded}
+        {pageTitle} — {accessibilityLabels.pageLoaded}
       </p>
 
       <div
@@ -271,7 +331,7 @@ export default function App() {
 
       {screen !== 'home' && (
         <BrandNotice
-          notice={t.brandNotice}
+          notice={brandNotice}
           navigation={navigationLabels}
           onNavigate={navigateFromHome}
         />
