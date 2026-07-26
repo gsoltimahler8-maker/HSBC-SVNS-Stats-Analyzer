@@ -5,6 +5,7 @@ import StatsTrends from './components/StatsTrends.jsx';
 import MatchSearch from './components/MatchSearch.jsx';
 import VideoLibrary from './components/VideoLibrary.jsx';
 import AboutPage from './components/AboutPage.jsx';
+import SourcesPage from './components/SourcesPage.jsx';
 import ja from './i18n/ja.js';
 import en from './i18n/en.js';
 
@@ -143,6 +144,8 @@ export default function App() {
     );
   } else if (screen === 'about') {
     content = <AboutPage onBackHome={backHome} t={t} />;
+  } else if (screen === 'sources') {
+    content = <SourcesPage onBackHome={backHome} t={t} />;
   } else if (screen === 'admin') {
     content = (
       <ComingSoon
@@ -157,13 +160,22 @@ export default function App() {
     content = (
       <>
         <HomeMenu onNavigate={navigateFromHome} t={t} />
-        <button
-          type="button"
-          className="homeAboutButton"
-          onClick={() => navigateFromHome('about')}
-        >
-          {t.about.homeButton}
-        </button>
+        <nav className="homeUtilityNav" aria-label={t.sources.utilityNavLabel}>
+          <button
+            type="button"
+            className="homeUtilityButton"
+            onClick={() => navigateFromHome('about')}
+          >
+            {t.about.homeButton}
+          </button>
+          <button
+            type="button"
+            className="homeUtilityButton"
+            onClick={() => navigateFromHome('sources')}
+          >
+            {t.sources.homeButton}
+          </button>
+        </nav>
       </>
     );
   }
