@@ -7,7 +7,9 @@ import VideoLibrary from './components/VideoLibrary.jsx';
 import AboutPage from './components/AboutPage.jsx';
 import SourcesPage from './components/SourcesPage.jsx';
 import PolicyPage from './components/PolicyPage.jsx';
-import AppNavigation from './components/AppNavigation.jsx';
+import AppNavigation, {
+  getAppNavigationLabels,
+} from './components/AppNavigation.jsx';
 import ja from './i18n/ja.js';
 import en from './i18n/en.js';
 
@@ -114,6 +116,10 @@ export default function App() {
   const [selectedMatchId, setSelectedMatchId] = useState('');
 
   const t = dictionaries[language];
+  const navigationLabels = getAppNavigationLabels(
+    t?.appNavigation,
+    language
+  );
 
   const backHome = () => {
     setSelectedMatchId('');
@@ -195,7 +201,7 @@ export default function App() {
       <AppNavigation
         screen={screen}
         onNavigate={navigateFromHome}
-        labels={t.appNavigation}
+        labels={navigationLabels}
       />
 
       {content}
@@ -203,7 +209,7 @@ export default function App() {
       {screen !== 'home' && (
         <BrandNotice
           notice={t.brandNotice}
-          navigation={t.appNavigation}
+          navigation={navigationLabels}
           onNavigate={navigateFromHome}
         />
       )}
