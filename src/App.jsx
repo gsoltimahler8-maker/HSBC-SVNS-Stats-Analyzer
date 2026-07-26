@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import HomeMenu from './components/HomeMenu.jsx';
 import StatsAnalysis from './components/StatsAnalysis.jsx';
 import StatsTrends from './components/StatsTrends.jsx';
@@ -19,22 +19,40 @@ const dictionaries = {
   en,
 };
 
-function LanguageToggle({ language, onChangeLanguage }) {
+function LanguageToggle({
+  language,
+  onChangeLanguage,
+  labels,
+}) {
   return (
-    <div className="languageToggle" aria-label="Language selector">
+    <div
+      className="languageToggle"
+      role="group"
+      aria-label={labels.languageSelector}
+    >
       <button
         type="button"
-        className={language === 'ja' ? 'languageButton active' : 'languageButton'}
+        className={
+          language === 'ja'
+            ? 'languageButton active'
+            : 'languageButton'
+        }
+        aria-pressed={language === 'ja'}
         onClick={() => onChangeLanguage('ja')}
       >
-        日本語
+        {labels.japanese}
       </button>
       <button
         type="button"
-        className={language === 'en' ? 'languageButton active' : 'languageButton'}
+        className={
+          language === 'en'
+            ? 'languageButton active'
+            : 'languageButton'
+        }
+        aria-pressed={language === 'en'}
         onClick={() => onChangeLanguage('en')}
       >
-        English
+        {labels.english}
       </button>
     </div>
   );
@@ -115,12 +133,37 @@ export default function App() {
   const [screen, setScreen] = useState('home');
   const [language, setLanguage] = useState('ja');
   const [selectedMatchId, setSelectedMatchId] = useState('');
+  const mainContentRef = useRef(null);
+  const initialScreenRender = useRef(true);
 
   const t = dictionaries[language];
   const navigationLabels = getAppNavigationLabels(
     t?.appNavigation,
     language
   );
+
+  const pageTitle =
+    screen === 'admin'
+      ? t.comingSoon.adminTitle
+      : navigationLabels.items[screen] || 'SVNS Stats Analyzer';
+
+  useEffect(() => {
+    document.documentElement.lang = language;
+    document.title =
+      screen === 'home'
+        ? 'SVNS Stats Analyzer'
+        : `${pageTitle} | SVNS Stats Analyzer`;
+  }, [language, pageTitle, screen]);
+
+  useEffect(() => {
+    if (initialScreenRender.current) {
+      initialScreenRender.current = false;
+      return;
+    }
+
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    mainContentRef.current?.focus();
+  }, [screen]);
 
   const backHome = () => {
     setSelectedMatchId('');
@@ -197,7 +240,15 @@ export default function App() {
 
   return (
     <>
-      <LanguageToggle language={language} onChangeLanguage={setLanguage} />
+      <a className="skipLink" href="#main-content">
+        {t.accessibility.skipToContent}
+      </a>
+
+      <LanguageToggle
+        language={language}
+        onChangeLanguage={setLanguage}
+        labels={t.accessibility}
+      />
 
       <AppNavigation
         screen={screen}
@@ -205,7 +256,18 @@ export default function App() {
         labels={navigationLabels}
       />
 
-      {content}
+      <p className="srOnly" aria-live="polite">
+        {pageTitle} — {t.accessibility.pageLoaded}
+      </p>
+
+      <div
+        id="main-content"
+        className="appMainContent"
+        tabIndex="-1"
+        ref={mainContentRef}
+      >
+        {content}
+      </div>
 
       {screen !== 'home' && (
         <BrandNotice
