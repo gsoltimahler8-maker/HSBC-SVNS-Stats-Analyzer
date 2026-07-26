@@ -467,6 +467,259 @@ statDefinitionVersion: 'Stats definition',
     ],
   },
 
+
+  policy: {
+    homeButton: 'Terms and privacy',
+    kicker: 'Terms, privacy and contact',
+    title: 'Terms, Privacy, and Disclaimer',
+    subtitle:
+      'This page brings together the conditions of use, privacy practices, disclaimer, and contact process for SVNS Stats Analyzer.',
+    versionLabel: 'Document version',
+    version: '1.0',
+    updatedLabel: 'Effective date',
+    updated: '26 July 2026',
+    noticeTitle: 'Status of these documents',
+    noticeBody:
+      'These documents describe the current operation of a personal, non-commercial initial MVP. They are not a substitute for jurisdiction-specific legal advice from a qualified professional.',
+    tabAriaLabel: 'Policy documents',
+    tabs: {
+      terms: 'Terms of use',
+      privacy: 'Privacy',
+      disclaimer: 'Disclaimer',
+      contact: 'Contact',
+    },
+    documents: {
+      terms: {
+        kicker: 'Terms of use',
+        title: 'Terms of Use',
+        effectiveDateLabel: 'Effective date',
+        effectiveDate: '26 July 2026',
+        introduction:
+          'Use the app with the understanding that it is an unofficial analytics tool and that official records and each provider’s terms remain controlling.',
+        sections: [
+          {
+            title: '1. Purpose of the service',
+            body:
+              'The app is an informational and analytical aid that organizes publicly available SVNS match information, team statistics, and links to official video for easier search, comparison, and verification.',
+          },
+          {
+            title: '2. Unofficial status',
+            items: [
+              'The app is not official, approved, affiliated, sponsored, or provided by World Rugby, HSBC, Rugby Australia, YouTube, or other rights holders.',
+              'The app is not a substitute for official match records, rulings, or announcements.',
+              'Competition names, organization names, and trademarks are used to identify the subject of analysis or a source.',
+            ],
+          },
+          {
+            title: '3. Permitted use',
+            items: [
+              'Personal match analysis, learning, research, comparison, and understanding of the sport',
+              'Non-commercial use within the scope of export features provided by the app',
+              'Reporting data errors, broken links, or display issues',
+            ],
+          },
+          {
+            title: '4. Prohibited conduct',
+            items: [
+              'Unauthorized access to or interference with the app, a source website, or a video service',
+              'Circumvention of access, embedding, regional, or other technical restrictions',
+              'Use that falsely suggests official, approved, or affiliated status',
+              'Redistribution or commercial use of images, video, logos, text, databases, or other content without the necessary rights',
+              'Excessive or automated access that places an unreasonable load on the app or a source service',
+              'Conduct that violates law or a third-party service’s terms',
+            ],
+          },
+          {
+            title: '5. Changes and suspension',
+            body:
+              'Features, presentation, registered data, and these terms may change without notice. The project may suspend or remove all or part of the service for maintenance, faults, rights-holder requests, or other operational reasons.',
+          },
+          {
+            title: '6. Third-party services',
+            body:
+              'GitHub Pages, YouTube, data providers, and video publishers are governed by their own terms and privacy policies.',
+          },
+        ],
+      },
+      privacy: {
+        kicker: 'Privacy policy',
+        title: 'Privacy Policy',
+        effectiveDateLabel: 'Effective date',
+        effectiveDate: '26 July 2026',
+        introduction:
+          'This policy distinguishes information collected directly by the project from information that may be processed by GitHub Pages, YouTube, or other third-party services.',
+        sections: [
+          {
+            title: '1. Information collected directly',
+            items: [
+              'At Version1.0, the app does not provide account registration, login, input forms, or project-controlled analytics.',
+              'When you send an email, the project receives your email address, display name, message, and any attachments.',
+              'Do not email sensitive information, passwords, private API keys, or another person’s personal information.',
+            ],
+          },
+          {
+            title: '2. Purposes of use',
+            items: [
+              'Responding to inquiries',
+              'Investigating data corrections, video-link issues, and display defects',
+              'Addressing abuse, spam, or security incidents',
+              'Maintaining operational records and improving the project where necessary',
+            ],
+          },
+          {
+            title: '3. Retention',
+            body:
+              'Inquiry information is retained only for as long as reasonably necessary for response, history, security, or legal obligations, and is deleted appropriately when no longer needed.',
+          },
+          {
+            title: '4. Disclosure',
+            body:
+              'Inquiry information is not sold or provided to third parties except where required by law, necessary to protect rights or safety, or authorized by the individual. Google services are used to process email.',
+          },
+          {
+            title: '5. Hosting and external content',
+            items: [
+              'The app is hosted on GitHub Pages. GitHub may process IP address, device and browser data, cookies, and other information under its own policies.',
+              'Loading or playing an embedded YouTube video sends network information such as IP address and device or browser information to Google, and cookies or similar technologies may be used.',
+              'Embeds use youtube-nocookie.com Privacy Enhanced Mode, but this does not guarantee that all communication with third parties is eliminated.',
+              'Information handling on external links is governed by the destination provider’s policies.',
+            ],
+          },
+          {
+            title: '6. Browser and PWA cache',
+            body:
+              'Browsers may temporarily cache public files. After PWA support is enabled, public app files and public match data may be cached on the device. This cache is not intended to identify or profile individual behavior.',
+          },
+          {
+            title: '7. Access, correction, and deletion requests',
+            body:
+              'Questions or requests concerning inquiry emails may be sent to the project contact address. Some requests may be limited by identity-verification needs or applicable law.',
+          },
+        ],
+      },
+      disclaimer: {
+        kicker: 'Disclaimer',
+        title: 'Disclaimer',
+        effectiveDateLabel: 'Effective date',
+        effectiveDate: '26 July 2026',
+        introduction:
+          'Statistics, analysis, links, video, and exports may contain omissions, delays, errors, or changes made by a source provider.',
+        sections: [
+          {
+            title: '1. Accuracy and completeness',
+            items: [
+              'Manual review and entry may result in transcription errors, delays, or missing values.',
+              'Definitions and aggregation methods may differ between statistics providers.',
+              'Older seasons or selected matches may contain results only or limited statistics.',
+              'Check the official record and original source before making an important decision.',
+            ],
+          },
+          {
+            title: '2. Analysis results',
+            body:
+              'Averages, correlations, derived indicators, and visualizations support review of match performance. They do not prove causation or conclusively establish future results, player quality, or team quality.',
+          },
+          {
+            title: '3. Betting and high-risk decisions',
+            body:
+              'The app does not provide betting, investment, employment, selection, medical, safety, or other high-risk advice. Do not rely on the app alone for such decisions.',
+          },
+          {
+            title: '4. External pages and video',
+            items: [
+              'Availability of external pages, YouTube video, and embedded playback is not guaranteed.',
+              'A publisher or platform may remove, restrict, region-lock, or require login for a video.',
+              'The project does not control the content, safety, or continuity of an external service.',
+            ],
+          },
+          {
+            title: '5. Loss or damage',
+            body:
+              'To the maximum extent permitted by applicable law, the project is not responsible for direct or indirect loss arising from use, inability to use, displayed content, external links, or exported results.',
+          },
+          {
+            title: '6. Ownership',
+            body:
+              'Competition names, trademarks, match data, video, images, and other third-party content remain the property of their respective owners. Original code, text, interface, and project-created material belong to the project maintainer unless otherwise stated.',
+          },
+        ],
+      },
+      contact: {
+        kicker: 'Contact policy',
+        title: 'Contact Policy',
+        effectiveDateLabel: 'Effective date',
+        effectiveDate: '26 July 2026',
+        introduction:
+          'The project accepts email concerning data corrections, video links, display defects, rights-holder matters, security, and other project-related issues.',
+        sections: [
+          {
+            title: '1. Contact address',
+            body: 'svnsstatsanalyzer@gmail.com',
+          },
+          {
+            title: '2. Accepted topics',
+            items: [
+              'Incorrect match data or inconsistent source attribution',
+              'Removed video, broken link, or embedding failure',
+              'Translation errors or responsive-display defects',
+              'Copyright, trademark, data-use, or other rights-holder matters',
+              'Security issues',
+              'Inquiries from World Rugby, Rugby Australia, or other relevant organizations',
+            ],
+          },
+          {
+            title: '3. Helpful information',
+            items: [
+              'The relevant screen, Match ID, or Video ID',
+              'The date and time when the issue was observed',
+              'A description and reproduction steps',
+              'The URL of an official page supporting the correction',
+              'A screenshot where necessary',
+            ],
+          },
+          {
+            title: '4. Important notes',
+            items: [
+              'Do not send personal data, passwords, API keys, or confidential material.',
+              'No automated response or guaranteed response time is provided.',
+              'The project may correct, remove, investigate further, or decline action depending on the report.',
+              'Spam, threats, and unlawful requests will not be handled.',
+            ],
+          },
+        ],
+      },
+    },
+    thirdPartyTitle: 'Third-party policies',
+    thirdPartyBody:
+      'Hosting, embedded video, and source pages are subject to the terms and privacy policies of their respective providers.',
+    thirdPartyLinks: [
+      {
+        label: 'GitHub Privacy Statement',
+        url: 'https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement',
+      },
+      {
+        label: 'Google Privacy Policy',
+        url: 'https://policies.google.com/privacy',
+      },
+      {
+        label: 'YouTube Terms of Service',
+        url: 'https://www.youtube.com/static?template=terms',
+      },
+      {
+        label: 'World Rugby Terms and Conditions',
+        url: 'https://www.world.rugby/terms-and-conditions',
+      },
+      {
+        label: 'Rugby Australia Terms and Conditions',
+        url: 'https://australia.rugby/terms-and-conditions',
+      },
+    ],
+    contactSummaryKicker: 'Contact',
+    contactSummaryTitle: 'Corrections, deletion, and rights-holder inquiries',
+    contactSummaryBody:
+      'Include the relevant page, Match ID or Video ID, observation time, and supporting source URL.',
+  },
+
   menu: {
     analysis: {
       label: 'Stats Analysis',
