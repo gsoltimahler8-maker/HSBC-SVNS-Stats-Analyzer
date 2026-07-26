@@ -3553,3 +3553,58 @@ ol{
   position: relative;
   z-index: 2;
 }
+
+
+/* Version 1.0-06c: emphasize Home and About tabs for cleaner layout */
+.appNavigationButtons {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.appNavigationInfoButtons {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.appNavigationButton--home {
+  grid-column: span 2;
+}
+
+.appNavigationInfoButtons .appNavigationButton--about {
+  grid-column: span 2;
+}
+
+@media (max-width: 1050px) {
+  .appNavigationButtons {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .appNavigationInfoButtons {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .appNavigationButton--home {
+    grid-column: span 2;
+  }
+
+  .appNavigationInfoButtons .appNavigationButton--about {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 800px) {
+  .appNavigationButtons,
+  .appNavigationInfoButtons {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .appNavigationButton--home,
+  .appNavigationInfoButtons .appNavigationButton--about {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 480px) {
+  .appNavigationButton--home,
+  .appNavigationInfoButtons .appNavigationButton--about {
+    grid-column: auto;
+  }
+}
