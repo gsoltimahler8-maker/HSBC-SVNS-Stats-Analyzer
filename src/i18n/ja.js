@@ -341,6 +341,132 @@ statDefinitionVersion: 'スタッツ定義',
       'データの誤り、動画リンクの不具合、表示上の問題、その他の連絡は次のメールアドレスで受け付けます。',
   },
 
+
+  sources: {
+    utilityNavLabel: 'プロジェクト情報',
+    homeButton: 'データ・動画ソース',
+    kicker: 'Sources and methodology',
+    title: 'データ・動画ソース',
+    subtitle:
+      'SVNS Stats Analyzerで使用する試合情報、チームスタッツ、公式動画の出典と、それぞれの役割・制約を説明します。',
+    currentDataTitle: '現在の登録状況',
+    metrics: {
+      registeredMatches: '登録試合',
+      realMatches: 'REAL DATA',
+      sampleMatches: 'SAMPLE DATA',
+      registeredVideos: '登録動画',
+    },
+    scopeTitle: 'このページの位置づけ',
+    scopeBody:
+      '出典を列挙するだけでなく、どの情報を主ソースとし、どの情報を照合・補完に使うかを区別します。各試合の具体的なURL、取得日時、外部Match IDはMatch Searchの出典追跡欄で確認できます。',
+    dataSourcesTitle: '試合情報・スタッツ',
+    dataSourcesSubtitle:
+      '公開されている試合情報を手作業で確認し、独自のデータ構造へ登録しています。',
+    rugbyComAu: {
+      title: 'Rugby.com.au Match Stats',
+      role: '詳細チームスタッツの主ソース',
+      items: [
+        '得点、トライ、キャリー、獲得メートル、ブレイク、タックル、ターンオーバー等を確認',
+        '各試合にsourceUrl、外部Match ID、取得日時を保存',
+        '確認できた詳細スタッツは主に2022-23シーズン以降を対象',
+        '元ページの文章、画像、画面構成は複製しない',
+      ],
+    },
+    svnsMatchCentre: {
+      title: 'SVNS / World Rugby Match Centre',
+      role: '大会・試合識別と結果照合',
+      items: [
+        '大会、日付、ステージ、対戦カード、得点の照合',
+        'SVNS側Match IDが確認できる場合は外部IDとして記録',
+        '公式記録と主スタッツソースの試合を結び付けるために使用',
+        '詳細スタッツがない場合は結果のみまたは限定データとして扱う',
+      ],
+    },
+    rugbyPass: {
+      title: 'RugbyPass',
+      role: '補助的な照合ソース',
+      items: [
+        '試合結果、記事、試合ページ等を補助確認に使用',
+        'Rugby.com.auまたは公式Match Centreの代替主ソースにはしない',
+        '対応する外部IDが確認できた場合のみ記録',
+        '出典間に差異がある場合は自動的に統合しない',
+      ],
+    },
+    sampleData: {
+      title: 'SAMPLE DATA',
+      role: 'UI・機能確認専用',
+      items: [
+        '実際の公式結果・公式スタッツとして扱わない',
+        'REAL DATAと画面上で区別',
+        '公開分析や結論の根拠に使用しない',
+        '実データへ置き換えた後も検証用途として分離管理',
+      ],
+    },
+    videoSourcesTitle: '公式動画',
+    videoSourcesSubtitle:
+      '動画ファイルは保存せず、公式YouTubeチャンネルが公開する映像を埋め込みまたは外部リンクで参照します。',
+    worldRugbyJapan: {
+      title: 'ワールドラグビー日本チャンネル',
+      role: '日本語の公式ハイライト・フルマッチ',
+      items: [
+        '日本語タイトル・日本語向け公式映像を登録',
+        'Full matchとHighlightsを別動画として管理',
+        '動画URLとチャンネルページを記録',
+        '公開されていない試合映像を存在するものとして扱わない',
+      ],
+    },
+    worldRugbyWomen: {
+      title: 'World Rugby Women',
+      role: '英語の女子公式映像',
+      items: [
+        '女子SVNSの公式フルマッチ・ハイライトを登録',
+        '日本語チャンネルにない映像を補完',
+        '言語、動画種別、公開状態を個別に記録',
+        '同一試合でも動画が異なれば別レコードとして扱う',
+      ],
+    },
+    youtubeEmbedding: {
+      title: 'YouTube公式埋め込み',
+      role: 'アプリ内再生方法',
+      items: [
+        'YouTubeの埋め込みプレーヤーを使用',
+        '動画をダウンロード、複製、再配布しない',
+        'YouTubeで開く外部リンクを残す',
+        '提供元と動画タイトルを表示する',
+      ],
+    },
+    videoAvailability: {
+      title: '公開状態の管理',
+      role: 'リンク切れ・制限への対応',
+      items: [
+        'available、not checked、removed、geo restricted等を区別',
+        'checkedAtで最終確認日時を記録',
+        '削除・埋め込み制限時は外部リンクまたは状態表示へ切り替える',
+        '動画提供元の公開判断を優先する',
+      ],
+    },
+    openChannel: '公式チャンネルを開く',
+    operationTitle: '登録・検証手順',
+    operationBody:
+      'Version1.0時点では自動収集を行わず、公開ページを確認してから手作業で登録します。',
+    operationSteps: [
+      '対象試合と公式Match IDを特定',
+      '主ソースで試合結果とスタッツを確認',
+      '補助ソースで大会・日付・対戦カードを照合',
+      'sourceUrl、fetchedAt、dataCoverageLevelを記録',
+      '動画は公式投稿とチャンネルを確認して登録',
+      'validationと公開画面の動作確認を実施',
+    ],
+    limitationsTitle: '制約と注意点',
+    limitations: [
+      '提供元によってスタッツ項目の定義や集計方法が異なる可能性があります。',
+      '欠損値は0として補わず、未取得または利用不能として扱います。',
+      '古いシーズンは詳細スタッツがなく、結果のみの場合があります。',
+      '公開ページや動画は提供元の判断で変更・削除されることがあります。',
+      '本アプリの表示は公式記録の代替ではありません。',
+    ],
+  },
+
   menu: {
     analysis: {
       label: 'スタッツ分析',
