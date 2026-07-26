@@ -725,7 +725,7 @@ export default function VideoLibrary({
         </div>
 
         <div className="videoLibraryToolbar">
-          <p className="note">
+          <p className="note" role="status" aria-live="polite">
             {labels.resultCount}: {filteredItems.length} {labels.videos}
           </p>
 
@@ -765,6 +765,12 @@ export default function VideoLibrary({
                     className={`videoCatalogCard${
                       isActive ? ' active' : ''
                     }`}
+                    aria-pressed={isActive}
+                    aria-label={`${video.title || videoTypeLabel(
+                      video.videoType
+                    )}, ${match.team} ${match.pointsFor}-${
+                      match.pointsAgainst
+                    } ${match.opponent}`}
                     onClick={() => setSelectedVideoId(video.id)}
                   >
                     <span className="videoCatalogCardTitle">
