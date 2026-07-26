@@ -85,6 +85,8 @@ function NavigationButton({ item, label, active, onNavigate }) {
         active ? ' active' : ''
       }`}
       aria-current={active ? 'page' : undefined}
+      aria-label={label || item.id}
+      title={label || item.id}
       onClick={() => onNavigate(item.id)}
     >
       <Icon size={16} aria-hidden="true" />
@@ -133,7 +135,7 @@ export default function AppNavigation({
           {resolvedLabels.mainGroup}
         </span>
 
-        <div className="appNavigationButtons">
+        <div className="appNavigationButtons appNavigationMainButtons">
           {MAIN_ITEMS.map((item) => (
             <NavigationButton
               key={item.id}
