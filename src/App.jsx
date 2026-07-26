@@ -7,6 +7,7 @@ import VideoLibrary from './components/VideoLibrary.jsx';
 import AboutPage from './components/AboutPage.jsx';
 import SourcesPage from './components/SourcesPage.jsx';
 import PolicyPage from './components/PolicyPage.jsx';
+import AppNavigation from './components/AppNavigation.jsx';
 import ja from './i18n/ja.js';
 import en from './i18n/en.js';
 
@@ -37,11 +38,35 @@ function LanguageToggle({ language, onChangeLanguage }) {
 }
 
 
-function BrandNotice({ notice }) {
+function BrandNotice({
+  notice,
+  navigation,
+  onNavigate,
+}) {
   return (
     <footer className="brandNotice" aria-label={notice.ariaLabel}>
-      <strong>{notice.title}</strong>
-      <p>{notice.body}</p>
+      <div className="brandNoticeText">
+        <strong>{notice.title}</strong>
+        <p>{notice.body}</p>
+      </div>
+
+      <nav
+        className="brandNoticeLinks"
+        aria-label={navigation.footerAriaLabel}
+      >
+        <button type="button" onClick={() => onNavigate('about')}>
+          {navigation.items.about}
+        </button>
+        <button type="button" onClick={() => onNavigate('sources')}>
+          {navigation.items.sources}
+        </button>
+        <button type="button" onClick={() => onNavigate('policy')}>
+          {navigation.items.policy}
+        </button>
+        <a href="mailto:svnsstatsanalyzer@gmail.com">
+          {navigation.contact}
+        </a>
+      </nav>
     </footer>
   );
 }
@@ -160,41 +185,28 @@ export default function App() {
       />
     );
   } else {
-    content = (
-      <>
-        <HomeMenu onNavigate={navigateFromHome} t={t} />
-        <nav className="homeUtilityNav" aria-label={t.sources.utilityNavLabel}>
-          <button
-            type="button"
-            className="homeUtilityButton"
-            onClick={() => navigateFromHome('about')}
-          >
-            {t.about.homeButton}
-          </button>
-          <button
-            type="button"
-            className="homeUtilityButton"
-            onClick={() => navigateFromHome('sources')}
-          >
-            {t.sources.homeButton}
-          </button>
-          <button
-            type="button"
-            className="homeUtilityButton"
-            onClick={() => navigateFromHome('policy')}
-          >
-            {t.policy.homeButton}
-          </button>
-        </nav>
-      </>
-    );
+    content = <HomeMenu onNavigate={navigateFromHome} t={t} />;
   }
 
   return (
     <>
       <LanguageToggle language={language} onChangeLanguage={setLanguage} />
+
+      <AppNavigation
+        screen={screen}
+        onNavigate={navigateFromHome}
+        labels={t.appNavigation}
+      />
+
       {content}
-      {screen !== 'home' && <BrandNotice notice={t.brandNotice} />}
+
+      {screen !== 'home' && (
+        <BrandNotice
+          notice={t.brandNotice}
+          navigation={t.appNavigation}
+          onNavigate={navigateFromHome}
+        />
+      )}
     </>
   );
 }
