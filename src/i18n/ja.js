@@ -720,6 +720,26 @@ statDefinitionVersion: 'スタッツ定義',
       '対象ページ、試合IDまたは動画ID、確認日時、根拠URLを添えてご連絡ください。',
   },
 
+
+  appNavigation: {
+    ariaLabel: 'アプリ内ナビゲーション',
+    footerAriaLabel: 'プロジェクト情報へのリンク',
+    projectMenu: 'プロジェクト情報',
+    mainGroup: '分析機能',
+    infoGroup: 'プロジェクト情報',
+    contact: '問い合わせ',
+    items: {
+      home: 'ホーム',
+      analysis: 'スタッツ分析',
+      trends: 'スタッツ推移',
+      search: '試合検索',
+      videos: '動画ライブラリ',
+      about: 'このアプリについて',
+      sources: 'データ・動画ソース',
+      policy: '利用条件・プライバシー',
+    },
+  },
+
   menu: {
     analysis: {
       label: 'スタッツ分析',
