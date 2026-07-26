@@ -720,6 +720,26 @@ statDefinitionVersion: 'Stats definition',
       'Include the relevant page, Match ID or Video ID, observation time, and supporting source URL.',
   },
 
+
+  appNavigation: {
+    ariaLabel: 'Application navigation',
+    footerAriaLabel: 'Project information links',
+    projectMenu: 'Project information',
+    mainGroup: 'Analysis tools',
+    infoGroup: 'Project information',
+    contact: 'Contact',
+    items: {
+      home: 'Home',
+      analysis: 'Stats Analysis',
+      trends: 'Stats Trends',
+      search: 'Match Search',
+      videos: 'Video Library',
+      about: 'About this app',
+      sources: 'Data and video sources',
+      policy: 'Terms and privacy',
+    },
+  },
+
   menu: {
     analysis: {
       label: 'Stats Analysis',
