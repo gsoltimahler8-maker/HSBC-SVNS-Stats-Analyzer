@@ -81,7 +81,9 @@ function NavigationButton({ item, label, active, onNavigate }) {
   return (
     <button
       type="button"
-      className={`appNavigationButton${active ? ' active' : ''}`}
+      className={`appNavigationButton appNavigationButton--${item.id}${
+        active ? ' active' : ''
+      }`}
       aria-current={active ? 'page' : undefined}
       onClick={() => onNavigate(item.id)}
     >
