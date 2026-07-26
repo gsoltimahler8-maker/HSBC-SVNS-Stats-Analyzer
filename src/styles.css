@@ -3732,3 +3732,285 @@ ol{
     grid-column: 2;
   }
 }
+
+
+/* Version 1.0-09: UI, accessibility, and performance final adjustments */
+html {
+  scroll-behavior: smooth;
+  scrollbar-gutter: stable;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  overflow-x: clip;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skipLink {
+  position: fixed;
+  top: 8px;
+  left: 50%;
+  z-index: 120;
+  min-height: 44px;
+  padding: 11px 16px;
+  border: 2px solid #ffffff;
+  border-radius: 999px;
+  background: #6d28d9;
+  color: #ffffff;
+  font-weight: 850;
+  text-decoration: none;
+  transform: translate(-50%, -160%);
+  transition: transform 120ms ease;
+}
+
+.skipLink:focus {
+  transform: translate(-50%, 0);
+}
+
+.appMainContent {
+  min-width: 0;
+}
+
+.appMainContent:focus {
+  outline: none;
+}
+
+button,
+a,
+summary,
+select,
+input,
+textarea {
+  touch-action: manipulation;
+}
+
+button:focus-visible,
+a:focus-visible,
+summary:focus-visible,
+select:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #fef08a;
+  outline-offset: 3px;
+}
+
+select,
+input,
+textarea {
+  min-height: 44px;
+}
+
+.backHomeButton,
+.languageButton,
+.appNavigationButton,
+.homeProjectMenu summary,
+.matchSearchResultCard,
+.videoCatalogCard,
+.crossScreenLinkButton {
+  min-height: 44px;
+}
+
+.appNavigationButton span,
+.brandNoticeLinks button,
+.brandNoticeLinks a,
+.policyTabButton,
+.thirdPartyPolicyLinks a {
+  hyphens: auto;
+  line-height: 1.35;
+  text-wrap: balance;
+}
+
+.appNavigationMainButtons {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-areas: "home home analysis trends search videos";
+}
+
+.appNavigationInfoButtons {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-areas: "about about sources policy";
+}
+
+.appNavigationMainButtons .appNavigationButton--home {
+  grid-area: home;
+}
+
+.appNavigationMainButtons .appNavigationButton--analysis {
+  grid-area: analysis;
+}
+
+.appNavigationMainButtons .appNavigationButton--trends {
+  grid-area: trends;
+}
+
+.appNavigationMainButtons .appNavigationButton--search {
+  grid-area: search;
+}
+
+.appNavigationMainButtons .appNavigationButton--videos {
+  grid-area: videos;
+}
+
+.appNavigationInfoButtons .appNavigationButton--about {
+  grid-area: about;
+}
+
+.appNavigationInfoButtons .appNavigationButton--sources {
+  grid-area: sources;
+}
+
+.appNavigationInfoButtons .appNavigationButton--policy {
+  grid-area: policy;
+}
+
+.matchSearchResultCard[aria-pressed="true"],
+.videoCatalogCard[aria-pressed="true"] {
+  outline: 2px solid rgba(221, 214, 254, 0.9);
+  outline-offset: -2px;
+}
+
+.appErrorBoundary {
+  display: grid;
+  align-content: center;
+  gap: 12px;
+  width: min(680px, calc(100% - 32px));
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 32px 0;
+  color: #e2e8f0;
+}
+
+.appErrorBoundary h1 {
+  margin: 0;
+  color: #ffffff;
+}
+
+.appErrorBoundary p {
+  margin: 0;
+  line-height: 1.7;
+}
+
+.appErrorBoundaryActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.appErrorBoundaryActions button,
+.appErrorBoundaryActions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 15px;
+  border: 1px solid rgba(196, 181, 253, 0.58);
+  border-radius: 999px;
+  background: rgba(109, 40, 217, 0.72);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+@media (max-width: 1050px) {
+  .appNavigationMainButtons {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "home home"
+      "analysis trends"
+      "search videos";
+  }
+
+  .appNavigationInfoButtons {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "about about"
+      "sources policy";
+  }
+}
+
+@media (max-width: 800px) {
+  .appNavigation,
+  .homeProjectMenu summary,
+  .homeProjectMenuPanel,
+  .pwaStatus,
+  .languageToggle {
+    backdrop-filter: none;
+  }
+
+  .appNavigationButton {
+    padding: 10px 9px;
+  }
+}
+
+@media (max-width: 480px) {
+  .appNavigationMainButtons,
+  .appNavigationInfoButtons {
+    grid-template-columns: 1fr;
+  }
+
+  .appNavigationMainButtons {
+    grid-template-areas:
+      "home"
+      "analysis"
+      "trends"
+      "search"
+      "videos";
+  }
+
+  .appNavigationInfoButtons {
+    grid-template-areas:
+      "about"
+      "sources"
+      "policy";
+  }
+
+  .appErrorBoundaryActions {
+    display: grid;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .appNavigation,
+  .panel,
+  .brandNotice,
+  .policyDocument,
+  .sourcesCard,
+  .aboutSection {
+    border-color: rgba(255, 255, 255, 0.72);
+  }
+
+  .appNavigationButton,
+  .languageButton,
+  .backHomeButton {
+    color: #ffffff;
+  }
+}
