@@ -748,7 +748,7 @@ export default function MatchSearch({
         </div>
 
         <div className="matchSearchToolbar">
-          <p className="note">
+          <p className="note" role="status" aria-live="polite">
             {labels.resultCount}: {filteredMatches.length} {labels.matches} /{' '}
             {labels.totalCount}: {matchData.length} {labels.matches}
           </p>
@@ -789,6 +789,12 @@ export default function MatchSearch({
                     className={`match matchSearchResultCard${
                       isActive ? ' active' : ''
                     }`}
+                    aria-pressed={isActive}
+                    aria-label={`${match.team} ${displayValue(
+                      match.pointsFor
+                    )}-${displayValue(match.pointsAgainst)} ${
+                      match.opponent
+                    }, ${getLocalizedMatchResult(match, isJapanese)}`}
                     onClick={() => setSelectedMatchId(match.id)}
                   >
                     <strong>
