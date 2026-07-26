@@ -316,6 +316,7 @@ statDefinitionVersion: 'Stats definition',
       'A video-centered catalog of official YouTube content',
       'Cross-navigation between match statistics and related video',
       'Japanese and English support on desktop and mobile',
+      'Installable PWA with basic offline reopening of loaded content',
     ],
     analysisPolicyTitle: 'Analysis policy',
     analysisPolicyBody:
@@ -588,7 +589,7 @@ statDefinitionVersion: 'Stats definition',
           {
             title: '6. Browser and PWA cache',
             body:
-              'Browsers may temporarily cache public files. After PWA support is enabled, public app files and public match data may be cached on the device. This cache is not intended to identify or profile individual behavior.',
+              'Browsers may temporarily cache public files. The app uses a Service Worker and may cache public app files and previously loaded public data on the device. This supports basic offline reopening and update management and is not intended to identify or profile individual behavior.',
           },
           {
             title: '7. Access, correction, and deletion requests',
@@ -738,6 +739,28 @@ statDefinitionVersion: 'Stats definition',
       sources: 'Data and video sources',
       policy: 'Terms and privacy',
     },
+  },
+
+
+  pwa: {
+    updateTitle: 'An update is available',
+    updateBody:
+      'A newer version is ready. Updating will reload the page.',
+    updateButton: 'Update',
+    installTitle: 'Install this app',
+    installBody:
+      'Add the app to your home screen and launch it without opening the browser first.',
+    installButton: 'Install',
+    offlineTitle: 'You are offline',
+    offlineBody:
+      'Previously loaded screens and data remain available. Video and external links may not work.',
+    offlineReadyTitle: 'Offline access is ready',
+    offlineReadyBody:
+      'Previously loaded app content can be reopened when a network connection is unavailable.',
+    installedTitle: 'App installed',
+    installedBody:
+      'SVNS Stats Analyzer can now be launched from your home screen.',
+    close: 'Close',
   },
 
   menu: {
