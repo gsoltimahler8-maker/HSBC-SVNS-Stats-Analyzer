@@ -3,8 +3,8 @@
 # Version1.0 Initial MVP Plan
 
 Version: v1.0  
-Revision: v1.0-08a  
-Status: Planned  
+Revision: v1.0-10  
+Status: Pre-release validation  
 Updated at: 2026-07-26
 
 ---
@@ -288,7 +288,7 @@ Version1.0完了後、World RugbyおよびRugby Australiaへの初回連絡を�
 - 問い合わせ先がある
 - PWAとしてインストールできる
 - 基本的なオフライン動作ができる
-- PDF／CSV／Excel出力が動作する
+- CSV／Excel／PDF出力機能が公開版に残っていない
 - buildが成功する
 - GitHub Actionsが成功する
 - 公開ページで確認済み
@@ -301,7 +301,7 @@ Version1.0完了後、World RugbyおよびRugby Australiaへの初回連絡を�
 ```text
 v0.9 Completed
 v1.0-01a Plan Corrected
-v1.0 Initial MVP + PWA + Export
+v1.0 Initial MVP + PWA / Export Removed
 Post-v1.0 External Inquiry
 v1.1〜v1.5 Data Expansion / Advanced Metrics / Admin
 v2.0 Database / Authentication / Semi-automated Operation
