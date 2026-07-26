@@ -6,6 +6,7 @@ import MatchSearch from './components/MatchSearch.jsx';
 import VideoLibrary from './components/VideoLibrary.jsx';
 import AboutPage from './components/AboutPage.jsx';
 import SourcesPage from './components/SourcesPage.jsx';
+import PolicyPage from './components/PolicyPage.jsx';
 import ja from './i18n/ja.js';
 import en from './i18n/en.js';
 
@@ -146,6 +147,8 @@ export default function App() {
     content = <AboutPage onBackHome={backHome} t={t} />;
   } else if (screen === 'sources') {
     content = <SourcesPage onBackHome={backHome} t={t} />;
+  } else if (screen === 'policy') {
+    content = <PolicyPage onBackHome={backHome} t={t} />;
   } else if (screen === 'admin') {
     content = (
       <ComingSoon
@@ -174,6 +177,13 @@ export default function App() {
             onClick={() => navigateFromHome('sources')}
           >
             {t.sources.homeButton}
+          </button>
+          <button
+            type="button"
+            className="homeUtilityButton"
+            onClick={() => navigateFromHome('policy')}
+          >
+            {t.policy.homeButton}
           </button>
         </nav>
       </>
