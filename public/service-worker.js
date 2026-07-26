@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'svns-stats-v1.0.07b-20260726';
+const CACHE_VERSION = 'svns-stats-v1.0.09-20260726';
 const APP_CACHE = `${CACHE_VERSION}-app`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
