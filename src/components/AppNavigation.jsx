@@ -2,7 +2,6 @@ import {
   BarChart3,
   Database,
   FileText,
-  Home,
   Info,
   Search,
   TrendingUp,
@@ -10,7 +9,6 @@ import {
 } from 'lucide-react';
 
 const MAIN_ITEMS = [
-  { id: 'home', icon: Home },
   { id: 'analysis', icon: BarChart3 },
   { id: 'trends', icon: TrendingUp },
   { id: 'search', icon: Search },
