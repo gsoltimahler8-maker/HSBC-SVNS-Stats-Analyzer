@@ -23,6 +23,58 @@ const INFO_ITEMS = [
   { id: 'policy', icon: FileText },
 ];
 
+const FALLBACK_LABELS = {
+  ja: {
+    ariaLabel: 'アプリ内ナビゲーション',
+    footerAriaLabel: 'プロジェクト情報へのリンク',
+    projectMenu: 'プロジェクト情報',
+    mainGroup: '分析機能',
+    infoGroup: 'プロジェクト情報',
+    contact: '問い合わせ',
+    items: {
+      home: 'ホーム',
+      analysis: 'スタッツ分析',
+      trends: 'スタッツ推移',
+      search: '試合検索',
+      videos: '動画ライブラリ',
+      about: 'このアプリについて',
+      sources: 'データ・動画ソース',
+      policy: '利用条件・プライバシー',
+    },
+  },
+  en: {
+    ariaLabel: 'Application navigation',
+    footerAriaLabel: 'Project information links',
+    projectMenu: 'Project information',
+    mainGroup: 'Analysis tools',
+    infoGroup: 'Project information',
+    contact: 'Contact',
+    items: {
+      home: 'Home',
+      analysis: 'Stats Analysis',
+      trends: 'Stats Trends',
+      search: 'Match Search',
+      videos: 'Video Library',
+      about: 'About this app',
+      sources: 'Data and video sources',
+      policy: 'Terms and privacy',
+    },
+  },
+};
+
+export function getAppNavigationLabels(labels, language = 'ja') {
+  const fallback = FALLBACK_LABELS[language] || FALLBACK_LABELS.en;
+
+  return {
+    ...fallback,
+    ...(labels || {}),
+    items: {
+      ...fallback.items,
+      ...(labels?.items || {}),
+    },
+  };
+}
+
 function NavigationButton({ item, label, active, onNavigate }) {
   const Icon = item.icon;
 
@@ -34,7 +86,7 @@ function NavigationButton({ item, label, active, onNavigate }) {
       onClick={() => onNavigate(item.id)}
     >
       <Icon size={16} aria-hidden="true" />
-      <span>{label}</span>
+      <span>{label || item.id}</span>
     </button>
   );
 }
@@ -44,20 +96,22 @@ export default function AppNavigation({
   onNavigate,
   labels,
 }) {
+  const resolvedLabels = getAppNavigationLabels(labels);
+
   if (screen === 'home') {
     return (
       <details className="homeProjectMenu">
-        <summary>{labels.projectMenu}</summary>
+        <summary>{resolvedLabels.projectMenu}</summary>
 
         <nav
           className="homeProjectMenuPanel"
-          aria-label={labels.infoGroup}
+          aria-label={resolvedLabels.infoGroup}
         >
           {INFO_ITEMS.map((item) => (
             <NavigationButton
               key={item.id}
               item={item}
-              label={labels.items[item.id]}
+              label={resolvedLabels.items[item.id]}
               active={false}
               onNavigate={onNavigate}
             />
@@ -68,10 +122,13 @@ export default function AppNavigation({
   }
 
   return (
-    <nav className="appNavigation" aria-label={labels.ariaLabel}>
+    <nav
+      className="appNavigation"
+      aria-label={resolvedLabels.ariaLabel}
+    >
       <div className="appNavigationGroup">
         <span className="appNavigationGroupLabel">
-          {labels.mainGroup}
+          {resolvedLabels.mainGroup}
         </span>
 
         <div className="appNavigationButtons">
@@ -79,7 +136,7 @@ export default function AppNavigation({
             <NavigationButton
               key={item.id}
               item={item}
-              label={labels.items[item.id]}
+              label={resolvedLabels.items[item.id]}
               active={screen === item.id}
               onNavigate={onNavigate}
             />
@@ -89,7 +146,7 @@ export default function AppNavigation({
 
       <div className="appNavigationGroup">
         <span className="appNavigationGroupLabel">
-          {labels.infoGroup}
+          {resolvedLabels.infoGroup}
         </span>
 
         <div className="appNavigationButtons appNavigationInfoButtons">
@@ -97,7 +154,7 @@ export default function AppNavigation({
             <NavigationButton
               key={item.id}
               item={item}
-              label={labels.items[item.id]}
+              label={resolvedLabels.items[item.id]}
               active={screen === item.id}
               onNavigate={onNavigate}
             />
