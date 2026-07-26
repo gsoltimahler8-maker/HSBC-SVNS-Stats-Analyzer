@@ -3281,3 +3281,249 @@ ol{
     width: 100%;
   }
 }
+
+
+/* Version 1.0-06: Integrated application navigation */
+.appNavigation {
+  display: grid;
+  gap: 10px;
+  width: min(calc(100% - 32px), 1600px);
+  margin: 62px auto 0;
+  padding: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 18px;
+  background: rgba(15, 23, 42, 0.92);
+  box-shadow: 0 12px 30px rgba(2, 6, 23, 0.2);
+  backdrop-filter: blur(12px);
+}
+
+.appNavigationGroup {
+  display: grid;
+  grid-template-columns: minmax(108px, 0.18fr) minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+}
+
+.appNavigationGroupLabel {
+  color: #94a3b8;
+  font-size: 0.7rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.appNavigationButtons {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.appNavigationInfoButtons {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.appNavigationButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 0;
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 11px;
+  background: rgba(30, 41, 59, 0.68);
+  color: #cbd5e1;
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    border-color 140ms ease,
+    background 140ms ease,
+    color 140ms ease;
+}
+
+.appNavigationButton span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.appNavigationButton:hover {
+  border-color: rgba(125, 211, 252, 0.52);
+  background: rgba(30, 41, 59, 0.95);
+  color: #f8fafc;
+}
+
+.appNavigationButton.active {
+  border-color: rgba(168, 85, 247, 0.7);
+  background: rgba(88, 28, 135, 0.5);
+  color: #f5f3ff;
+}
+
+.homeProjectMenu {
+  position: fixed;
+  left: 14px;
+  bottom: 52px;
+  z-index: 24;
+}
+
+.homeProjectMenu summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 9px 13px;
+  border: 1px solid rgba(226, 232, 240, 0.34);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.9);
+  color: #f8fafc;
+  font-size: 0.76rem;
+  font-weight: 850;
+  cursor: pointer;
+  list-style: none;
+  backdrop-filter: blur(12px);
+}
+
+.homeProjectMenu summary::-webkit-details-marker {
+  display: none;
+}
+
+.homeProjectMenu summary::after {
+  content: '＋';
+  margin-left: 8px;
+  color: #bae6fd;
+}
+
+.homeProjectMenu[open] summary::after {
+  content: '−';
+}
+
+.homeProjectMenuPanel {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 8px);
+  display: grid;
+  gap: 7px;
+  width: min(290px, calc(100vw - 28px));
+  padding: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.26);
+  border-radius: 15px;
+  background: rgba(15, 23, 42, 0.96);
+  box-shadow: 0 14px 34px rgba(2, 6, 23, 0.34);
+  backdrop-filter: blur(14px);
+}
+
+.homeProjectMenuPanel .appNavigationButton {
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.brandNotice {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+}
+
+.brandNoticeText {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.brandNoticeLinks {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
+.brandNoticeLinks button,
+.brandNoticeLinks a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 7px 10px;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 999px;
+  background: rgba(30, 41, 59, 0.74);
+  color: #cbd5e1;
+  font: inherit;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.brandNoticeLinks button:hover,
+.brandNoticeLinks a:hover {
+  border-color: rgba(125, 211, 252, 0.5);
+  color: #f8fafc;
+}
+
+@media (max-width: 1050px) {
+  .appNavigationGroup {
+    grid-template-columns: 1fr;
+    gap: 7px;
+  }
+
+  .appNavigationButtons {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .appNavigationInfoButtons {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 800px) {
+  .appNavigation {
+    width: min(calc(100% - 24px), 1600px);
+    margin-top: 12px;
+    padding: 10px;
+  }
+
+  .appNavigationButtons,
+  .appNavigationInfoButtons {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .appNavigationButton {
+    font-size: 0.72rem;
+  }
+
+  .homeProjectMenu {
+    left: 10px;
+    bottom: 54px;
+  }
+
+  .brandNotice {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .brandNoticeLinks {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .appNavigationButtons,
+  .appNavigationInfoButtons {
+    grid-template-columns: 1fr;
+  }
+
+  .appNavigationButton {
+    justify-content: flex-start;
+  }
+
+  .brandNoticeLinks {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .brandNoticeLinks button,
+  .brandNoticeLinks a {
+    width: 100%;
+  }
+}
