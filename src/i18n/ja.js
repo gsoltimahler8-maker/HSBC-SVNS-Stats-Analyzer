@@ -763,6 +763,15 @@ statDefinitionVersion: 'スタッツ定義',
     close: '閉じる',
   },
 
+
+  accessibility: {
+    skipToContent: '本文へ移動',
+    languageSelector: '表示言語',
+    japanese: '日本語',
+    english: 'English',
+    pageLoaded: 'ページを表示しました',
+  },
+
   menu: {
     analysis: {
       label: 'スタッツ分析',
