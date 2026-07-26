@@ -98,3 +98,4 @@ CSV・Excel・PDF出力を再検討する場合は、少なくとも次を事前
 - GitHub ActionsがGreen
 - `exportUtils.js`が削除されている
 - 出力関連文書が削除されている
+<!-- Trigger fresh Pages deployment -->
