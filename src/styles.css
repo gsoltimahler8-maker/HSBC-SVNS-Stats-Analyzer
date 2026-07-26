@@ -4014,3 +4014,248 @@ textarea {
     color: #ffffff;
   }
 }
+
+
+/* Version 1.0-09b: mobile Home and compact navigation adjustment */
+
+/* Non-Home navigation: Home is handled by each page's back button. */
+.appNavigationMainButtons {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-areas: "analysis trends search videos";
+}
+
+.appNavigationInfoButtons {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-areas: "about sources policy";
+}
+
+.appNavigation {
+  gap: 7px;
+  padding: 9px;
+}
+
+.appNavigationGroup {
+  gap: 7px;
+}
+
+.appNavigationButtons {
+  gap: 6px;
+}
+
+.appNavigationButton {
+  min-height: 44px;
+  padding: 7px 8px;
+  font-size: 0.72rem;
+}
+
+.appNavigationGroupLabel {
+  font-size: 0.65rem;
+}
+
+/* Home Project Information: smaller and below the Data Management tab. */
+.homeProjectMenu {
+  left: 10px;
+  bottom: max(10px, env(safe-area-inset-bottom));
+}
+
+.homeProjectMenu summary {
+  min-height: 34px;
+  max-width: min(178px, calc(100vw - 20px));
+  padding: 6px 9px;
+  font-size: 0.66rem;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+.homeProjectMenu summary::after {
+  margin-left: 5px;
+}
+
+.homeProjectMenuPanel {
+  width: min(270px, calc(100vw - 20px));
+  bottom: calc(100% + 6px);
+  gap: 5px;
+  padding: 8px;
+}
+
+.homeProjectMenuPanel .appNavigationButton {
+  min-height: 40px;
+  padding: 7px 9px;
+  font-size: 0.69rem;
+}
+
+/* Mobile Home: tighten the language bar and move the content upward. */
+@media (max-width: 800px) {
+  .languageToggle {
+    margin: 6px auto 6px !important;
+    padding: 3px !important;
+    gap: 2px !important;
+  }
+
+  .languageButton {
+    min-height: 40px !important;
+    padding: 7px 11px !important;
+    font-size: 0.7rem !important;
+  }
+
+  .homeHeader {
+    top: 6px !important;
+    left: 9px !important;
+    right: 9px !important;
+    padding: 7px 10px !important;
+    border-radius: 14px !important;
+  }
+
+  .homeHeader h1 {
+    margin-bottom: 3px !important;
+    font-size: 1.22rem !important;
+  }
+
+  .homeHeader p {
+    font-size: 0.64rem !important;
+    line-height: 1.32 !important;
+  }
+
+  .homeKicker {
+    margin-bottom: 2px !important;
+    font-size: 0.5rem !important;
+  }
+
+  .homeButton,
+  .homeButtonAnalysis,
+  .homeButtonTrends,
+  .homeButtonSearch,
+  .homeButtonVideos {
+    width: 126px !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    max-height: 52px !important;
+    padding: 6px 8px !important;
+    border-radius: 14px !important;
+  }
+
+  .homeButtonLabelJa {
+    font-size: 0.82rem !important;
+  }
+
+  .homeButtonLabelEn {
+    font-size: 0.48rem !important;
+  }
+
+  .homeButtonAnalysis {
+    left: 4% !important;
+    top: 34.5% !important;
+  }
+
+  .homeButtonTrends {
+    left: auto !important;
+    right: 4% !important;
+    top: 34.5% !important;
+  }
+
+  .homeButtonSearch {
+    left: 4% !important;
+    top: 65.5% !important;
+  }
+
+  .homeButtonVideos {
+    left: auto !important;
+    right: 4% !important;
+    top: 65.5% !important;
+  }
+
+  .homeButtonAdmin {
+    top: 80% !important;
+  }
+
+  .appNavigation {
+    width: min(calc(100% - 20px), 1600px);
+    margin-top: 8px;
+    padding: 8px;
+    gap: 6px;
+  }
+
+  .appNavigationMainButtons,
+  .appNavigationInfoButtons {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .appNavigationMainButtons {
+    grid-template-areas:
+      "analysis trends"
+      "search videos";
+  }
+
+  .appNavigationInfoButtons {
+    grid-template-areas:
+      "about sources"
+      "policy policy";
+  }
+
+  .appNavigationButton {
+    justify-content: flex-start;
+    min-height: 44px;
+    padding: 7px 9px;
+    font-size: 0.7rem;
+  }
+
+  .appNavigationInfoButtons .appNavigationButton--policy {
+    justify-content: center;
+  }
+}
+
+/* Keep two columns even on narrow phones. */
+@media (max-width: 480px) {
+  .appNavigationMainButtons,
+  .appNavigationInfoButtons {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .appNavigationMainButtons {
+    grid-template-areas:
+      "analysis trends"
+      "search videos";
+  }
+
+  .appNavigationInfoButtons {
+    grid-template-areas:
+      "about sources"
+      "policy policy";
+  }
+
+  .appNavigationButton {
+    justify-content: flex-start;
+    min-width: 0;
+  }
+
+  .appNavigationButton span {
+    font-size: 0.68rem;
+  }
+}
+
+/* Very narrow devices may use one column to avoid clipped labels. */
+@media (max-width: 340px) {
+  .appNavigationMainButtons,
+  .appNavigationInfoButtons {
+    grid-template-columns: 1fr;
+  }
+
+  .appNavigationMainButtons {
+    grid-template-areas:
+      "analysis"
+      "trends"
+      "search"
+      "videos";
+  }
+
+  .appNavigationInfoButtons {
+    grid-template-areas:
+      "about"
+      "sources"
+      "policy";
+  }
+
+  .appNavigationInfoButtons .appNavigationButton--policy {
+    justify-content: flex-start;
+  }
+}
