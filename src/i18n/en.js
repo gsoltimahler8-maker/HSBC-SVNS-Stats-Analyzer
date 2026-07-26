@@ -763,6 +763,15 @@ statDefinitionVersion: 'Stats definition',
     close: 'Close',
   },
 
+
+  accessibility: {
+    skipToContent: 'Skip to main content',
+    languageSelector: 'Display language',
+    japanese: '日本語',
+    english: 'English',
+    pageLoaded: 'page loaded',
+  },
+
   menu: {
     analysis: {
       label: 'Stats Analysis',
