@@ -316,6 +316,7 @@ statDefinitionVersion: 'スタッツ定義',
       '公式YouTube映像を動画単位で探せるVideo Library',
       '試合スタッツと対応映像の相互移動',
       '日本語・英語、PC・スマートフォン対応',
+      'ホーム画面へのインストールと基本的なオフライン再表示',
     ],
     analysisPolicyTitle: '分析方針',
     analysisPolicyBody:
@@ -588,7 +589,7 @@ statDefinitionVersion: 'スタッツ定義',
           {
             title: '6. ブラウザ・PWAキャッシュ',
             body:
-              'ブラウザは公開ファイルを一時保存する場合があります。PWA対応後は、公開アプリファイルや公開試合データを端末へキャッシュする場合がありますが、個人の行動履歴を識別・プロファイリングする目的では使用しません。',
+              'ブラウザは公開ファイルを一時保存する場合があります。本アプリはService Workerを使用し、公開アプリファイルや読み込み済みの公開データを端末へキャッシュする場合があります。これは基本的なオフライン再表示と更新管理のためであり、個人の行動履歴を識別・プロファイリングする目的では使用しません。',
           },
           {
             title: '7. 照会・削除依頼',
@@ -738,6 +739,28 @@ statDefinitionVersion: 'スタッツ定義',
       sources: 'データ・動画ソース',
       policy: '利用条件・プライバシー',
     },
+  },
+
+
+  pwa: {
+    updateTitle: '更新があります',
+    updateBody:
+      '新しいバージョンを利用できます。更新するとページを再読み込みします。',
+    updateButton: '更新する',
+    installTitle: 'アプリとして利用できます',
+    installBody:
+      'ホーム画面へ追加すると、ブラウザを開かずに起動できます。',
+    installButton: 'インストール',
+    offlineTitle: 'オフラインです',
+    offlineBody:
+      '読み込み済みの画面とデータを表示しています。一部の動画や外部リンクは利用できません。',
+    offlineReadyTitle: 'オフライン利用の準備ができました',
+    offlineReadyBody:
+      '次回以降、通信がない状態でも読み込み済みのアプリを再表示できます。',
+    installedTitle: 'インストールしました',
+    installedBody:
+      'SVNS Stats Analyzerをホーム画面から起動できます。',
+    close: '閉じる',
   },
 
   menu: {
