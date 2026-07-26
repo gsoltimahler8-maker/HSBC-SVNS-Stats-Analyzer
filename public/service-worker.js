@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'svns-stats-v1.0.07-20260726';
+const CACHE_VERSION = 'svns-stats-v1.0.07b-20260726';
 const APP_CACHE = `${CACHE_VERSION}-app`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
@@ -16,6 +16,8 @@ const CORE_ASSETS = [
   scopeAsset('icons/icon-192.png'),
   scopeAsset('icons/icon-512.png'),
   scopeAsset('icons/apple-touch-icon.png'),
+  scopeAsset('icons/icon-maskable-192.png'),
+  scopeAsset('icons/icon-maskable-512.png'),
 ];
 
 function isSameScope(url) {
