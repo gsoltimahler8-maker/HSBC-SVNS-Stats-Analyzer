@@ -10,6 +10,7 @@ import PolicyPage from './components/PolicyPage.jsx';
 import AppNavigation, {
   getAppNavigationLabels,
 } from './components/AppNavigation.jsx';
+import PwaStatus from './components/PwaStatus.jsx';
 import ja from './i18n/ja.js';
 import en from './i18n/en.js';
 
@@ -213,6 +214,11 @@ export default function App() {
           onNavigate={navigateFromHome}
         />
       )}
+
+      <PwaStatus
+        language={language}
+        labels={t?.pwa}
+      />
     </>
   );
 }
