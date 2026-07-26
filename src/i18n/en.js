@@ -341,6 +341,132 @@ statDefinitionVersion: 'Stats definition',
       'Use the following email address to report data errors, broken video links, display issues, or other project-related matters.',
   },
 
+
+  sources: {
+    utilityNavLabel: 'Project information',
+    homeButton: 'Data and video sources',
+    kicker: 'Sources and methodology',
+    title: 'Data and Video Sources',
+    subtitle:
+      'This page explains the sources used for match information, team statistics, and official video, together with the role and limitations of each source.',
+    currentDataTitle: 'Current registered data',
+    metrics: {
+      registeredMatches: 'Registered matches',
+      realMatches: 'REAL DATA',
+      sampleMatches: 'SAMPLE DATA',
+      registeredVideos: 'Registered videos',
+    },
+    scopeTitle: 'Purpose of this page',
+    scopeBody:
+      'The project distinguishes primary sources from sources used for verification or supplementation. Match-specific URLs, retrieval times, and external Match IDs are available in the traceability section of Match Search.',
+    dataSourcesTitle: 'Match information and statistics',
+    dataSourcesSubtitle:
+      'Public match information is reviewed manually and entered into an original data structure.',
+    rugbyComAu: {
+      title: 'Rugby.com.au Match Stats',
+      role: 'Primary source for detailed team statistics',
+      items: [
+        'Used to review points, tries, carries, metres, breaks, tackles, turnovers, and other team values',
+        'Stores sourceUrl, external Match ID, and retrieval time for each match',
+        'Confirmed detailed statistics are mainly used from the 2022-23 season onward',
+        'The source page text, images, and interface are not reproduced',
+      ],
+    },
+    svnsMatchCentre: {
+      title: 'SVNS / World Rugby Match Centre',
+      role: 'Competition identification and result verification',
+      items: [
+        'Used to verify competition, date, stage, teams, and score',
+        'The SVNS Match ID is recorded when it can be confirmed',
+        'Used to connect official match records with the primary statistics source',
+        'Matches without detailed statistics are classified as results only or limited data',
+      ],
+    },
+    rugbyPass: {
+      title: 'RugbyPass',
+      role: 'Supplementary verification source',
+      items: [
+        'Used as a secondary check for results, articles, or match pages',
+        'Not treated as a replacement primary source for Rugby.com.au or the official Match Centre',
+        'An external ID is recorded only when it can be confirmed',
+        'Differences between sources are not merged automatically',
+      ],
+    },
+    sampleData: {
+      title: 'SAMPLE DATA',
+      role: 'Interface and feature testing only',
+      items: [
+        'Not treated as official results or official statistics',
+        'Visually separated from REAL DATA',
+        'Not used as evidence for public analysis or conclusions',
+        'Maintained separately for testing after real data is added',
+      ],
+    },
+    videoSourcesTitle: 'Official video',
+    videoSourcesSubtitle:
+      'Video files are not stored. Official YouTube uploads are referenced through embedding or external links.',
+    worldRugbyJapan: {
+      title: 'World Rugby Japan channel',
+      role: 'Official Japanese highlights and full matches',
+      items: [
+        'Registers official Japanese-language video',
+        'Manages full matches and highlights as separate video records',
+        'Records the video URL and channel page',
+        'Does not imply that an unpublished match video exists',
+      ],
+    },
+    worldRugbyWomen: {
+      title: 'World Rugby Women',
+      role: 'Official English-language women’s video',
+      items: [
+        'Registers official women’s SVNS full matches and highlights',
+        'Supplements video not available on the Japanese channel',
+        'Records language, video type, and availability separately',
+        'Treats different videos for the same match as separate records',
+      ],
+    },
+    youtubeEmbedding: {
+      title: 'Official YouTube embedding',
+      role: 'In-app playback method',
+      items: [
+        'Uses the YouTube embedded player',
+        'Does not download, copy, or redistribute video files',
+        'Keeps an external Open on YouTube link',
+        'Displays the provider and video title',
+      ],
+    },
+    videoAvailability: {
+      title: 'Availability management',
+      role: 'Handling removed or restricted video',
+      items: [
+        'Distinguishes available, not checked, removed, geo restricted, and other states',
+        'Records the last check time through checkedAt',
+        'Uses an external link or status notice when embedding is unavailable',
+        'Respects the publisher’s availability settings',
+      ],
+    },
+    openChannel: 'Open official channel',
+    operationTitle: 'Entry and verification workflow',
+    operationBody:
+      'Version1.0 does not use automated collection. Public pages are reviewed before data is entered manually.',
+    operationSteps: [
+      'Identify the target match and official Match ID',
+      'Review the result and statistics in the primary source',
+      'Verify competition, date, and teams with supplementary sources',
+      'Record sourceUrl, fetchedAt, and dataCoverageLevel',
+      'Confirm the official uploader and channel before adding video',
+      'Run validation and verify the published interface',
+    ],
+    limitationsTitle: 'Limitations',
+    limitations: [
+      'Statistics definitions and aggregation methods may differ between providers.',
+      'Missing values are not converted to zero; they remain unavailable or uncollected.',
+      'Older seasons may contain results only without detailed statistics.',
+      'Source pages and videos may be changed or removed by their providers.',
+      'The app is not a substitute for official records.',
+    ],
+  },
+
   menu: {
     analysis: {
       label: 'Stats Analysis',
