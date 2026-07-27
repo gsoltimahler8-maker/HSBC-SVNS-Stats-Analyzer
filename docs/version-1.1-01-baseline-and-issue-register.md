@@ -37,13 +37,13 @@ Version1.0は初期MVPとして固定し、新機能、データ拡張、分析�
 
 ```text
 Public demo URL:
-[ENTER PUBLIC GITHUB PAGES URL]
+https://gsoltimahler8-maker.github.io/HSBC-SVNS-Stats-Analyzer/
 
 GitHub repository URL:
-[ENTER GITHUB REPOSITORY URL]
+https://github.com/gsoltimahler8-maker/HSBC-SVNS-Stats-Analyzer/
 
 Version1.0 baseline commit SHA:
-[ENTER FULL COMMIT SHA]
+045f590c634fa5d556d4625ddf44ca1ca57b038f
 ```
 
 補助記録：
