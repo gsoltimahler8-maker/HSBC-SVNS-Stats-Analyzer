@@ -12,45 +12,35 @@ Inquiry about HSBC SVNS match statistics and an independent analytics prototype
 
 Dear World Rugby team,
 
-My name is [FULL NAME]. I am an independent rugby fan based in Japan and the creator of SVNS Stats Analyzer, an unofficial, non-commercial rugby sevens analytics prototype.
+My name is [FULL NAME]. I’m a rugby fan in Japan, and I’ve built a small independent project called SVNS Stats Analyzer.
 
-I am contacting you in an individual capacity and do not represent a rugby union, broadcaster, data company, or commercial organisation.
+I created it because I wanted a simple way to see how a sevens team’s performance changes across matches, tournaments and seasons. The project is a non-commercial web app that combines match statistics, longer-term trends, match search and links to publicly available match videos. It is currently available in Japanese and English.
 
-The prototype is designed to help users explore rugby sevens match statistics through season and tournament analysis, longer-term trends, match search, and links between match data and publicly available match videos. It is currently available in Japanese and English as a progressive web application.
+At the moment, the app contains only a small number of matches as a proof of concept. The public statistics I have found through World Rugby, RugbyPass and HSBC SVNS are useful for scores and basic match information, but they appear to be limited for the type of analysis I am trying to build.
 
-The public-facing statistics I have been able to access through World Rugby, RugbyPass and HSBC SVNS pages are useful for scores and basic match information, but I may have overlooked an official source that provides the additional detail and consistency required for this type of analysis.
+For the current prototype, I manually entered a small sample of publicly displayed team statistics from Rugby Australia’s Match Centre and included links to the source. I do not use automated scraping.
 
-As a temporary and limited proof of concept, the prototype currently contains a small manually entered sample of publicly displayed team match statistics from Rugby Australia's Match Centre, with source attribution. It does not use automated scraping. I have used this sample only to validate the product concept, data model and user interface while seeking guidance on an appropriate official data route. I have not assumed that public display alone grants permission for broader reuse or expansion.
+Before adding any more data, I would like to make sure that I am using the right source and following the appropriate conditions.
 
-The prototype also links to and embeds publicly available match videos using the standard YouTube embedded player. It does not download, host, copy or redistribute any video files. Video availability and playback remain controlled by YouTube and the relevant channel or rights holder.
+Could you please let me know whether World Rugby has:
 
-I would be grateful for guidance on the following questions:
+- more detailed HSBC SVNS match statistics;
+- an API, data feed, downloadable dataset or data dictionary; or
+- guidance on using official statistics in a small, non-commercial public analytics project?
 
-1. Does World Rugby hold more detailed HSBC SVNS match statistics than those currently available on public-facing pages?
-2. Is there an official API, data feed, downloadable dataset or other access route for those statistics?
-3. Is an official data dictionary or set of metric definitions available?
-4. What conditions would apply to the limited, non-commercial public display and analysis of official HSBC SVNS match statistics in an independent prototype?
-5. Does World Rugby have any preferred conditions or technical requirements for linking to or embedding videos published on its official YouTube channels?
-6. Could this enquiry be directed to the appropriate Game Analysis, Game Systems, Information Management, Digital or HSBC SVNS operations contact?
-7. If another organisation, such as RugbyPass or a designated data provider, is the appropriate contact, could you please direct me to them?
+The app also links to and embeds publicly available match videos through the standard YouTube player. It does not download or host any video files. Please let me know if World Rugby has any preferred conditions for linking to or embedding videos from its official channels.
 
-Project links:
-
-Public prototype:
-[PUBLIC DEMO URL]
-
-About:
-[ABOUT PAGE URL]
-
-Data and video sources:
-[DATA AND VIDEO SOURCES PAGE URL]
+Public app:
+https://gsoltimahler8-maker.github.io/HSBC-SVNS-Stats-Analyzer/
 
 GitHub repository:
-[GITHUB REPOSITORY URL]
+https://github.com/gsoltimahler8-maker/HSBC-SVNS-Stats-Analyzer
 
-The current prototype is intentionally small. Its present data sample is for technical validation rather than a claim of comprehensive coverage. My preference is to use an appropriate official World Rugby data source, subject to the relevant terms, before expanding it.
+Further information about the project, data sources and video sources is available from the About and Data and Video Sources sections within the app.
 
-Thank you for your time and guidance.
+If another World Rugby team, RugbyPass or a data provider is better placed to answer these questions, I would be grateful if you could point me in the right direction.
+
+Thank you very much for your time.
 
 Kind regards,
 
