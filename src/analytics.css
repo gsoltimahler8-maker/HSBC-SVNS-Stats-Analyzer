@@ -516,3 +516,42 @@
     min-height: 130px;
   }
 }
+
+
+/* v1.1-02A-r2: explicit axis labels */
+.analyticsAxisGuide {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 10px;
+}
+
+.analyticsAxisGuide span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 6px 10px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 999px;
+  background: rgba(248, 250, 252, 0.96);
+  color: #334155;
+  font-size: 0.86rem;
+}
+
+.analyticsAxisGuide b {
+  color: #0369a1;
+}
+
+@media (max-width: 640px) {
+  .analyticsAxisGuide {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .analyticsAxisGuide span {
+    width: 100%;
+    justify-content: flex-start;
+    border-radius: 10px;
+  }
+}
