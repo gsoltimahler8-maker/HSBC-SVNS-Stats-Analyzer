@@ -104,6 +104,9 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
     winRateResultWarning: isJapanese
       ? '勝敗別比較では勝率が100%と0%に固定されるため、勝率は選択肢から除外しています。'
       : 'Win Rate is excluded from result comparison because the groups would be fixed at 100% and 0%.',
+    xAxis: isJapanese ? 'X軸' : 'X axis',
+    yAxis: isJapanese ? 'Y軸' : 'Y axis',
+    averageValue: isJapanese ? '平均値' : 'Average value',
   };
 
   const seasons = getUniqueValues(matches, 'season');
@@ -243,6 +246,28 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
   const selectedRelationship =
     RELATIONSHIP_PRESETS.find((preset) => preset.id === relationshipId) ||
     RELATIONSHIP_PRESETS[0];
+
+  const comparisonXAxisLabel =
+    compareBy === 'tournament'
+      ? copy.tournamentComparison
+      : compareBy === 'opponent'
+        ? copy.opponentComparison
+        : copy.resultComparison;
+
+  const comparisonYAxisLabel = getMetricLabel(
+    comparisonMetric,
+    isJapanese
+  );
+
+  const relationshipXAxisLabel = getMetricLabel(
+    selectedRelationship.xMetric,
+    isJapanese
+  );
+
+  const relationshipYAxisLabel = getMetricLabel(
+    selectedRelationship.yMetric,
+    isJapanese
+  );
 
   const scatterRows = useMemo(
     () =>
@@ -572,11 +597,22 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
                 <p className="analyticsInlineNote">{copy.winRateResultWarning}</p>
               )}
 
+              <div className="analyticsAxisGuide" aria-label={`${copy.xAxis}: ${comparisonXAxisLabel}; ${copy.yAxis}: ${comparisonYAxisLabel}`}>
+                <span>
+                  <b>{copy.xAxis}</b>
+                  {comparisonXAxisLabel}
+                </span>
+                <span>
+                  <b>{copy.yAxis}</b>
+                  {comparisonYAxisLabel} ({copy.averageValue})
+                </span>
+              </div>
+
               <div className="analyticsChart">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
                     data={comparisonGroups}
-                    margin={{ top: 16, right: 16, left: 8, bottom: 32 }}
+                    margin={{ top: 16, right: 20, left: 34, bottom: 62 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis
@@ -584,9 +620,32 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
                       interval={0}
                       angle={comparisonGroups.length > 4 ? -20 : 0}
                       textAnchor={comparisonGroups.length > 4 ? 'end' : 'middle'}
-                      height={comparisonGroups.length > 4 ? 72 : 44}
+                      height={comparisonGroups.length > 4 ? 92 : 64}
+                      label={{
+                        value: comparisonXAxisLabel,
+                        position: 'insideBottom',
+                        offset: -18,
+                        style: {
+                          fill: '#334155',
+                          fontSize: 12,
+                          fontWeight: 700,
+                        },
+                      }}
                     />
-                    <YAxis />
+                    <YAxis
+                      width={72}
+                      label={{
+                        value: comparisonYAxisLabel,
+                        angle: -90,
+                        position: 'insideLeft',
+                        style: {
+                          fill: '#334155',
+                          fontSize: 12,
+                          fontWeight: 700,
+                          textAnchor: 'middle',
+                        },
+                      }}
+                    />
                     <Tooltip content={comparisonTooltip} />
                     <Bar
                       dataKey="value"
@@ -644,9 +703,20 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
                 </p>
               </div>
 
+              <div className="analyticsAxisGuide" aria-label={`${copy.xAxis}: ${relationshipXAxisLabel}; ${copy.yAxis}: ${relationshipYAxisLabel}`}>
+                <span>
+                  <b>{copy.xAxis}</b>
+                  {relationshipXAxisLabel}
+                </span>
+                <span>
+                  <b>{copy.yAxis}</b>
+                  {relationshipYAxisLabel}
+                </span>
+              </div>
+
               <div className="analyticsChart analyticsScatterChart">
                 <ResponsiveContainer width="100%" height="100%">
-                  <ScatterChart margin={{ top: 16, right: 20, left: 8, bottom: 24 }}>
+                  <ScatterChart margin={{ top: 16, right: 24, left: 38, bottom: 58 }}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis
                       type="number"
@@ -655,6 +725,16 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
                       tickFormatter={(value) =>
                         formatMetricValue(selectedRelationship.xMetric, value)
                       }
+                      label={{
+                        value: relationshipXAxisLabel,
+                        position: 'insideBottom',
+                        offset: -18,
+                        style: {
+                          fill: '#334155',
+                          fontSize: 12,
+                          fontWeight: 700,
+                        },
+                      }}
                     />
                     <YAxis
                       type="number"
@@ -663,6 +743,18 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
                       tickFormatter={(value) =>
                         formatMetricValue(selectedRelationship.yMetric, value)
                       }
+                      width={72}
+                      label={{
+                        value: relationshipYAxisLabel,
+                        angle: -90,
+                        position: 'insideLeft',
+                        style: {
+                          fill: '#334155',
+                          fontSize: 12,
+                          fontWeight: 700,
+                          textAnchor: 'middle',
+                        },
+                      }}
                     />
                     <Tooltip content={scatterTooltip} />
                     <Legend />
