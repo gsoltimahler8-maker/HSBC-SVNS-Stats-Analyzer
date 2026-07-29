@@ -29,6 +29,79 @@ import '../analytics.css';
 
 const ALL = 'All';
 
+const TEAM_ABBREVIATIONS = {
+  Argentina: 'ARG',
+  Australia: 'AUS',
+  Belgium: 'BEL',
+  Brazil: 'BRA',
+  Canada: 'CAN',
+  Chile: 'CHI',
+  China: 'CHN',
+  Fiji: 'FIJ',
+  France: 'FRA',
+  Georgia: 'GEO',
+  Germany: 'GER',
+  'Great Britain': 'GBR',
+  'Hong Kong': 'HKG',
+  'Hong Kong China': 'HKG',
+  Ireland: 'IRL',
+  Japan: 'JPN',
+  Kenya: 'KEN',
+  'New Zealand': 'NZL',
+  Portugal: 'POR',
+  Samoa: 'SAM',
+  'South Africa': 'RSA',
+  Spain: 'ESP',
+  Tonga: 'TGA',
+  Uruguay: 'URU',
+  USA: 'USA',
+  'United States': 'USA',
+};
+
+const getTeamAbbreviation = (teamName) =>
+  TEAM_ABBREVIATIONS[teamName] || String(teamName || '').slice(0, 3).toUpperCase();
+
+const useCompactChartLabels = () => {
+  const [isCompact, setIsCompact] = useState(() =>
+    typeof window !== 'undefined'
+      ? window.matchMedia('(max-width: 640px)').matches
+      : false
+  );
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return undefined;
+    }
+
+    const mediaQuery = window.matchMedia('(max-width: 640px)');
+    const update = (event) => setIsCompact(event.matches);
+
+    setIsCompact(mediaQuery.matches);
+    mediaQuery.addEventListener?.('change', update);
+
+    return () => mediaQuery.removeEventListener?.('change', update);
+  }, []);
+
+  return isCompact;
+};
+
+const CompactMatchTick = ({ x, y, payload }) => {
+  const [dateLabel, opponentLabel] = String(payload?.value || '').split('|');
+
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <text textAnchor="middle" fill="#64748b" fontSize="11">
+        <tspan x="0" dy="12">
+          {dateLabel}
+        </tspan>
+        <tspan x="0" dy="14" fontWeight="700">
+          {opponentLabel}
+        </tspan>
+      </text>
+    </g>
+  );
+};
+
 const compactDate = (dateValue) => {
   const date = new Date(dateValue);
 
@@ -114,6 +187,7 @@ export default function StatsTrends({ onBackHome, t = ja }) {
   const [opponent, setOpponent] = useState(ALL);
   const [aggregation, setAggregation] = useState('match');
   const [metric, setMetric] = useState('pointDiff');
+  const compactChartLabels = useCompactChartLabels();
 
   useEffect(() => {
     setOpponent(ALL);
@@ -175,6 +249,9 @@ export default function StatsTrends({ onBackHome, t = ja }) {
           return {
             id: match.id,
             label: `${compactDate(match.date)} ${match.opponent}`,
+            compactAxisLabel: `${compactDate(match.date)}|${getTeamAbbreviation(
+              match.opponent
+            )}`,
             value,
             matches: 1,
             coverage: 1,
@@ -254,6 +331,10 @@ export default function StatsTrends({ onBackHome, t = ja }) {
 
   const overallCoverage = getMetricCoverage(filtered, metric);
   const definition = getMetricDefinition(metric);
+  const compactMatchTicks =
+    compactChartLabels && aggregation === 'match';
+  const angledTrendTicks =
+    !compactMatchTicks && aggregateRows.length > 5;
 
   const tooltip = ({ active, payload }) => {
     if (!active || !payload?.length) {
@@ -461,40 +542,25 @@ export default function StatsTrends({ onBackHome, t = ja }) {
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
                 data={aggregateRows}
-                margin={{ top: 18, right: 24, left: 38, bottom: 72 }}
+                margin={{
+                  top: 16,
+                  right: 16,
+                  left: 2,
+                  bottom: angledTrendTicks ? 44 : 8,
+                }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
-                  dataKey="label"
+                  dataKey={compactMatchTicks ? 'compactAxisLabel' : 'label'}
                   interval={0}
-                  angle={aggregateRows.length > 5 ? -22 : 0}
-                  textAnchor={aggregateRows.length > 5 ? 'end' : 'middle'}
-                  height={aggregateRows.length > 5 ? 104 : 70}
-                  label={{
-                    value: trendXAxisLabel,
-                    position: 'insideBottom',
-                    offset: -20,
-                    style: {
-                      fill: '#334155',
-                      fontSize: 12,
-                      fontWeight: 700,
-                    },
-                  }}
+                  angle={angledTrendTicks ? -22 : 0}
+                  textAnchor={angledTrendTicks ? 'end' : 'middle'}
+                  height={compactMatchTicks ? 52 : angledTrendTicks ? 74 : 38}
+                  tick={compactMatchTicks ? <CompactMatchTick /> : undefined}
                 />
                 <YAxis
-                  width={72}
+                  width={compactChartLabels ? 48 : 58}
                   tickFormatter={(value) => formatMetricValue(metric, value)}
-                  label={{
-                    value: trendYAxisLabel,
-                    angle: -90,
-                    position: 'insideLeft',
-                    style: {
-                      fill: '#334155',
-                      fontSize: 12,
-                      fontWeight: 700,
-                      textAnchor: 'middle',
-                    },
-                  }}
                 />
                 <Tooltip content={tooltip} />
                 <Line
