@@ -1,0 +1,367 @@
+/* v1.1-02A Public Demo Readiness
+   Scoped analytics styles for Stats Analysis and Stats Trends. */
+
+.analyticsScreen {
+  --analytics-border: rgba(148, 163, 184, 0.28);
+  --analytics-muted: #64748b;
+  --analytics-text: #0f172a;
+  --analytics-soft: rgba(248, 250, 252, 0.92);
+}
+
+.analyticsWarning {
+  margin: 12px;
+  padding: 12px 16px;
+  border: 1px solid #f4c95d;
+  border-radius: 12px;
+  background: #fff7d6;
+  color: #4a3a00;
+  font-weight: 700;
+}
+
+.analyticsFilters {
+  align-items: end;
+}
+
+.analyticsScopeSummary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.analyticsScopeSummary span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 7px 11px;
+  border: 1px solid var(--analytics-border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  color: #334155;
+  font-size: 0.9rem;
+}
+
+.analyticsScopeSummary strong {
+  color: var(--analytics-text);
+}
+
+.analyticsModeTabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  width: min(760px, calc(100% - 24px));
+  margin: 12px auto;
+  padding: 6px;
+  border: 1px solid var(--analytics-border);
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.88);
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.2);
+}
+
+.analyticsModeTabs button {
+  min-height: 44px;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 11px;
+  background: transparent;
+  color: #cbd5e1;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.analyticsModeTabs button:hover,
+.analyticsModeTabs button:focus-visible {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.analyticsModeTabs button.active {
+  background: #fff;
+  color: #0f172a;
+  box-shadow: 0 5px 15px rgba(15, 23, 42, 0.24);
+}
+
+.analyticsPanel {
+  margin: 12px;
+}
+
+.analyticsPanelHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.analyticsPanelHeader h2 {
+  margin-bottom: 4px;
+}
+
+.analyticsPanelHeader p {
+  margin: 0;
+  color: var(--analytics-muted);
+}
+
+.analyticsSampleCount {
+  flex: 0 0 auto;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: #e0f2fe;
+  color: #075985;
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.analyticsKpiGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.analyticsKpiCard {
+  display: flex;
+  min-height: 132px;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--analytics-border);
+  border-radius: 16px;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.98),
+    rgba(241, 245, 249, 0.94)
+  );
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
+}
+
+.analyticsKpiCard > span {
+  color: #475569;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.analyticsKpiCard > strong {
+  color: var(--analytics-text);
+  font-size: clamp(1.45rem, 3vw, 2.15rem);
+  line-height: 1;
+}
+
+.analyticsKpiCard > small {
+  overflow-wrap: anywhere;
+  color: var(--analytics-muted);
+  line-height: 1.35;
+}
+
+.analyticsControlRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.analyticsControlRow label {
+  display: grid;
+  gap: 6px;
+  color: #334155;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.analyticsControlRow select {
+  width: 100%;
+  min-height: 43px;
+  padding: 8px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: #fff;
+  color: #0f172a;
+  font: inherit;
+}
+
+.analyticsChart {
+  width: 100%;
+  height: 390px;
+  margin-top: 8px;
+  padding: 10px 4px 0;
+  border: 1px solid var(--analytics-border);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.analyticsScatterChart {
+  height: 430px;
+}
+
+.analyticsTrendChart {
+  height: 440px;
+}
+
+.analyticsTooltip {
+  display: grid;
+  gap: 4px;
+  min-width: 210px;
+  max-width: 320px;
+  padding: 10px 12px;
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  border-radius: 10px;
+  background: #0f172a;
+  color: #e5e7eb;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+  font-size: 0.86rem;
+}
+
+.analyticsTooltip strong {
+  color: #fff;
+}
+
+.analyticsTooltip span {
+  line-height: 1.35;
+}
+
+.analyticsDefinitionGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.analyticsDefinition {
+  display: grid;
+  gap: 6px;
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid var(--analytics-border);
+  border-radius: 14px;
+  background: rgba(248, 250, 252, 0.94);
+}
+
+.analyticsDefinition > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.analyticsDefinition strong {
+  color: #0f172a;
+}
+
+.analyticsDefinition span {
+  color: #0369a1;
+  font-weight: 800;
+}
+
+.analyticsDefinition p,
+.analyticsDefinition small {
+  margin: 0;
+  color: #475569;
+}
+
+.analyticsCaution {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 13px 14px;
+  border: 1px solid #facc15;
+  border-radius: 14px;
+  background: #fefce8;
+  color: #713f12;
+}
+
+.analyticsCaution p {
+  margin: 5px 0 0;
+}
+
+.analyticsFootnote {
+  margin: 14px 0 0;
+  color: var(--analytics-muted);
+  font-size: 0.88rem;
+}
+
+.analyticsEmpty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 150px;
+  margin: 12px;
+  color: #475569;
+  text-align: center;
+}
+
+@media (max-width: 960px) {
+  .analyticsKpiGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .analyticsChart,
+  .analyticsScatterChart,
+  .analyticsTrendChart {
+    height: 380px;
+  }
+}
+
+@media (max-width: 640px) {
+  .analyticsModeTabs {
+    width: calc(100% - 20px);
+    gap: 4px;
+    padding: 5px;
+  }
+
+  .analyticsModeTabs button {
+    min-height: 42px;
+    padding: 7px 5px;
+    font-size: 0.79rem;
+  }
+
+  .analyticsPanel {
+    margin: 10px;
+  }
+
+  .analyticsPanelHeader {
+    display: grid;
+  }
+
+  .analyticsSampleCount {
+    width: fit-content;
+  }
+
+  .analyticsKpiGrid,
+  .analyticsControlRow,
+  .analyticsDefinitionGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .analyticsKpiCard {
+    min-height: 112px;
+  }
+
+  .analyticsChart,
+  .analyticsScatterChart,
+  .analyticsTrendChart {
+    height: 340px;
+    overflow: hidden;
+  }
+
+  .analyticsScopeSummary span {
+    width: 100%;
+    justify-content: space-between;
+    border-radius: 10px;
+  }
+}
+
+@media (max-width: 420px) {
+  .analyticsModeTabs button {
+    font-size: 0.72rem;
+  }
+
+  .analyticsChart,
+  .analyticsScatterChart,
+  .analyticsTrendChart {
+    height: 320px;
+  }
+}
