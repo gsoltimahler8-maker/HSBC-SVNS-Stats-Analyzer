@@ -47,8 +47,8 @@ export default function StatsTrends({ onBackHome, t = ja }) {
   const copy = {
     title: isJapanese ? 'スタッツ推移' : 'Stats Trends',
     subtitle: isJapanese
-      ? '試合、大会、シーズンの粒度を切り替えて、中長期的な変化を追跡します。'
-      : 'Track longer-term performance changes at match, tournament and season level.',
+      ? '13の中核指標を、試合・大会・シーズンの時間軸で追跡します。'
+      : 'Track the 13 core indicators across matches, tournaments and seasons.',
     badge: isJapanese ? '長期パフォーマンス推移' : 'Long-term Performance Trends',
     scope: isJapanese ? '表示条件' : 'Trend Scope',
     season: isJapanese ? 'シーズン' : 'Season',
@@ -67,14 +67,14 @@ export default function StatsTrends({ onBackHome, t = ja }) {
     available: isJapanese ? '利用可能' : 'Available',
     dataCoverage: isJapanese ? 'データ利用可能数' : 'Data Coverage',
     metricDefinition: isJapanese ? '指標定義' : 'Metric Definition',
-    rawMetric: isJapanese ? '取得値' : 'Raw metric',
     calculatedMetric: isJapanese ? '計算指標' : 'Calculated metric',
+    rawMetric: isJapanese ? '取得値' : 'Raw metric',
     noData: isJapanese
       ? '現在の条件で表示できるデータがありません。'
       : 'No data is available for the current filters.',
     oneSeasonNote: isJapanese
-      ? '現在は比較可能なシーズンが1件だけです。複数シーズンのデータが追加されると、長期比較として機能します。'
-      : 'Only one comparable season is currently available. This view becomes a multi-season comparison when more seasons are added.',
+      ? '現在は比較可能なシーズンが少数です。複数シーズンの実データが追加されると、長期比較としての意味が強くなります。'
+      : 'Only a small number of comparable seasons is currently available. This becomes more meaningful as multi-season real data is added.',
     missingData: isJapanese
       ? '必要な値が欠けている試合は平均・グラフから除外し、0として扱いません。'
       : 'Matches with missing inputs are excluded from averages and charts rather than treated as zero.',
@@ -82,14 +82,16 @@ export default function StatsTrends({ onBackHome, t = ja }) {
       ? 'この表示範囲にはサンプルデータが含まれています。実データと混同せずに解釈してください。'
       : 'This view includes sample data. Do not mix it with real-data conclusions.',
     trendQuestion: isJapanese
-      ? 'この指標は、時間の経過に沿ってどのように変化したか'
-      : 'How this metric changes over time',
-    average: isJapanese ? '平均' : 'Average',
+      ? 'この指標が時間の経過に沿ってどのように変化したかを表示します。'
+      : 'Shows how this indicator changed over time.',
     score: isJapanese ? 'スコア' : 'Score',
     result: isJapanese ? '結果' : 'Result',
     win: isJapanese ? '勝利' : 'Win',
     loss: isJapanese ? '敗戦' : 'Loss',
     sources: isJapanese ? '主なデータソース' : 'Primary data sources',
+    winRateMatchNote: isJapanese
+      ? '試合表示の勝率は、勝利を100%、敗戦を0%として試合結果を可視化します。大会・シーズン表示では通常の勝率です。'
+      : 'At match level, Win Rate encodes a win as 100% and a loss as 0%. Tournament and season views show the usual aggregate win rate.',
   };
 
   const seasons = getUniqueValues(matches, 'season').sort((a, b) =>
@@ -140,17 +142,11 @@ export default function StatsTrends({ onBackHome, t = ja }) {
   const includesSampleData = filtered.some(
     (match) =>
       match.dataType === 'sample' ||
-      String(match.sourceProvider || '')
-        .toLowerCase()
-        .includes('sample')
+      String(match.sourceProvider || '').toLowerCase().includes('sample')
   );
 
   const sourceProviders = [
-    ...new Set(
-      filtered
-        .map((match) => match.sourceProvider)
-        .filter(Boolean)
-    ),
+    ...new Set(filtered.map((match) => match.sourceProvider).filter(Boolean)),
   ];
 
   const aggregateRows = useMemo(() => {
@@ -193,9 +189,7 @@ export default function StatsTrends({ onBackHome, t = ja }) {
         .map(([key, group]) => {
           const value = averageMetric(group, metric);
           const coverage = getMetricCoverage(group, metric);
-          const firstMatch = group
-            .slice()
-            .sort(compareMatchesChronologically)[0];
+          const firstMatch = group.slice().sort(compareMatchesChronologically)[0];
           const [groupSeason, tournamentName] = key.split('::');
 
           if (value === null) {
@@ -235,9 +229,7 @@ export default function StatsTrends({ onBackHome, t = ja }) {
           value,
           matches: group.length,
           coverage: coverage.available,
-          date:
-            group.slice().sort(compareMatchesChronologically)[0]?.date ||
-            '',
+          date: group.slice().sort(compareMatchesChronologically)[0]?.date || '',
           tournament: '',
           season: groupSeason,
           opponent: '',
@@ -264,8 +256,8 @@ export default function StatsTrends({ onBackHome, t = ja }) {
         {aggregation === 'match' ? (
           <>
             <span>
-              {copy.score}: {row.team} {row.pointsFor}-
-              {row.pointsAgainst} {row.opponent}
+              {copy.score}: {row.team} {row.pointsFor}-{row.pointsAgainst}{' '}
+              {row.opponent}
             </span>
             <span>
               {copy.result}:{' '}
@@ -307,11 +299,7 @@ export default function StatsTrends({ onBackHome, t = ja }) {
       }}
     >
       {onBackHome && (
-        <button
-          type="button"
-          className="backHomeButton"
-          onClick={onBackHome}
-        >
+        <button type="button" className="backHomeButton" onClick={onBackHome}>
           {t.navigation.backHome}
         </button>
       )}
@@ -338,10 +326,7 @@ export default function StatsTrends({ onBackHome, t = ja }) {
         <div className="filters analyticsFilters">
           <label>
             {copy.season}
-            <select
-              value={season}
-              onChange={(event) => setSeason(event.target.value)}
-            >
+            <select value={season} onChange={(event) => setSeason(event.target.value)}>
               <option value={ALL}>{copy.all}</option>
               {seasons.map((item) => (
                 <option key={item} value={item}>
@@ -353,17 +338,10 @@ export default function StatsTrends({ onBackHome, t = ja }) {
 
           <label>
             {copy.gender}
-            <select
-              value={gender}
-              onChange={(event) => setGender(event.target.value)}
-            >
+            <select value={gender} onChange={(event) => setGender(event.target.value)}>
               {genders.map((item) => (
                 <option key={item} value={item}>
-                  {item === 'Women'
-                    ? copy.women
-                    : item === 'Men'
-                      ? copy.men
-                      : item}
+                  {item === 'Women' ? copy.women : item === 'Men' ? copy.men : item}
                 </option>
               ))}
             </select>
@@ -371,10 +349,7 @@ export default function StatsTrends({ onBackHome, t = ja }) {
 
           <label>
             {copy.team}
-            <select
-              value={team}
-              onChange={(event) => setTeam(event.target.value)}
-            >
+            <select value={team} onChange={(event) => setTeam(event.target.value)}>
               {teams.map((item) => (
                 <option key={item} value={item}>
                   {item}
@@ -385,10 +360,7 @@ export default function StatsTrends({ onBackHome, t = ja }) {
 
           <label>
             {copy.opponent}
-            <select
-              value={opponent}
-              onChange={(event) => setOpponent(event.target.value)}
-            >
+            <select value={opponent} onChange={(event) => setOpponent(event.target.value)}>
               <option value={ALL}>{copy.all}</option>
               {opponents.map((item) => (
                 <option key={item} value={item}>
@@ -402,9 +374,7 @@ export default function StatsTrends({ onBackHome, t = ja }) {
             {copy.aggregation}
             <select
               value={aggregation}
-              onChange={(event) =>
-                setAggregation(event.target.value)
-              }
+              onChange={(event) => setAggregation(event.target.value)}
             >
               <option value="match">{copy.match}</option>
               <option value="tournament">{copy.tournament}</option>
@@ -414,10 +384,7 @@ export default function StatsTrends({ onBackHome, t = ja }) {
 
           <label>
             {copy.metric}
-            <select
-              value={metric}
-              onChange={(event) => setMetric(event.target.value)}
-            >
+            <select value={metric} onChange={(event) => setMetric(event.target.value)}>
               {TREND_METRIC_KEYS.map((metricKey) => (
                 <option key={metricKey} value={metricKey}>
                   {getMetricLabel(metricKey, isJapanese)}
@@ -438,8 +405,7 @@ export default function StatsTrends({ onBackHome, t = ja }) {
             </strong>
           </span>
           <span>
-            {copy.sources}:{' '}
-            <strong>{sourceProviders.join(' / ') || '—'}</strong>
+            {copy.sources}: <strong>{sourceProviders.join(' / ') || '—'}</strong>
           </span>
         </div>
       </section>
@@ -456,6 +422,15 @@ export default function StatsTrends({ onBackHome, t = ja }) {
           </span>
         </div>
 
+        {metric === 'winRate' && aggregation === 'match' && (
+          <div className="analyticsCaution analyticsCautionCompact">
+            <Info size={18} />
+            <div>
+              <strong>{copy.winRateMatchNote}</strong>
+            </div>
+          </div>
+        )}
+
         {aggregateRows.length > 0 ? (
           <div className="analyticsChart analyticsTrendChart">
             <ResponsiveContainer width="100%" height="100%">
@@ -468,16 +443,10 @@ export default function StatsTrends({ onBackHome, t = ja }) {
                   dataKey="label"
                   interval={0}
                   angle={aggregateRows.length > 5 ? -22 : 0}
-                  textAnchor={
-                    aggregateRows.length > 5 ? 'end' : 'middle'
-                  }
+                  textAnchor={aggregateRows.length > 5 ? 'end' : 'middle'}
                   height={aggregateRows.length > 5 ? 82 : 48}
                 />
-                <YAxis
-                  tickFormatter={(value) =>
-                    formatMetricValue(metric, value)
-                  }
-                />
+                <YAxis tickFormatter={(value) => formatMetricValue(metric, value)} />
                 <Tooltip content={tooltip} />
                 <Line
                   type="monotone"
@@ -515,12 +484,9 @@ export default function StatsTrends({ onBackHome, t = ja }) {
           </div>
           <p>{getMetricFormula(metric, isJapanese)}</p>
           <small>
-            {definition.type === 'calculated'
-              ? copy.calculatedMetric
-              : copy.rawMetric}
+            {definition.type === 'calculated' ? copy.calculatedMetric : copy.rawMetric}
             {' · '}
-            {copy.dataCoverage}: {overallCoverage.available}/
-            {overallCoverage.total}
+            {copy.dataCoverage}: {overallCoverage.available}/{overallCoverage.total}
           </small>
         </div>
 
