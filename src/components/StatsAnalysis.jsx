@@ -1,429 +1,345 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
-  BarChart,
   Bar,
+  BarChart,
+  CartesianGrid,
+  Legend,
+  ResponsiveContainer,
+  Scatter,
+  ScatterChart,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  ScatterChart,
-  Scatter,
-  Legend,
 } from 'recharts';
-import {
-  ShieldAlert,
-  Database,
-  Trophy,
-  Filter,
-  Info,
-  RefreshCcw,
-} from 'lucide-react';
-import { matchData as sampleMatches } from '../data/loadMatches.js';
-import { pct, avg, corr } from '../utils/statistics.js';
+import { Database, Filter, Info } from 'lucide-react';
+import { matchData as matches } from '../data/loadMatches.js';
 import ja from '../i18n/ja.js';
+import {
+  COMPARISON_METRIC_KEYS,
+  RELATIONSHIP_METRIC_KEYS,
+  averageMetric,
+  compareMatchesChronologically,
+  formatMetricValue,
+  getMetricCoverage,
+  getMetricDefinition,
+  getMetricFormula,
+  getMetricLabel,
+  getMetricValue,
+  getTeamResult,
+  getUniqueValues,
+  groupMatches,
+} from '../utils/analyticsMetrics.js';
+import '../analytics.css';
 
-function compareMatchesChronologically(a, b) {
-  const dateDifference = new Date(a.date) - new Date(b.date);
+const ALL = 'All';
 
-  if (dateDifference !== 0) {
-    return dateDifference;
-  }
-
-  const aRugbyComAuId = Number(a.external?.rugbyComAu);
-  const bRugbyComAuId = Number(b.external?.rugbyComAu);
-
-  if (
-    Number.isFinite(aRugbyComAuId) &&
-    Number.isFinite(bRugbyComAuId) &&
-    aRugbyComAuId !== bRugbyComAuId
-  ) {
-    return aRugbyComAuId - bRugbyComAuId;
-  }
-
-  return String(a.id).localeCompare(String(b.id));
-}
+const selectLatestSeason = (seasons) =>
+  seasons.slice().sort((a, b) => b.localeCompare(a))[0] || '';
 
 export default function StatsAnalysis({ onBackHome, t = ja }) {
-  const labels = t.statsAnalysis;
+  const isJapanese = t.navigation?.backHome?.includes('ホーム');
   const screenBgImage = `${import.meta.env.BASE_URL}assets/bg-stats-analysis.png`;
   const mobileScreenBgImage = `${import.meta.env.BASE_URL}assets/bg-stats-analysis-mobile.png`;
-  const isJapanese = t.navigation?.backHome?.includes('ホーム');
-  const seasons = [...new Set(sampleMatches.map((m) => m.season))];
 
-  const [season, setSeason] = useState('2025-26');
-  const [gender, setGender] = useState('Women');
-  const [team, setTeam] = useState('Japan');
-  const [tournament, setTournament] = useState('All');
-  const [selected, setSelected] = useState(sampleMatches[0]?.id || '');
-  const [scatterX, setScatterX] = useState('metres');
+  const copy = {
+    title: isJapanese ? 'スタッツ分析' : 'Stats Analysis',
+    subtitle: isJapanese
+      ? '選択したシーズンの概要、比較、指標間の関係を分析します。'
+      : 'Analyse the selected season through overview, comparison and metric relationships.',
+    badge: isJapanese ? 'シーズン・大会分析' : 'Season & Tournament Analysis',
+    scope: isJapanese ? '分析条件' : 'Analysis Scope',
+    season: isJapanese ? 'シーズン' : 'Season',
+    gender: isJapanese ? '男女区分' : 'Gender',
+    team: isJapanese ? 'チーム' : 'Team',
+    tournament: isJapanese ? '大会' : 'Tournament',
+    opponent: isJapanese ? '対戦相手' : 'Opponent',
+    result: isJapanese ? '試合結果' : 'Result',
+    all: isJapanese ? 'すべて' : 'All',
+    women: isJapanese ? '女子' : 'Women',
+    men: isJapanese ? '男子' : 'Men',
+    win: isJapanese ? '勝利' : 'Win',
+    loss: isJapanese ? '敗戦' : 'Loss',
+    matches: isJapanese ? '対象試合' : 'Matches',
+    dataCoverage: isJapanese ? 'データ利用可能数' : 'Data Coverage',
+    realData: isJapanese ? '実データ' : 'Real Data',
+    sampleData: isJapanese ? 'サンプルデータ' : 'Sample Data',
+    sampleWarning: isJapanese
+      ? 'この表示範囲にはサンプルデータが含まれています。実データと混同せず、画面検証用として解釈してください。'
+      : 'This view includes sample data. Treat it as interface-validation data and do not mix it with real-data conclusions.',
+    noData: isJapanese
+      ? '現在の条件に一致する試合がありません。'
+      : 'No matches are available for the current filters.',
+    overview: isJapanese ? '概要' : 'Overview',
+    comparison: isJapanese ? '比較' : 'Comparison',
+    relationships: isJapanese ? '指標間分析' : 'Relationships',
+    overviewIntro: isJapanese
+      ? '選択範囲を、試合数・勝率・平均効率・規律の観点から要約します。'
+      : 'Summarises the selected scope through match count, win rate, efficiency and discipline.',
+    comparisonIntro: isJapanese
+      ? '同じ指標を大会、勝敗、対戦相手ごとに比較します。'
+      : 'Compares one metric by tournament, result or opponent.',
+    relationshipsIntro: isJapanese
+      ? '1試合を1点として、二つの指標の関係を確認します。'
+      : 'Plots one point per match to review the relationship between two metrics.',
+    compareBy: isJapanese ? '比較単位' : 'Compare by',
+    metric: isJapanese ? '指標' : 'Metric',
+    tournamentComparison: isJapanese ? '大会' : 'Tournament',
+    resultComparison: isJapanese ? '勝敗' : 'Result',
+    opponentComparison: isJapanese ? '対戦相手' : 'Opponent',
+    average: isJapanese ? '平均' : 'Average',
+    available: isJapanese ? '利用可能' : 'Available',
+    metricDefinition: isJapanese ? '指標定義' : 'Metric Definition',
+    rawMetric: isJapanese ? '取得値' : 'Raw metric',
+    calculatedMetric: isJapanese ? '計算指標' : 'Calculated metric',
+    xAxis: isJapanese ? 'X軸' : 'X axis',
+    yAxis: isJapanese ? 'Y軸' : 'Y axis',
+    plottedMatches: isJapanese ? 'プロット可能試合' : 'Plotted matches',
+    smallSample: isJapanese
+      ? '表示結果は選択範囲内の記述的な関連です。試合数が少ないため、相関や因果関係は断定しません。'
+      : 'This is a descriptive association within the selected scope. The sample is too small for causal or firm correlation claims.',
+    missingData: isJapanese
+      ? '必要な値が欠けている試合は計算・グラフから除外し、0として扱いません。'
+      : 'Matches with missing inputs are excluded from calculations and charts rather than treated as zero.',
+    fullStatsCoverage: isJapanese ? '詳細データ試合' : 'Full-stat matches',
+    pointDifferential: isJapanese ? '平均得失点差' : 'Average point differential',
+    averagePenalties: isJapanese ? '平均反則数' : 'Average penalties',
+    averageTurnovers: isJapanese ? '平均ターンオーバー差' : 'Average turnover differential',
+    averageMetresPerCarry: isJapanese
+      ? '平均1キャリー当たりメートル'
+      : 'Average metres per carry',
+    averageTackleSuccess: isJapanese
+      ? '平均タックル成功率'
+      : 'Average tackle success',
+    winRate: isJapanese ? '勝率' : 'Win rate',
+    dataSources: isJapanese ? '主なデータソース' : 'Primary data sources',
+  };
+
+  const seasons = getUniqueValues(matches, 'season');
+  const genders = getUniqueValues(matches, 'gender');
+  const teams = getUniqueValues(matches, 'team');
+
+  const [season, setSeason] = useState(selectLatestSeason(seasons));
+  const [gender, setGender] = useState(
+    genders.includes('Women') ? 'Women' : genders[0] || ''
+  );
+  const [team, setTeam] = useState(
+    teams.includes('Japan') ? 'Japan' : teams[0] || ''
+  );
+  const [tournament, setTournament] = useState(ALL);
+  const [opponent, setOpponent] = useState(ALL);
+  const [result, setResult] = useState(ALL);
+  const [mode, setMode] = useState('overview');
+  const [compareBy, setCompareBy] = useState('result');
+  const [comparisonMetric, setComparisonMetric] = useState(
+    'penaltiesConceded'
+  );
+  const [scatterX, setScatterX] = useState('penaltiesConceded');
   const [scatterY, setScatterY] = useState('pointDiff');
+
+  useEffect(() => {
+    setTournament(ALL);
+    setOpponent(ALL);
+    setResult(ALL);
+  }, [season, gender, team]);
+
+  useEffect(() => {
+    setOpponent(ALL);
+  }, [tournament]);
+
+  const baseScope = useMemo(
+    () =>
+      matches.filter(
+        (match) =>
+          match.season === season &&
+          match.gender === gender &&
+          match.team === team
+      ),
+    [season, gender, team]
+  );
+
+  const tournaments = getUniqueValues(baseScope, 'tournament');
+
+  const tournamentScope = useMemo(
+    () =>
+      baseScope.filter(
+        (match) =>
+          tournament === ALL || match.tournament === tournament
+      ),
+    [baseScope, tournament]
+  );
+
+  const opponents = getUniqueValues(tournamentScope, 'opponent');
 
   const filtered = useMemo(
     () =>
-      sampleMatches
+      tournamentScope
         .filter(
-          (m) =>
-            m.season === season &&
-            m.gender === gender &&
-            m.team === team &&
-            (tournament === 'All' || m.tournament === tournament)
+          (match) => opponent === ALL || match.opponent === opponent
+        )
+        .filter(
+          (match) =>
+            result === ALL || getTeamResult(match) === result
         )
         .slice()
         .sort(compareMatchesChronologically),
-    [season, gender, team, tournament]
+    [tournamentScope, opponent, result]
   );
 
-  const tournaments = [
-    'All',
+  const wins = filtered.filter((match) => getTeamResult(match) === 'W');
+  const knownResults = filtered.filter((match) =>
+    ['W', 'L'].includes(getTeamResult(match))
+  );
+  const winRate = knownResults.length
+    ? (wins.length / knownResults.length) * 100
+    : null;
+
+  const fullStatsCount = filtered.filter(
+    (match) => match.dataCoverageLevel === 'full_match_stats'
+  ).length;
+
+  const sourceProviders = [
     ...new Set(
-      sampleMatches
-        .filter((m) => m.season === season && m.gender === gender)
-        .map((m) => m.tournament)
+      filtered
+        .map((match) => match.sourceProvider)
+        .filter(Boolean)
     ),
   ];
 
-  const selectedMatch =
-    filtered.find((m) => m.id === selected) || filtered[0];
-
-  const wins = filtered.filter(
-    (m) => (m.teamResult || m.result) === 'W'
+  const includesSampleData = filtered.some(
+    (match) =>
+      match.dataType === 'sample' ||
+      String(match.sourceProvider || '')
+        .toLowerCase()
+        .includes('sample')
   );
 
-  const losses = filtered.filter(
-    (m) => (m.teamResult || m.result) === 'L'
-  );
-
-  const metricLabels = labels.metrics;
-
-  const fallbackMetricLabels = {
-    pointsFor: isJapanese ? '得点' : 'Points For',
-    pointsAgainst: isJapanese ? '失点' : 'Points Against',
-    tries: isJapanese ? 'トライ' : 'Tries',
-    metres: isJapanese ? '獲得メートル' : 'Metres',
-    carries: isJapanese ? 'キャリー' : 'Carries',
-    passes: isJapanese ? 'パス' : 'Passes',
-    offloads: isJapanese ? 'オフロード' : 'Offloads',
-    cleanBreaks: isJapanese
-      ? 'クリーンブレイク'
-      : 'Clean Breaks',
-    defendersBeaten: isJapanese
-      ? 'ディフェンダー突破'
-      : 'Defenders Beaten',
-    turnoversWon: isJapanese
-      ? 'ターンオーバー獲得'
-      : 'Turnovers Won',
-    turnoversConceded: isJapanese
-      ? 'ターンオーバー喪失'
-      : 'Turnovers Conceded',
-    tackles: isJapanese ? 'タックル' : 'Tackles',
-    missedTackles: isJapanese
-      ? 'ミスタックル'
-      : 'Missed Tackles',
-    rucksWon: isJapanese ? 'ラック獲得' : 'Rucks Won',
-    rucksLost: isJapanese ? 'ラック喪失' : 'Rucks Lost',
-    penaltiesConceded: isJapanese
-      ? '反則数'
-      : 'Penalties Conceded',
-    possession: isJapanese
-      ? 'ポゼッション'
-      : 'Possession',
-    pointDiff: isJapanese
-      ? '得失点差'
-      : 'Point Differential',
-    tackleSuccess: isJapanese
-      ? 'タックル成功率'
-      : 'Tackle Success',
-  };
-
-  const resultFieldLabels = {
-    matchResult: isJapanese ? '試合結果' : 'Match Result',
-    winner: isJapanese ? '勝者' : 'Winner',
-    loser: isJapanese ? '敗者' : 'Loser',
-  };
-
-  const scatterUiLabels = {
-    xAxis: isJapanese ? 'X軸' : 'X Axis',
-    yAxis: isJapanese ? 'Y軸' : 'Y Axis',
-    availablePoints: isJapanese ? '有効プロット数' : 'Available Points',
-    totalMatches: isJapanese ? '対象試合数' : 'Matches',
-    description: isJapanese
-      ? 'X軸とY軸の指標を選択し、試合ごとのばらつきを確認できます。'
-      : 'Select the X- and Y-axis metrics to review match-level variation.',
-    smallSampleWarning: isJapanese
-      ? 'サンプル数が少ないため、相関や因果関係は断定できません。この図は試合ごとのばらつきを確認するためのものです。'
-      : 'The sample is too small to establish correlation or causation. Use this chart to review match-level variation.',
-    missingDataNote: isJapanese
-      ? '選択した両指標の値がそろっている試合だけを表示しています。'
-      : 'Only matches with valid values for both selected metrics are plotted.',
-    sameAxisWarning: isJapanese
-      ? 'X軸とY軸に同じ指標が選択されています。'
-      : 'The same metric is selected for both axes.',
-    noData: isJapanese
-      ? '選択した指標の組み合わせで表示できる試合データがありません。'
-      : 'No matches have valid data for this metric combination.',
-  };
-
-  const getMetricLabel = (key) =>
-    metricLabels[key] || fallbackMetricLabels[key] || key;
-
-  const scatterMetricKeys = [
-    'pointsFor',
-    'pointsAgainst',
-    'pointDiff',
-    'tries',
-    'metres',
-    'carries',
-    'passes',
-    'offloads',
-    'cleanBreaks',
-    'defendersBeaten',
-    'tackles',
-    'missedTackles',
-    'turnoversWon',
-    'turnoversConceded',
-    'rucksWon',
-    'rucksLost',
-    'possession',
-    'tackleSuccess',
-    'penaltiesConceded',
+  const overviewCards = [
+    {
+      label: copy.matches,
+      value: String(filtered.length),
+      sub: `${copy.fullStatsCoverage}: ${fullStatsCount}/${filtered.length}`,
+    },
+    {
+      label: copy.winRate,
+      value: winRate === null ? '—' : `${winRate.toFixed(1)}%`,
+      sub: `${wins.length}/${knownResults.length}`,
+    },
+    {
+      label: copy.pointDifferential,
+      value: formatMetricValue(
+        'pointDiff',
+        averageMetric(filtered, 'pointDiff')
+      ),
+      sub: getMetricFormula('pointDiff', isJapanese),
+    },
+    {
+      label: copy.averagePenalties,
+      value: formatMetricValue(
+        'penaltiesConceded',
+        averageMetric(filtered, 'penaltiesConceded')
+      ),
+      sub: `${getMetricCoverage(filtered, 'penaltiesConceded').available}/${filtered.length}`,
+    },
+    {
+      label: copy.averageTurnovers,
+      value: formatMetricValue(
+        'turnoverDifferential',
+        averageMetric(filtered, 'turnoverDifferential')
+      ),
+      sub: getMetricFormula('turnoverDifferential', isJapanese),
+    },
+    {
+      label: copy.averageMetresPerCarry,
+      value: formatMetricValue(
+        'metresPerCarry',
+        averageMetric(filtered, 'metresPerCarry')
+      ),
+      sub: `${getMetricCoverage(filtered, 'metresPerCarry').available}/${filtered.length}`,
+    },
+    {
+      label: copy.averageTackleSuccess,
+      value: formatMetricValue(
+        'tackleSuccess',
+        averageMetric(filtered, 'tackleSuccess')
+      ),
+      sub: `${getMetricCoverage(filtered, 'tackleSuccess').available}/${filtered.length}`,
+    },
+    {
+      label: copy.dataSources,
+      value: sourceProviders.length ? String(sourceProviders.length) : '—',
+      sub: sourceProviders.join(' / ') || '—',
+    },
   ];
 
-  const scatterMetricOptions = scatterMetricKeys.map((key) => ({
-    key,
-    label: getMetricLabel(key),
-  }));
+  const comparisonGroups = useMemo(() => {
+    const keyGetter =
+      compareBy === 'tournament'
+        ? (match) => match.tournament
+        : compareBy === 'opponent'
+          ? (match) => match.opponent
+          : (match) => getTeamResult(match);
 
-  const scatterXLabel =
-    scatterMetricOptions.find((item) => item.key === scatterX)?.label ||
-    scatterX;
-
-  const scatterYLabel =
-    scatterMetricOptions.find((item) => item.key === scatterY)?.label ||
-    scatterY;
-
-  const chartMetricLabels = {
-    pointsFor: 'PF',
-    pointsAgainst: 'PA',
-    cleanBreaks: 'Clean breaks',
-    defendersBeaten: 'Def. beaten',
-    turnoversWon: 'TO won',
-    turnoversConceded: 'TO conceded',
-    possession: 'Possession',
-  };
-
-  const analysisRows = [
-    'pointsFor',
-    'pointsAgainst',
-    'cleanBreaks',
-    'defendersBeaten',
-    'turnoversWon',
-    'turnoversConceded',
-    'possession',
-  ].map((k) => ({
-    metric: k,
-    metricLabel: getMetricLabel(k),
-    chartMetricLabel:
-      chartMetricLabels[k] || getMetricLabel(k),
-    wins: +avg(wins, k).toFixed(1),
-    losses: +avg(losses, k).toFixed(1),
-  }));
-
-  const corrData = filtered.map((m) => {
-    const tackles = Number(m.tackles || 0);
-    const missedTackles = Number(m.missedTackles || 0);
-    const tackleTotal = tackles + missedTackles;
-
-    return {
-      ...m,
-      pointDiff: m.pointsFor - m.pointsAgainst,
-      tackleSuccess:
-        tackleTotal > 0
-          ? (100 * tackles) / tackleTotal
-          : 0,
-    };
-  });
-
-  const correlations = [
-    'cleanBreaks',
-    'defendersBeaten',
-    'turnoversWon',
-    'turnoversConceded',
-    'possession',
-    'tackleSuccess',
-  ]
-    .map((k) => ({
-      metric: k,
-      metricLabel: getMetricLabel(k),
-      correlation: corr(corrData, k, 'pointDiff'),
-    }))
-    .filter((x) => x.correlation !== null)
-    .sort(
-      (a, b) =>
-        Math.abs(b.correlation) -
-        Math.abs(a.correlation)
-    );
-
-  const mixedSeasonWarning = false;
-
-  const tournamentLabel = (name) =>
-    name === 'All' ? labels.filters.all : name;
-
-  const resultLabel = (result) =>
-    result === 'W'
-      ? labels.results.win
-      : labels.results.loss;
-
-  const getWinner = (match) => {
-    if (!match) return '';
-
-    if (match.winner) {
-      return match.winner;
-    }
-
-    const teamResult = match.teamResult || match.result;
-
-    if (teamResult === 'W') {
-      return match.team;
-    }
-
-    if (teamResult === 'L') {
-      return match.opponent;
-    }
-
-    return '';
-  };
-
-  const getLoser = (match) => {
-    if (!match) return '';
-
-    if (match.loser) {
-      return match.loser;
-    }
-
-    const teamResult = match.teamResult || match.result;
-
-    if (teamResult === 'W') {
-      return match.opponent;
-    }
-
-    if (teamResult === 'L') {
-      return match.team;
-    }
-
-    return '';
-  };
-
-  const getMatchResultLabel = (match) => {
-    if (!match) return '';
-
-    const winner = getWinner(match);
-
-    if (winner) {
-      return isJapanese
-        ? `${winner} 勝利`
-        : match.matchResult || `${winner} Win`;
-    }
-
-    if (match.matchResult) {
-      return match.matchResult;
-    }
-
-    return resultLabel(match.teamResult || match.result);
-  };
-
-  const displayValue = (value) =>
-    value === null || value === undefined
-      ? '—'
-      : value;
-
-  const getScatterMetricValue = (match, key) => {
-    if (key === 'pointDiff') {
-      if (
-        match.pointsFor === null ||
-        match.pointsFor === undefined ||
-        match.pointsAgainst === null ||
-        match.pointsAgainst === undefined
-      ) {
-        return null;
-      }
-
-      return Number(match.pointsFor) - Number(match.pointsAgainst);
-    }
-
-    if (key === 'tackleSuccess') {
-      const hasTackles =
-        match.tackles !== null && match.tackles !== undefined;
-      const hasMissedTackles =
-        match.missedTackles !== null &&
-        match.missedTackles !== undefined;
-
-      if (!hasTackles && !hasMissedTackles) {
-        return null;
-      }
-
-      const tackles = Number(match.tackles ?? 0);
-      const missedTackles = Number(match.missedTackles ?? 0);
-      const tackleTotal = tackles + missedTackles;
-
-      return tackleTotal > 0 ? (100 * tackles) / tackleTotal : 0;
-    }
-
-    const rawValue = match[key];
-
-    if (
-      rawValue === null ||
-      rawValue === undefined ||
-      rawValue === ''
-    ) {
-      return null;
-    }
-
-    const numericValue = Number(rawValue);
-
-    return Number.isFinite(numericValue) ? numericValue : null;
-  };
-
-  const formatScatterValue = (key, value) => {
-    if (value === null || value === undefined) {
-      return '—';
-    }
-
-    const formattedValue = Number.isInteger(value)
-      ? value
-      : Number(value.toFixed(1));
-
-    const suffix =
-      key === 'possession' || key === 'tackleSuccess'
-        ? '%'
-        : '';
-
-    return `${formattedValue}${suffix}`;
-  };
-
-  const scatterData = filtered
-    .map((match) => {
-      const xValue = getScatterMetricValue(match, scatterX);
-      const yValue = getScatterMetricValue(match, scatterY);
+    const groups = groupMatches(filtered, keyGetter);
+    const rows = [...groups.entries()].map(([key, group]) => {
+      const coverage = getMetricCoverage(group, comparisonMetric);
+      const label =
+        compareBy === 'result'
+          ? key === 'W'
+            ? copy.win
+            : key === 'L'
+              ? copy.loss
+              : key
+          : key;
 
       return {
-        ...match,
-        xValue,
-        yValue,
-        matchResultLabel: getMatchResultLabel(match),
+        key,
+        label,
+        value: averageMetric(group, comparisonMetric),
+        matches: group.length,
+        coverage: coverage.available,
+        earliestDate:
+          group.slice().sort(compareMatchesChronologically)[0]?.date || '',
       };
-    })
-    .filter(
-      (match) =>
-        match.xValue !== null &&
-        match.yValue !== null
-    );
+    });
 
-  const coverageLevelLabel = (level) =>
-    labels.dataCoverage?.levels?.[level] ||
-    labels.dataCoverage?.levels?.unknown ||
-    level ||
-    labels.dataCoverage?.unknownSource;
+    return rows.sort((a, b) => {
+      if (compareBy === 'result') {
+        return ['W', 'L'].indexOf(a.key) - ['W', 'L'].indexOf(b.key);
+      }
+
+      if (compareBy === 'tournament') {
+        return a.earliestDate.localeCompare(b.earliestDate);
+      }
+
+      return a.label.localeCompare(b.label);
+    });
+  }, [filtered, compareBy, comparisonMetric, copy.win, copy.loss]);
+
+  const scatterRows = useMemo(
+    () =>
+      filtered
+        .map((match) => ({
+          ...match,
+          xValue: getMetricValue(match, scatterX),
+          yValue: getMetricValue(match, scatterY),
+          teamResult: getTeamResult(match),
+        }))
+        .filter(
+          (match) =>
+            match.xValue !== null && match.yValue !== null
+        ),
+    [filtered, scatterX, scatterY]
+  );
+
+  const winScatterRows = scatterRows.filter(
+    (match) => match.teamResult === 'W'
+  );
+  const lossScatterRows = scatterRows.filter(
+    (match) => match.teamResult === 'L'
+  );
+  const otherScatterRows = scatterRows.filter(
+    (match) => !['W', 'L'].includes(match.teamResult)
+  );
 
   const chartTooltipStyle = {
     backgroundColor: '#0f172a',
@@ -433,55 +349,83 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
     boxShadow: '0 10px 24px rgba(0, 0, 0, 0.28)',
   };
 
-  const chartTooltipLabelStyle = {
-    color: '#f8fafc',
-    fontWeight: 800,
-  };
-
-  const chartTooltipItemStyle = {
-    color: '#e5e7eb',
-  };
-
-  const renderScatterTooltip = ({ active, payload }) => {
+  const comparisonTooltip = ({ active, payload }) => {
     if (!active || !payload?.length) {
       return null;
     }
 
-    const point = payload[0].payload;
+    const row = payload[0].payload;
 
     return (
-      <div
-        style={{
-          ...chartTooltipStyle,
-          padding: '10px 12px',
-          minWidth: '220px',
-        }}
-      >
-        <div style={chartTooltipLabelStyle}>
-          {point.team} {point.pointsFor}-{point.pointsAgainst}{' '}
-          {point.opponent}
+      <div className="analyticsTooltip">
+        <strong>{row.label}</strong>
+        <span>
+          {copy.average}:{' '}
+          {formatMetricValue(comparisonMetric, row.value)}
+        </span>
+        <span>
+          {copy.matches}: {row.matches}
+        </span>
+        <span>
+          {copy.dataCoverage}: {row.coverage}/{row.matches}
+        </span>
+      </div>
+    );
+  };
+
+  const scatterTooltip = ({ active, payload }) => {
+    if (!active || !payload?.length) {
+      return null;
+    }
+
+    const row = payload[0].payload;
+
+    return (
+      <div className="analyticsTooltip">
+        <strong>
+          {row.team} {row.pointsFor}-{row.pointsAgainst}{' '}
+          {row.opponent}
+        </strong>
+        <span>
+          {row.date} / {row.tournament} / {row.stage}
+        </span>
+        <span>
+          {getMetricLabel(scatterX, isJapanese)}:{' '}
+          {formatMetricValue(scatterX, row.xValue)}
+        </span>
+        <span>
+          {getMetricLabel(scatterY, isJapanese)}:{' '}
+          {formatMetricValue(scatterY, row.yValue)}
+        </span>
+      </div>
+    );
+  };
+
+  const renderMetricDefinition = (metricKey) => {
+    const definition = getMetricDefinition(metricKey);
+    const coverage = getMetricCoverage(filtered, metricKey);
+
+    return (
+      <div className="analyticsDefinition">
+        <div>
+          <strong>{copy.metricDefinition}</strong>
+          <span>{getMetricLabel(metricKey, isJapanese)}</span>
         </div>
-        <div style={chartTooltipItemStyle}>
-          {point.date} / {point.tournament} / {point.stage}
-        </div>
-        <div style={chartTooltipItemStyle}>
-          {point.matchResultLabel}
-        </div>
-        <div style={chartTooltipItemStyle}>
-          {scatterUiLabels.xAxis} · {scatterXLabel}:{' '}
-          <b>{formatScatterValue(scatterX, point.xValue)}</b>
-        </div>
-        <div style={chartTooltipItemStyle}>
-          {scatterUiLabels.yAxis} · {scatterYLabel}:{' '}
-          <b>{formatScatterValue(scatterY, point.yValue)}</b>
-        </div>
+        <p>{getMetricFormula(metricKey, isJapanese)}</p>
+        <small>
+          {definition.type === 'calculated'
+            ? copy.calculatedMetric
+            : copy.rawMetric}
+          {' · '}
+          {copy.dataCoverage}: {coverage.available}/{coverage.total}
+        </small>
       </div>
     );
   };
 
   return (
     <div
-      className="app screenBackground statsAnalysisScreen"
+      className="app screenBackground statsAnalysisScreen analyticsScreen"
       style={{
         '--screen-bg-image': `url(${screenBgImage})`,
         '--screen-bg-mobile-image': `url(${mobileScreenBgImage})`,
@@ -497,626 +441,394 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
         </button>
       )}
 
-      <div
-        style={{
-          background: '#fff3cd',
-          color: '#3b2f00',
-          padding: '12px 16px',
-          border: '1px solid #ffda6a',
-          borderRadius: '12px',
-          margin: '12px',
-        }}
-      >
-        {labels.sampleWarning}
-      </div>
+      {includesSampleData && (
+        <div className="analyticsWarning">{copy.sampleWarning}</div>
+      )}
 
       <header className="hero">
         <div>
-          <h1>{t.appTitle}</h1>
-          <p>{labels.subtitle}</p>
+          <h1>{copy.title}</h1>
+          <p>{copy.subtitle}</p>
         </div>
-
         <div className="badge">
-          <Database size={22} /> {labels.badge}
+          <Database size={22} /> {copy.badge}
         </div>
       </header>
 
       <section className="panel scope">
         <h2>
-          <Filter size={18} /> {labels.dataScope}
+          <Filter size={18} /> {copy.scope}
         </h2>
 
-        <div className="filters">
+        <div className="filters analyticsFilters">
           <label>
-            {labels.filters.season}
+            {copy.season}
             <select
               value={season}
-              onChange={(e) =>
-                setSeason(e.target.value)
-              }
+              onChange={(event) => setSeason(event.target.value)}
             >
-              {seasons.map((s) => (
-                <option key={s}>{s}</option>
-              ))}
-            </select>
-          </label>
-
-          <label>
-            {labels.filters.gender}
-            <select
-              value={gender}
-              onChange={(e) =>
-                setGender(e.target.value)
-              }
-            >
-              <option value="Women">
-                {labels.filters.women}
-              </option>
-              <option value="Men">
-                {labels.filters.men}
-              </option>
-            </select>
-          </label>
-
-          <label>
-            {labels.filters.team}
-            <select
-              value={team}
-              onChange={(e) =>
-                setTeam(e.target.value)
-              }
-            >
-              <option>Japan</option>
-            </select>
-          </label>
-
-          <label>
-            {labels.filters.tournament}
-            <select
-              value={tournament}
-              onChange={(e) =>
-                setTournament(e.target.value)
-              }
-            >
-              {tournaments.map((tournamentName) => (
-                <option
-                  key={tournamentName}
-                  value={tournamentName}
-                >
-                  {tournamentLabel(tournamentName)}
+              {seasons.map((item) => (
+                <option key={item} value={item}>
+                  {item}
                 </option>
               ))}
             </select>
           </label>
+
+          <label>
+            {copy.gender}
+            <select
+              value={gender}
+              onChange={(event) => setGender(event.target.value)}
+            >
+              {genders.map((item) => (
+                <option key={item} value={item}>
+                  {item === 'Women'
+                    ? copy.women
+                    : item === 'Men'
+                      ? copy.men
+                      : item}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label>
+            {copy.team}
+            <select
+              value={team}
+              onChange={(event) => setTeam(event.target.value)}
+            >
+              {teams.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label>
+            {copy.tournament}
+            <select
+              value={tournament}
+              onChange={(event) => setTournament(event.target.value)}
+            >
+              <option value={ALL}>{copy.all}</option>
+              {tournaments.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label>
+            {copy.opponent}
+            <select
+              value={opponent}
+              onChange={(event) => setOpponent(event.target.value)}
+            >
+              <option value={ALL}>{copy.all}</option>
+              {opponents.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label>
+            {copy.result}
+            <select
+              value={result}
+              onChange={(event) => setResult(event.target.value)}
+            >
+              <option value={ALL}>{copy.all}</option>
+              <option value="W">{copy.win}</option>
+              <option value="L">{copy.loss}</option>
+            </select>
+          </label>
         </div>
 
-        <div className="scopeGrid">
+        <div className="analyticsScopeSummary">
           <span>
-            {labels.scopeLabels.season}:{' '}
-            <b>{season}</b>
+            {copy.matches}: <strong>{filtered.length}</strong>
           </span>
-
           <span>
-            {labels.scopeLabels.gender}:{' '}
-            <b>
-              {gender === 'Women'
-                ? labels.filters.women
-                : labels.filters.men}
-            </b>
+            {copy.fullStatsCoverage}:{' '}
+            <strong>
+              {fullStatsCount}/{filtered.length}
+            </strong>
           </span>
-
           <span>
-            {labels.scopeLabels.tournament}:{' '}
-            <b>{tournamentLabel(tournament)}</b>
-          </span>
-
-          <span>
-            {labels.scopeLabels.matches}:{' '}
-            <b>{filtered.length}</b>
+            {copy.realData}:{' '}
+            <strong>
+              {
+                filtered.filter(
+                  (match) =>
+                    match.dataType === 'real' ||
+                    !String(match.sourceProvider || '')
+                      .toLowerCase()
+                      .includes('sample')
+                ).length
+              }
+            </strong>
           </span>
         </div>
-
-        <div className="dataAvailabilityNotice">
-          <b>{labels.dataAvailability.title}</b>
-          <span>
-            {labels.dataAvailability.fullStatsEra}
-          </span>
-          <small>
-            {labels.dataAvailability.note}
-          </small>
-        </div>
-
-        {mixedSeasonWarning && (
-          <div className="warn">
-            <ShieldAlert />{' '}
-            {labels.mixedSeasonWarning}
-          </div>
-        )}
       </section>
 
-      <main className="grid">
-        <section className="panel">
-          <h2>
-            <Trophy size={18} /> {labels.matchList}
-          </h2>
+      <nav
+        className="analyticsModeTabs"
+        aria-label={copy.title}
+      >
+        {[
+          ['overview', copy.overview],
+          ['comparison', copy.comparison],
+          ['relationships', copy.relationships],
+        ].map(([key, label]) => (
+          <button
+            key={key}
+            type="button"
+            className={mode === key ? 'active' : ''}
+            aria-pressed={mode === key}
+            onClick={() => setMode(key)}
+          >
+            {label}
+          </button>
+        ))}
+      </nav>
 
-          <div className="matches">
-            {filtered.map((m) => (
-              <button
-                className={
-                  m.id === selected
-                    ? 'match active'
-                    : 'match'
-                }
-                key={m.id}
-                onClick={() => setSelected(m.id)}
-              >
-                <b>
-                  {m.team} {m.pointsFor}-
-                  {m.pointsAgainst} {m.opponent}
-                </b>
+      {filtered.length === 0 ? (
+        <section className="panel analyticsEmpty">
+          <Info size={22} />
+          <p>{copy.noData}</p>
+        </section>
+      ) : (
+        <>
+          {mode === 'overview' && (
+            <section className="panel analyticsPanel">
+              <div className="analyticsPanelHeader">
+                <div>
+                  <h2>{copy.overview}</h2>
+                  <p>{copy.overviewIntro}</p>
+                </div>
+              </div>
 
-                <span>
-                  {m.date} / {m.tournament} /{' '}
-                  {m.stage}
-                </span>
+              <div className="analyticsKpiGrid">
+                {overviewCards.map((card) => (
+                  <article
+                    className="analyticsKpiCard"
+                    key={card.label}
+                  >
+                    <span>{card.label}</span>
+                    <strong>{card.value}</strong>
+                    <small>{card.sub}</small>
+                  </article>
+                ))}
+              </div>
 
-                <em>
-                  {getMatchResultLabel(m)} · {m.id}
-                </em>
-              </button>
-            ))}
-
-            {filtered.length === 0 && (
-              <p className="empty">
-                {labels.noSampleData}
+              <p className="analyticsFootnote">
+                {copy.missingData}
               </p>
-            )}
-          </div>
-        </section>
-
-        <section className="panel">
-          <h2>
-            <Info size={18} /> {labels.matchDetail}
-          </h2>
-
-          {selectedMatch ? (
-            <div className="detail">
-              <h3>
-                {selectedMatch.team} vs{' '}
-                {selectedMatch.opponent}
-              </h3>
-
-              <div className="scoreLine">
-                <b>
-                  {selectedMatch.pointsFor} -{' '}
-                  {selectedMatch.pointsAgainst}
-                </b>
-
-                <span>
-                  {selectedMatch.tournament} /{' '}
-                  {selectedMatch.stage} /{' '}
-                  {selectedMatch.date}
-                </span>
-              </div>
-
-              <div className="metricGrid">
-                <span>
-                  {resultFieldLabels.matchResult}
-                  <b>
-                    {getMatchResultLabel(
-                      selectedMatch
-                    )}
-                  </b>
-                </span>
-
-                <span>
-                  {resultFieldLabels.winner}
-                  <b>
-                    {getWinner(selectedMatch) || '—'}
-                  </b>
-                </span>
-
-                <span>
-                  {resultFieldLabels.loser}
-                  <b>
-                    {getLoser(selectedMatch) || '—'}
-                  </b>
-                </span>
-              </div>
-
-              <div className="metricGrid">
-                <span>
-                  {getMetricLabel('tries')}
-                  <b>
-                    {displayValue(
-                      selectedMatch.tries
-                    )}
-                  </b>
-                </span>
-
-                <span>
-                  {getMetricLabel('metres')}
-                  <b>
-                    {displayValue(
-                      selectedMatch.metres
-                    )}
-                  </b>
-                </span>
-
-                <span>
-                  {getMetricLabel('cleanBreaks')}
-                  <b>
-                    {displayValue(
-                      selectedMatch.cleanBreaks
-                    )}
-                  </b>
-                </span>
-
-                <span>
-                  {getMetricLabel(
-                    'defendersBeaten'
-                  )}
-                  <b>
-                    {displayValue(
-                      selectedMatch.defendersBeaten
-                    )}
-                  </b>
-                </span>
-
-                <span>
-                  {getMetricLabel('turnoversWon')}
-                  <b>
-                    {displayValue(
-                      selectedMatch.turnoversWon
-                    )}
-                  </b>
-                </span>
-
-                <span>
-                  {getMetricLabel(
-                    'turnoversConceded'
-                  )}
-                  <b>
-                    {displayValue(
-                      selectedMatch.turnoversConceded
-                    )}
-                  </b>
-                </span>
-
-                <span>
-                  {getMetricLabel('tackles')}
-                  <b>
-                    {displayValue(
-                      selectedMatch.tackles
-                    )}
-                  </b>
-                </span>
-
-                <span>
-                  {getMetricLabel(
-                    'missedTackles'
-                  )}
-                  <b>
-                    {displayValue(
-                      selectedMatch.missedTackles
-                    )}
-                  </b>
-                </span>
-
-                <span>
-                  {getMetricLabel('possession')}
-                  <b>
-                    {selectedMatch.possession ===
-                      null ||
-                    selectedMatch.possession ===
-                      undefined
-                      ? '—'
-                      : pct(
-                          selectedMatch.possession
-                        )}
-                  </b>
-                </span>
-
-                <span>
-                  {getMetricLabel('pointDiff')}
-                  <b>
-                    {selectedMatch.pointsFor -
-                      selectedMatch.pointsAgainst}
-                  </b>
-                </span>
-              </div>
-
-              <div className="sourceBox">
-                <b>{labels.traceability}</b>
-                <br />
-                {labels.internalMatchId}:{' '}
-                {selectedMatch.id}
-                <br />
-                {labels.rugbyComAuId}:{' '}
-                {selectedMatch.external
-                  ?.rugbyComAu || 'Unknown'}
-                <br />
-                {labels.svnsId}:{' '}
-                {selectedMatch.external?.svns ||
-                  'Unknown'}
-                <br />
-                {labels.lastFetched}:{' '}
-                {selectedMatch.fetchedAt ||
-                  'Unknown'}
-                <br />
-                {labels.sourceProvider}:{' '}
-                {selectedMatch.sourceProvider ||
-                  'Unknown'}
-                <br />
-                {labels.statDefinitionVersion}:{' '}
-                {selectedMatch.statDefinitionVersion ||
-                  'Unknown'}
-                <br />
-                {labels.dataCoverage.label}:{' '}
-                {coverageLevelLabel(
-                  selectedMatch.dataCoverageLevel
-                )}
-                <br />
-                {labels.dataCoverage.sourceLabel}:{' '}
-                {selectedMatch.dataCoverageSource ||
-                  labels.dataCoverage
-                    .unknownSource}
-              </div>
-            </div>
-          ) : (
-            <p className="empty">
-              {labels.noSampleData}
-            </p>
-          )}
-        </section>
-
-        <section className="panel wide">
-          <h2>{labels.winLossComparison}</h2>
-          <p className="note">
-            {labels.winLossNote}
-          </p>
-
-          <div className="chart">
-            <ResponsiveContainer
-              width="100%"
-              height={390}
-            >
-              <BarChart
-                data={analysisRows}
-                layout="vertical"
-                margin={{
-                  top: 8,
-                  right: 20,
-                  bottom: 8,
-                  left: 12,
-                }}
-              >
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                />
-                <XAxis type="number" />
-                <YAxis
-                  type="category"
-                  dataKey="chartMetricLabel"
-                  width={92}
-                  interval={0}
-                  tickLine={false}
-                  tick={{ fontSize: 11 }}
-                />
-                <Tooltip
-                  cursor={false}
-                  labelFormatter={(
-                    value,
-                    payload
-                  ) =>
-                    payload?.[0]?.payload
-                      ?.metricLabel || value
-                  }
-                  contentStyle={
-                    chartTooltipStyle
-                  }
-                  labelStyle={
-                    chartTooltipLabelStyle
-                  }
-                  itemStyle={
-                    chartTooltipItemStyle
-                  }
-                />
-                <Legend />
-                <Bar
-                  dataKey="wins"
-                  name={labels.results.winsAvg}
-                  fill="#22c55e"
-                />
-                <Bar
-                  dataKey="losses"
-                  name={labels.results.lossesAvg}
-                  fill="#ef4444"
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </section>
-
-        <section className="panel wide">
-          <h2>{labels.candidateDrivers}</h2>
-          <p className="note">
-            {labels.candidateDriversNote}
-          </p>
-
-          <p className="note sampleSizeNote">
-            {labels.candidateDriversSampleSize}: n=
-            {corrData.length}
-          </p>
-
-          {corrData.length > 0 &&
-            corrData.length < 6 && (
-              <div className="smallSampleWarning">
-                <ShieldAlert size={16} />
-                <span>
-                  {
-                    labels.candidateDriversSmallSampleWarning
-                  }
-                </span>
-              </div>
-            )}
-
-          <div className="cards">
-            {correlations.map((c) => (
-              <div
-                className="corr"
-                key={c.metric}
-              >
-                <span>{c.metricLabel}</span>
-                <b>
-                  {c.correlation.toFixed(2)}
-                </b>
-                <small>
-                  {
-                    labels.candidateDriversSampleSize
-                  }
-                  : n={corrData.length}
-                </small>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="panel wide">
-          <h2>
-            {labels.scatterTitle}: {scatterXLabel} × {scatterYLabel}
-          </h2>
-
-          <p className="note">{scatterUiLabels.description}</p>
-
-          <div className="filters">
-            <label>
-              {scatterUiLabels.xAxis}
-              <select
-                value={scatterX}
-                onChange={(event) =>
-                  setScatterX(event.target.value)
-                }
-              >
-                {scatterMetricOptions.map((item) => (
-                  <option key={item.key} value={item.key}>
-                    {item.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label>
-              {scatterUiLabels.yAxis}
-              <select
-                value={scatterY}
-                onChange={(event) =>
-                  setScatterY(event.target.value)
-                }
-              >
-                {scatterMetricOptions.map((item) => (
-                  <option key={item.key} value={item.key}>
-                    {item.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-
-          <p className="note sampleSizeNote">
-            {scatterUiLabels.availablePoints}: n={scatterData.length} /{' '}
-            {scatterUiLabels.totalMatches}: {filtered.length}
-          </p>
-
-          {scatterData.length < filtered.length && (
-            <p className="note">
-              {scatterUiLabels.missingDataNote}
-            </p>
+            </section>
           )}
 
-          {scatterX === scatterY && (
-            <div className="smallSampleWarning">
-              <ShieldAlert size={16} />
-              <span>{scatterUiLabels.sameAxisWarning}</span>
-            </div>
-          )}
-
-          {scatterData.length > 0 &&
-            scatterData.length < 10 && (
-              <div className="smallSampleWarning">
-                <ShieldAlert size={16} />
-                <span>
-                  {scatterUiLabels.smallSampleWarning}
-                </span>
+          {mode === 'comparison' && (
+            <section className="panel analyticsPanel">
+              <div className="analyticsPanelHeader">
+                <div>
+                  <h2>{copy.comparison}</h2>
+                  <p>{copy.comparisonIntro}</p>
+                </div>
               </div>
-            )}
 
-          {scatterData.length > 0 ? (
-            <div className="chart">
-              <ResponsiveContainer
-                width="100%"
-                height={340}
-              >
-                <ScatterChart
-                  margin={{
-                    top: 16,
-                    right: 24,
-                    bottom: 24,
-                    left: 12,
-                  }}
-                >
-                  <CartesianGrid />
-                  <XAxis
-                    type="number"
-                    dataKey="xValue"
-                    name={scatterXLabel}
-                    tickFormatter={(value) =>
-                      formatScatterValue(scatterX, value)
+              <div className="analyticsControlRow">
+                <label>
+                  {copy.compareBy}
+                  <select
+                    value={compareBy}
+                    onChange={(event) =>
+                      setCompareBy(event.target.value)
                     }
-                  />
-                  <YAxis
-                    type="number"
-                    dataKey="yValue"
-                    name={scatterYLabel}
-                    tickFormatter={(value) =>
-                      formatScatterValue(scatterY, value)
+                  >
+                    <option value="tournament">
+                      {copy.tournamentComparison}
+                    </option>
+                    <option value="result">
+                      {copy.resultComparison}
+                    </option>
+                    <option value="opponent">
+                      {copy.opponentComparison}
+                    </option>
+                  </select>
+                </label>
+
+                <label>
+                  {copy.metric}
+                  <select
+                    value={comparisonMetric}
+                    onChange={(event) =>
+                      setComparisonMetric(event.target.value)
                     }
-                  />
-                  <Tooltip
-                    cursor={false}
-                    content={renderScatterTooltip}
-                  />
-                  <Scatter
-                    data={scatterData}
-                    name={labels.scatter.matches}
-                    fill="#38bdf8"
-                  />
-                </ScatterChart>
-              </ResponsiveContainer>
-            </div>
-          ) : (
-            <p className="empty">
-              {scatterUiLabels.noData}
-            </p>
+                  >
+                    {COMPARISON_METRIC_KEYS.map((metricKey) => (
+                      <option key={metricKey} value={metricKey}>
+                        {getMetricLabel(metricKey, isJapanese)}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+
+              <div className="analyticsChart">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={comparisonGroups}
+                    margin={{ top: 16, right: 16, left: 8, bottom: 32 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis
+                      dataKey="label"
+                      interval={0}
+                      angle={comparisonGroups.length > 4 ? -20 : 0}
+                      textAnchor={
+                        comparisonGroups.length > 4 ? 'end' : 'middle'
+                      }
+                      height={comparisonGroups.length > 4 ? 72 : 44}
+                    />
+                    <YAxis />
+                    <Tooltip
+                      content={comparisonTooltip}
+                      contentStyle={chartTooltipStyle}
+                    />
+                    <Bar
+                      dataKey="value"
+                      name={getMetricLabel(
+                        comparisonMetric,
+                        isJapanese
+                      )}
+                      fill="#22c55e"
+                      radius={[6, 6, 0, 0]}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
+              {renderMetricDefinition(comparisonMetric)}
+              <p className="analyticsFootnote">
+                {copy.missingData}
+              </p>
+            </section>
           )}
-        </section>
 
-        <section className="panel wide">
-          <h2>
-            <RefreshCcw size={18} />{' '}
-            {labels.nextImplementation}
-          </h2>
+          {mode === 'relationships' && (
+            <section className="panel analyticsPanel">
+              <div className="analyticsPanelHeader">
+                <div>
+                  <h2>{copy.relationships}</h2>
+                  <p>{copy.relationshipsIntro}</p>
+                </div>
+                <span className="analyticsSampleCount">
+                  {copy.plottedMatches}: {scatterRows.length}/
+                  {filtered.length}
+                </span>
+              </div>
 
-          <ol>
-            {labels.nextImplementationItems.map(
-              (item) => (
-                <li key={item}>{item}</li>
-              )
-            )}
-          </ol>
-        </section>
-      </main>
+              <div className="analyticsControlRow">
+                <label>
+                  {copy.xAxis}
+                  <select
+                    value={scatterX}
+                    onChange={(event) =>
+                      setScatterX(event.target.value)
+                    }
+                  >
+                    {RELATIONSHIP_METRIC_KEYS.map((metricKey) => (
+                      <option key={metricKey} value={metricKey}>
+                        {getMetricLabel(metricKey, isJapanese)}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label>
+                  {copy.yAxis}
+                  <select
+                    value={scatterY}
+                    onChange={(event) =>
+                      setScatterY(event.target.value)
+                    }
+                  >
+                    {RELATIONSHIP_METRIC_KEYS.map((metricKey) => (
+                      <option key={metricKey} value={metricKey}>
+                        {getMetricLabel(metricKey, isJapanese)}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+
+              <div className="analyticsChart analyticsScatterChart">
+                <ResponsiveContainer width="100%" height="100%">
+                  <ScatterChart
+                    margin={{ top: 16, right: 20, left: 8, bottom: 24 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis
+                      type="number"
+                      dataKey="xValue"
+                      name={getMetricLabel(scatterX, isJapanese)}
+                      tickFormatter={(value) =>
+                        formatMetricValue(scatterX, value)
+                      }
+                    />
+                    <YAxis
+                      type="number"
+                      dataKey="yValue"
+                      name={getMetricLabel(scatterY, isJapanese)}
+                      tickFormatter={(value) =>
+                        formatMetricValue(scatterY, value)
+                      }
+                    />
+                    <Tooltip content={scatterTooltip} />
+                    <Legend />
+                    <Scatter
+                      name={copy.win}
+                      data={winScatterRows}
+                      fill="#22c55e"
+                    />
+                    <Scatter
+                      name={copy.loss}
+                      data={lossScatterRows}
+                      fill="#ef4444"
+                    />
+                    {otherScatterRows.length > 0 && (
+                      <Scatter
+                        name={copy.all}
+                        data={otherScatterRows}
+                        fill="#64748b"
+                      />
+                    )}
+                  </ScatterChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div className="analyticsDefinitionGrid">
+                {renderMetricDefinition(scatterX)}
+                {renderMetricDefinition(scatterY)}
+              </div>
+
+              <div className="analyticsCaution">
+                <Info size={18} />
+                <div>
+                  <strong>{copy.smallSample}</strong>
+                  <p>{copy.missingData}</p>
+                </div>
+              </div>
+            </section>
+          )}
+        </>
+      )}
     </div>
   );
 }
