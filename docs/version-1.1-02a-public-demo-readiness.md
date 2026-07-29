@@ -4,6 +4,7 @@
 
 Version: v1.1  
 Step: v1.1-02A  
+Revision: r1  
 Status: Implementation package prepared  
 Created: 2026-07-29
 
@@ -11,36 +12,61 @@ Created: 2026-07-29
 
 ## 1. 目的
 
-World Rugbyへの初回問い合わせ前に、公開デモ上でStats AnalysisとStats Trendsの役割を明確にする。
+World Rugbyへの初回問い合わせ前に、公開デモ上でStats AnalysisとStats Trendsの分析目的を明確にする。
 
-この工程はv1.1分析機能の完全実装ではない。公式データ仕様・利用条件・内部要件が未確認の段階で過度な作り込みを行わず、現在のデータだけで説明可能な最小構成を実装する。
+初版のv1.1-02Aは、自由なX軸・Y軸選択による散布図を中心に置きすぎていた。r1では、プロダクトの中核を次の13指標によるチーム・パフォーマンス分析として再定義する。
+
+```text
+Points Differential
+Win Rate
+Points per Match
+Tries per Match
+Points per 100 Metres
+Tries per 100 Metres
+Metres per Carry
+Clean Breaks per 100 Carries
+Defenders Beaten per Carry
+Turnover Differential
+Penalties per Match
+Tackle Success
+Ruck Success
+```
 
 ---
 
 ## 2. Stats Analysis
 
-次の3モードへ再構成する。
+次の3モードを維持する。
 
 ```text
-Overview
+Performance Profile
 Comparison
 Relationships
 ```
 
-### Overview
+### 2.1 Performance Profile
 
-- 対象試合数
-- 勝率
-- 平均得失点差
-- 平均反則数
-- 平均ターンオーバー差
-- 平均Metres per Carry
-- 平均Tackle Success
-- source数・coverage
+13指標を次の5カテゴリーに整理して表示する。
 
-### Comparison
+```text
+Results & Scoring
+Scoring Efficiency
+Attacking Efficiency
+Possession & Discipline
+Defence & Retention
+```
 
-比較単位：
+各指標について次を表示する。
+
+```text
+value
+formula
+coverage
+```
+
+### 2.2 Comparison
+
+13指標から一つを選び、次の単位で比較する。
 
 ```text
 Tournament
@@ -48,38 +74,33 @@ Result
 Opponent
 ```
 
-比較指標：
+Win RateはResult比較では100%と0%に固定されるため、Result選択時のみ候補から外す。
 
-- Point Differential
-- Penalties Conceded
-- Turnover Differential
-- Metres per Carry
-- Defenders Beaten per Carry
-- Clean Breaks per 100 Carries
-- Tries per 100 Metres
-- Points per 100 Metres
-- Metres per Try
-- Tackle Success
-- Ruck Success
+### 2.3 Relationships
 
-### Relationships
+自由なX軸・Y軸選択は廃止する。
 
-初期表示：
+競技上の問いが明確で、数式上の自己相関をできるだけ避けたプリセットだけを表示する。
 
 ```text
-X = Penalties Conceded
-Y = Point Differential
+Metres per Carry × Points Differential
+Clean Breaks per 100 Carries × Points Differential
+Defenders Beaten per Carry × Points Differential
+Turnover Differential × Points Differential
+Penalties per Match × Points Differential
+Tackle Success × Points Against
+Ruck Success × Turnovers Conceded
 ```
 
-1試合を1点とし、勝利・敗戦を分けて表示する。
+散布図は1試合を1点として表示し、勝利・敗戦を区別する。
 
-これは記述的な関連表示であり、因果関係を示さない。
+因果関係や確定的な相関は主張しない。
 
 ---
 
 ## 3. Stats Trends
 
-次の集約粒度を切り替える。
+13指標すべてを次の粒度で表示する。
 
 ```text
 Match
@@ -87,53 +108,65 @@ Tournament
 Season
 ```
 
-- Match：試合ごとの値
-- Tournament：大会内の有効試合平均
-- Season：シーズン内の有効試合平均
-
-複数シーズンがない場合もSeason表示は残し、将来の拡張点を明示する。
+Win RateをMatch表示する場合は、勝利を100%、敗戦を0%として試合結果を可視化する。TournamentとSeasonでは通常の集計勝率を表示する。
 
 ---
 
-## 4. 共通計算基盤
+## 4. 集計方法
 
-新規追加：
+単純な試合別比率の平均ではなく、指標の性質に応じて集計する。
+
+### 比率指標
 
 ```text
-src/utils/analyticsMetrics.js
+Points per 100 Metres
+Tries per 100 Metres
+Metres per Carry
+Clean Breaks per 100 Carries
+Defenders Beaten per Carry
+Tackle Success
+Ruck Success
 ```
 
-責務：
+選択範囲内の有効な分子合計と分母合計から算出する。
 
-- raw metric取得
-- derived metric計算
-- null propagation
-- division-by-zero処理
-- metric label／formula
-- data coverage
-- average
-- chronological sort
-- grouping
+例：
 
-欠損値は0として扱わない。
+```text
+Metres per Carry
+= total metres ÷ total carries
+```
 
-分母が0の場合は`null`とする。
+### 1試合当たり指標
 
-丸めは表示時だけ行う。
+```text
+Points per Match
+Tries per Match
+Penalties per Match
+Points Differential
+Turnover Differential
+```
+
+有効な試合値の平均を使用する。
+
+### Win Rate
+
+```text
+wins ÷ matches with a known result × 100
+```
 
 ---
 
-## 5. UI
-
-新規追加：
+## 5. 欠損値
 
 ```text
-src/analytics.css
+Missing value = null
+Denominator 0 = null
+Missing value is not converted to 0
+Rounding is applied only for display
 ```
 
-既存`styles.css`を置き換えず、analytics固有classだけを追加する。
-
-PC・tablet・smartphoneに対応する。
+coverageは指標ごとに表示する。
 
 ---
 
@@ -144,14 +177,15 @@ PC・tablet・smartphoneに対応する。
 ```text
 src/components/StatsAnalysis.jsx
 src/components/StatsTrends.jsx
+src/utils/analyticsMetrics.js
+src/analytics.css
+docs/version-1.1-02a-public-demo-readiness.md
 ```
 
 ### Add
 
 ```text
-src/utils/analyticsMetrics.js
-src/analytics.css
-docs/version-1.1-02a-public-demo-readiness.md
+None
 ```
 
 ### Delete
@@ -162,23 +196,24 @@ None
 
 ---
 
-## 7. 問い合わせ前の手動確認
+## 7. 問い合わせ前の確認
 
 ```text
 [ ] GitHub ActionsがGreen
-[ ] Stats Analysisが起動
-[ ] Overview／Comparison／Relationshipsを切替可能
-[ ] ComparisonのTournament／Result／Opponentを切替可能
-[ ] Relationships初期表示がPenalties × Point Differential
-[ ] Stats Trendsが起動
-[ ] Match／Tournament／Seasonを切替可能
-[ ] 日本語／英語切替後も表示崩れなし
-[ ] 欠損metricを0として描画していない
-[ ] sample dataが含まれる場合はwarning表示
+[ ] Performance Profileに13指標が表示される
+[ ] 13指標が5カテゴリーに整理される
+[ ] ComparisonでTournament / Result / Opponentを切り替えられる
+[ ] Result比較ではWin Rateが表示候補から外れる
+[ ] Relationshipsに自由なX/Y選択がない
+[ ] Relationshipsの7プリセットが切り替わる
+[ ] Stats Trendsで13指標を選択できる
+[ ] Match / Tournament / Seasonを切り替えられる
+[ ] 比率指標が合計分子÷合計分母で集計される
+[ ] 欠損値を0として扱っていない
+[ ] 日本語・英語切替後も表示崩れがない
 [ ] PC表示
 [ ] smartphone縦表示
 [ ] Console errorなし
-[ ] PWA更新後に新版が表示
 ```
 
 ---
@@ -187,15 +222,11 @@ None
 
 改修後は次の説明を使用できる。
 
-> The app currently provides match-level analysis, tournament and result comparisons, performance trends across matches and tournaments, match search, and links to publicly available match videos. Its structure is designed to extend to multi-season analysis as more consistent data becomes available.
+> The app analyses team performance through 13 indicators covering results, scoring efficiency, attacking efficiency, possession, discipline, defence and ball retention. These indicators can be compared by tournament, result and opponent, and tracked across matches, tournaments and seasons.
 
 ---
 
-## 9. 完了条件
-
-GitHub Actionsと手動確認が完了した時点でv1.1-02AをCompletedとする。
-
-次工程：
+## 9. 次工程
 
 ```text
 v1.1-02B
