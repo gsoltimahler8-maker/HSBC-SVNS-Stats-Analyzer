@@ -365,3 +365,154 @@
     height: 320px;
   }
 }
+
+/* v1.1-02A-r1: 13-indicator performance profile */
+.analyticsCategoryStack {
+  display: grid;
+  gap: 16px;
+}
+
+.analyticsMetricCategory {
+  padding: 16px;
+  border: 1px solid var(--analytics-border);
+  border-radius: 18px;
+  background: rgba(248, 250, 252, 0.9);
+}
+
+.analyticsMetricCategory > header {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.analyticsMetricCategory h3,
+.analyticsMetricCategory p {
+  margin: 0;
+}
+
+.analyticsMetricCategory h3 {
+  color: #0f172a;
+}
+
+.analyticsMetricCategory p {
+  color: #64748b;
+}
+
+.analyticsMetricGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.analyticsMetricCard {
+  display: grid;
+  gap: 8px;
+  min-height: 154px;
+  padding: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 14px;
+  background: #fff;
+}
+
+.analyticsMetricCard > span {
+  color: #334155;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.analyticsMetricCard > strong {
+  color: #0f172a;
+  font-size: clamp(1.45rem, 2.8vw, 2rem);
+  line-height: 1;
+}
+
+.analyticsMetricCard > small {
+  color: #64748b;
+  line-height: 1.35;
+}
+
+.analyticsCoverageRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+  color: #64748b;
+  font-size: 0.82rem;
+}
+
+.analyticsCoverageRow b {
+  color: #0f172a;
+}
+
+.analyticsSingleControl {
+  max-width: 680px;
+  margin-bottom: 12px;
+}
+
+.analyticsSingleControl label {
+  display: grid;
+  gap: 6px;
+  color: #334155;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.analyticsSingleControl select {
+  width: 100%;
+  min-height: 43px;
+  padding: 8px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: #fff;
+  color: #0f172a;
+  font: inherit;
+}
+
+.analyticsQuestion {
+  margin-bottom: 12px;
+  padding: 13px 14px;
+  border-left: 4px solid #0ea5e9;
+  border-radius: 0 12px 12px 0;
+  background: #f0f9ff;
+  color: #0c4a6e;
+}
+
+.analyticsQuestion p {
+  margin: 5px 0 0;
+}
+
+.analyticsInlineNote {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #f8fafc;
+  color: #475569;
+  font-size: 0.88rem;
+}
+
+.analyticsCautionCompact {
+  margin-bottom: 12px;
+}
+
+@media (max-width: 960px) {
+  .analyticsMetricGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .analyticsMetricCategory {
+    padding: 12px;
+  }
+
+  .analyticsMetricGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .analyticsMetricCard {
+    min-height: 130px;
+  }
+}
