@@ -1,486 +1,306 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
-  LineChart as RechartsLineChart,
+  CartesianGrid,
   Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
 } from 'recharts';
-import { ArrowLeft, LineChart as TrendIcon, Filter, Info } from 'lucide-react';
-import { matchData as sampleMatches } from '../data/loadMatches.js';
+import { Filter, Info, LineChart as TrendIcon } from 'lucide-react';
+import { matchData as matches } from '../data/loadMatches.js';
 import ja from '../i18n/ja.js';
+import {
+  TREND_METRIC_KEYS,
+  averageMetric,
+  compareMatchesChronologically,
+  formatMetricValue,
+  getMetricCoverage,
+  getMetricDefinition,
+  getMetricFormula,
+  getMetricLabel,
+  getMetricValue,
+  getTeamResult,
+  getUniqueValues,
+  groupMatches,
+} from '../utils/analyticsMetrics.js';
+import '../analytics.css';
 
-const metricOptions = [
-  { key: 'pointsFor', labelJa: '得点', labelEn: 'Points For', suffix: '' },
-  { key: 'pointsAgainst', labelJa: '失点', labelEn: 'Points Against', suffix: '' },
-  { key: 'metres', labelJa: '獲得メートル', labelEn: 'Metres', suffix: '' },
-  { key: 'cleanBreaks', labelJa: 'クリーンブレイク', labelEn: 'Clean Breaks', suffix: '' },
-  { key: 'defendersBeaten', labelJa: 'ディフェンダー突破', labelEn: 'Defenders Beaten', suffix: '' },
-  { key: 'turnoversWon', labelJa: 'ターンオーバー獲得', labelEn: 'Turnovers Won', suffix: '' },
-  { key: 'turnoversConceded', labelJa: 'ターンオーバー喪失', labelEn: 'Turnovers Conceded', suffix: '' },
-  { key: 'possession', labelJa: 'ポゼッション', labelEn: 'Possession', suffix: '%' },
-  { key: 'tackleSuccess', labelJa: 'タックル成功率', labelEn: 'Tackle Success', suffix: '%' },
-];
+const ALL = 'All';
 
-function isMissingValue(value) {
-  return value === null || value === undefined || value === '';
-}
+const compactDate = (dateValue) => {
+  const date = new Date(dateValue);
 
-function getMetricValue(match, metric) {
-  if (metric === 'tackleSuccess') {
-    const hasTackles = !isMissingValue(match.tackles);
-    const hasMissedTackles = !isMissingValue(match.missedTackles);
-
-    if (!hasTackles && !hasMissedTackles) {
-      return null;
-    }
-
-    const tackles = Number(match.tackles ?? 0);
-    const missedTackles = Number(match.missedTackles ?? 0);
-    const total = tackles + missedTackles;
-
-    return total > 0 ? (100 * tackles) / total : 0;
+  if (Number.isNaN(date.getTime())) {
+    return dateValue || '';
   }
 
-  const rawValue = match[metric];
-
-  if (isMissingValue(rawValue)) {
-    return null;
-  }
-
-  const numericValue = Number(rawValue);
-
-  return Number.isFinite(numericValue) ? numericValue : null;
-}
-
-function getWinner(match) {
-  if (match.winner) {
-    return match.winner;
-  }
-
-  const teamResult = match.teamResult || match.result;
-
-  if (teamResult === 'W') {
-    return match.team;
-  }
-
-  if (teamResult === 'L') {
-    return match.opponent;
-  }
-
-  return '';
-}
-
-function getMatchResultLabel(match, isJapanese) {
-  const winner = getWinner(match);
-
-  if (winner) {
-    return isJapanese ? `${winner} 勝利` : match.matchResult || `${winner} Win`;
-  }
-
-  return match.matchResult || '';
-}
-
-function getDataType(match) {
-  if (match.dataType === 'real') {
-    return 'real';
-  }
-
-  if (match.dataType === 'sample') {
-    return 'sample';
-  }
-
-  return match.sourceProvider === 'Sample data' ? 'sample' : 'real';
-}
-
-function compareMatchesChronologically(a, b) {
-  const dateDifference = new Date(a.date) - new Date(b.date);
-
-  if (dateDifference !== 0) {
-    return dateDifference;
-  }
-
-  const aRugbyComAuId = Number(a.external?.rugbyComAu);
-  const bRugbyComAuId = Number(b.external?.rugbyComAu);
-
-  if (
-    Number.isFinite(aRugbyComAuId) &&
-    Number.isFinite(bRugbyComAuId) &&
-    aRugbyComAuId !== bRugbyComAuId
-  ) {
-    return aRugbyComAuId - bRugbyComAuId;
-  }
-
-  return String(a.id).localeCompare(String(b.id));
-}
+  return `${date.getMonth() + 1}/${date.getDate()}`;
+};
 
 export default function StatsTrends({ onBackHome, t = ja }) {
   const isJapanese = t.navigation?.backHome?.includes('ホーム');
   const screenBgImage = `${import.meta.env.BASE_URL}assets/bg-stats-trends.png`;
   const mobileScreenBgImage = `${import.meta.env.BASE_URL}assets/bg-stats-trends-mobile.png`;
 
-  const labels = {
+  const copy = {
     title: isJapanese ? 'スタッツ推移' : 'Stats Trends',
     subtitle: isJapanese
-      ? 'シーズン内の試合ごとのスタッツ変化を確認するための画面です。'
-      : 'A screen for reviewing match-by-match statistical trends within a season.',
-    filters: isJapanese ? '分析条件' : 'Analysis Scope',
+      ? '試合、大会、シーズンの粒度を切り替えて、中長期的な変化を追跡します。'
+      : 'Track longer-term performance changes at match, tournament and season level.',
+    badge: isJapanese ? '長期パフォーマンス推移' : 'Long-term Performance Trends',
+    scope: isJapanese ? '表示条件' : 'Trend Scope',
     season: isJapanese ? 'シーズン' : 'Season',
     gender: isJapanese ? '男女区分' : 'Gender',
     team: isJapanese ? 'チーム' : 'Team',
-    tournament: isJapanese ? '大会' : 'Tournament',
     opponent: isJapanese ? '対戦相手' : 'Opponent',
+    aggregation: isJapanese ? '表示粒度' : 'Aggregation',
     metric: isJapanese ? '指標' : 'Metric',
-    allTournaments: isJapanese ? 'すべて' : 'All',
-    allOpponents: isJapanese ? 'すべて' : 'All',
-    currentScope: isJapanese ? '現在の表示条件' : 'Current View',
-    matchCount: isJapanese ? '対象試合数' : 'Match Count',
-    availableDataPoints: isJapanese ? '有効データ数' : 'Available Data Points',
+    all: isJapanese ? 'すべて' : 'All',
     women: isJapanese ? '女子' : 'Women',
     men: isJapanese ? '男子' : 'Men',
-    dataAvailability: isJapanese ? 'データ利用可能範囲' : 'Data Availability',
-    dataAvailabilityText: isJapanese
-      ? '詳細チームスタッツの標準対象は2022-23シーズン以降です。'
-      : 'Full team match stats are treated as standard from the 2022-23 season onward.',
-    dataCoverageNote: isJapanese
-      ? '表示中の試合データの粒度とデータ種別を確認し、比較条件に注意が必要な場合は警告します。'
-      : 'This screen checks the data coverage and data type of displayed matches and warns when comparisons need caution.',
-    sourceProvider: isJapanese ? '主ソース' : 'Primary source',
-    fetchedAt: isJapanese ? '取得日時' : 'Fetched at',
-    statDefinitionVersion: isJapanese ? 'スタッツ定義' : 'Stats definition',
-    dataCoverageSummary: isJapanese
-      ? '現在の表示範囲のデータ粒度'
-      : 'Data coverage in current view',
-    dataTypeSummary: isJapanese ? '現在の表示範囲のデータ種別' : 'Data type in current view',
-    coverageAllFull: isJapanese
-      ? '現在の表示範囲は詳細試合スタッツのみです。'
-      : 'The current view contains full match stats only.',
-    coverageMixedWarning: isJapanese
-      ? 'データ粒度の異なる試合が含まれています。比較結果の解釈に注意してください。'
-      : 'This view includes matches with different data coverage levels. Interpret comparisons carefully.',
-    dataTypeRealOnly: isJapanese
-      ? '現在の表示範囲は実データのみです。'
-      : 'The current view contains real data only.',
-    dataTypeSampleWarning: isJapanese
-      ? 'サンプルデータが含まれています。実データとの比較結果を確定的に解釈しないでください。'
-      : 'Sample data is included. Do not treat comparisons with real data as conclusive.',
-    dataTypeMixedWarning: isJapanese
-      ? '実データとサンプルデータが混在しています。平均値や推移の解釈に注意してください。'
-      : 'Real and sample data are mixed. Interpret averages and trends carefully.',
-    coverageLevels: {
-      full_match_stats: isJapanese ? '詳細試合スタッツ' : 'Full match stats',
-      limited_data: isJapanese ? '限定データ' : 'Limited data',
-      results_only: isJapanese ? '結果のみ' : 'Results only',
-      unknown: isJapanese ? '未確認' : 'Unknown',
-    },
-    dataTypes: {
-      real: isJapanese ? '実データ' : 'Real data',
-      sample: isJapanese ? 'サンプルデータ' : 'Sample data',
-    },
-    tournamentCards: isJapanese ? '大会別平均値' : 'Tournament averages',
-    opponentCards: isJapanese ? '対戦相手別平均値' : 'Opponent averages',
-    next: isJapanese ? '今後の追加予定' : 'Next implementation',
-    matches: isJapanese ? '試合' : 'matches',
+    match: isJapanese ? '試合' : 'Match',
+    tournament: isJapanese ? '大会' : 'Tournament',
+    seasonAggregation: isJapanese ? 'シーズン' : 'Season',
+    matches: isJapanese ? '対象試合' : 'Matches',
+    available: isJapanese ? '利用可能' : 'Available',
+    dataCoverage: isJapanese ? 'データ利用可能数' : 'Data Coverage',
+    metricDefinition: isJapanese ? '指標定義' : 'Metric Definition',
+    rawMetric: isJapanese ? '取得値' : 'Raw metric',
+    calculatedMetric: isJapanese ? '計算指標' : 'Calculated metric',
     noData: isJapanese
-      ? 'この条件に一致する試合はありません。'
-      : 'No matches are available for this condition.',
-    noDataTitle: isJapanese
-      ? '該当する試合データがありません'
-      : 'No matching match data',
-    noDataBody: isJapanese
-      ? '現在の Season / Gender / Team / Tournament / Opponent の組み合わせでは、表示できる試合がありません。'
-      : 'There are no matches available for the current Season / Gender / Team / Tournament / Opponent combination.',
-    noMetricDataBody: isJapanese
-      ? '対象試合はありますが、選択した指標の有効な値がありません。'
-      : 'Matching games exist, but the selected metric has no valid values.',
-    noDataHint: isJapanese
-      ? '条件または指標を変更するか、今後のデータ追加後に再確認してください。'
-      : 'Change the filters or metric, or check again after more data has been added.',
-    noDataCoverageStatus: isJapanese
-      ? '表示対象の試合がないため、データ粒度は判定できません。'
-      : 'Data coverage cannot be evaluated because no matches are currently displayed.',
-    noDataTypeStatus: isJapanese
-      ? '表示対象の試合がないため、データ種別は判定できません。'
-      : 'Data type cannot be evaluated because no matches are currently displayed.',
+      ? '現在の条件で表示できるデータがありません。'
+      : 'No data is available for the current filters.',
+    oneSeasonNote: isJapanese
+      ? '現在は比較可能なシーズンが1件だけです。複数シーズンのデータが追加されると、長期比較として機能します。'
+      : 'Only one comparable season is currently available. This view becomes a multi-season comparison when more seasons are added.',
+    missingData: isJapanese
+      ? '必要な値が欠けている試合は平均・グラフから除外し、0として扱いません。'
+      : 'Matches with missing inputs are excluded from averages and charts rather than treated as zero.',
+    sampleWarning: isJapanese
+      ? 'この表示範囲にはサンプルデータが含まれています。実データと混同せずに解釈してください。'
+      : 'This view includes sample data. Do not mix it with real-data conclusions.',
+    trendQuestion: isJapanese
+      ? 'この指標は、時間の経過に沿ってどのように変化したか'
+      : 'How this metric changes over time',
+    average: isJapanese ? '平均' : 'Average',
+    score: isJapanese ? 'スコア' : 'Score',
+    result: isJapanese ? '結果' : 'Result',
+    win: isJapanese ? '勝利' : 'Win',
+    loss: isJapanese ? '敗戦' : 'Loss',
+    sources: isJapanese ? '主なデータソース' : 'Primary data sources',
   };
 
-  const seasons = [...new Set(sampleMatches.map((match) => match.season))];
+  const seasons = getUniqueValues(matches, 'season').sort((a, b) =>
+    b.localeCompare(a)
+  );
+  const genders = getUniqueValues(matches, 'gender');
+  const teams = getUniqueValues(matches, 'team');
 
-  const [season, setSeason] = useState('2025-26');
-  const [gender, setGender] = useState('Women');
-  const [team, setTeam] = useState('Japan');
-  const [tournament, setTournament] = useState('All');
-  const [opponent, setOpponent] = useState('All');
-  const [metric, setMetric] = useState('cleanBreaks');
+  const [season, setSeason] = useState(ALL);
+  const [gender, setGender] = useState(
+    genders.includes('Women') ? 'Women' : genders[0] || ''
+  );
+  const [team, setTeam] = useState(
+    teams.includes('Japan') ? 'Japan' : teams[0] || ''
+  );
+  const [opponent, setOpponent] = useState(ALL);
+  const [aggregation, setAggregation] = useState('match');
+  const [metric, setMetric] = useState('pointDiff');
 
-  const baseFiltered = useMemo(
+  useEffect(() => {
+    setOpponent(ALL);
+  }, [season, gender, team]);
+
+  const baseScope = useMemo(
     () =>
-      sampleMatches.filter(
-        (match) =>
-          match.season === season &&
-          match.gender === gender &&
-          match.team === team
-      ),
+      matches
+        .filter(
+          (match) =>
+            (season === ALL || match.season === season) &&
+            match.gender === gender &&
+            match.team === team
+        )
+        .slice()
+        .sort(compareMatchesChronologically),
     [season, gender, team]
   );
 
-  const tournaments = [
-    'All',
-    ...new Set(baseFiltered.map((match) => match.tournament)),
-  ];
-
-  useEffect(() => {
-    setTournament('All');
-    setOpponent('All');
-  }, [season, gender, team]);
-
-  const tournamentFiltered = useMemo(
-    () =>
-      baseFiltered.filter(
-        (match) => tournament === 'All' || match.tournament === tournament
-      ),
-    [baseFiltered, tournament]
-  );
-
-  const opponents = [
-    'All',
-    ...new Set(tournamentFiltered.map((match) => match.opponent)),
-  ];
-
-  useEffect(() => {
-    setOpponent('All');
-  }, [tournament]);
+  const opponents = getUniqueValues(baseScope, 'opponent');
 
   const filtered = useMemo(
     () =>
-      tournamentFiltered.filter(
-        (match) => opponent === 'All' || match.opponent === opponent
+      baseScope.filter(
+        (match) => opponent === ALL || match.opponent === opponent
       ),
-    [tournamentFiltered, opponent]
+    [baseScope, opponent]
   );
 
-  const selectedMetric =
-    metricOptions.find((item) => item.key === metric) || metricOptions[0];
+  const includesSampleData = filtered.some(
+    (match) =>
+      match.dataType === 'sample' ||
+      String(match.sourceProvider || '')
+        .toLowerCase()
+        .includes('sample')
+  );
 
-  const metricLabel = isJapanese
-    ? selectedMetric.labelJa
-    : selectedMetric.labelEn;
-
-  const hasNoMatches = filtered.length === 0;
-
-  const coverageLevels = [
+  const sourceProviders = [
     ...new Set(
-      filtered.map((match) => match.dataCoverageLevel || 'unknown')
+      filtered
+        .map((match) => match.sourceProvider)
+        .filter(Boolean)
     ),
   ];
 
-  const hasMixedCoverage = coverageLevels.length > 1;
-  const hasNonFullCoverage = coverageLevels.some(
-    (level) => level !== 'full_match_stats'
-  );
-
-  const coverageLevelText =
-    coverageLevels.length > 0
-      ? coverageLevels
-          .map((level) => labels.coverageLevels[level] || level)
-          .join(' / ')
-      : labels.coverageLevels.unknown;
-
-  const coverageStatusText = hasNoMatches
-    ? labels.noDataCoverageStatus
-    : hasMixedCoverage || hasNonFullCoverage
-      ? labels.coverageMixedWarning
-      : labels.coverageAllFull;
-
-  const dataTypes = [...new Set(filtered.map((match) => getDataType(match)))];
-  const hasSampleData = dataTypes.includes('sample');
-  const hasMixedDataTypes = dataTypes.length > 1;
-
-  const dataTypeText =
-    dataTypes.length > 0
-      ? dataTypes.map((type) => labels.dataTypes[type] || type).join(' / ')
-      : labels.noDataTypeStatus;
-
-  const dataTypeStatusText = hasNoMatches
-    ? labels.noDataTypeStatus
-    : hasMixedDataTypes
-      ? labels.dataTypeMixedWarning
-      : hasSampleData
-        ? labels.dataTypeSampleWarning
-        : labels.dataTypeRealOnly;
-
-  const sourceProviderText =
-    filtered.length > 0
-      ? [
-          ...new Set(
-            filtered.map((match) => match.sourceProvider || 'Unknown')
-          ),
-        ].join(' / ')
-      : 'Unknown';
-
-  const statDefinitionVersionText =
-    filtered.length > 0
-      ? [
-          ...new Set(
-            filtered.map(
-              (match) => match.statDefinitionVersion || 'Unknown'
-            )
-          ),
-        ].join(' / ')
-      : 'Unknown';
-
-  const fetchedAtValues = filtered
-    .map((match) => match.fetchedAt)
-    .filter(Boolean)
-    .sort();
-
-  const latestFetchedAt =
-    fetchedAtValues.length > 0
-      ? fetchedAtValues[fetchedAtValues.length - 1]
-      : 'Unknown';
-
-  const selectedTournamentText =
-    tournament === 'All' ? labels.allTournaments : tournament;
-
-  const selectedOpponentText =
-    opponent === 'All' ? labels.allOpponents : opponent;
-
-  const selectedGenderText =
-    gender === 'Women' ? labels.women : labels.men;
-
-  const trendRows = useMemo(
-    () =>
-      filtered
-        .slice()
-        .sort(compareMatchesChronologically)
+  const aggregateRows = useMemo(() => {
+    if (aggregation === 'match') {
+      return filtered
         .map((match, index) => {
-          const metricValue = getMetricValue(match, metric);
-          const matchResultLabel = getMatchResultLabel(match, isJapanese);
+          const value = getMetricValue(match, metric);
+
+          if (value === null) {
+            return null;
+          }
 
           return {
-            matchIndex: index + 1,
-            matchLabel: `M${index + 1}`,
-            matchDescription: [
-              match.date,
-              match.tournament,
-              `${match.team} ${match.pointsFor}-${match.pointsAgainst} ${match.opponent}`,
-              matchResultLabel,
-            ]
-              .filter(Boolean)
-              .join(' / '),
-            value:
-              metricValue === null
-                ? null
-                : Number(metricValue.toFixed(1)),
+            id: match.id,
+            label: `${compactDate(match.date)} ${match.opponent}`,
+            value,
+            matches: 1,
+            coverage: 1,
+            date: match.date,
+            tournament: match.tournament,
+            season: match.season,
+            opponent: match.opponent,
+            team: match.team,
+            pointsFor: match.pointsFor,
+            pointsAgainst: match.pointsAgainst,
+            result: getTeamResult(match),
+            order: index,
           };
-        }),
-    [filtered, metric, isJapanese]
-  );
+        })
+        .filter(Boolean);
+    }
 
-  const availableDataPoints = trendRows.filter(
-    (row) => row.value !== null
-  ).length;
+    if (aggregation === 'tournament') {
+      const groups = groupMatches(
+        filtered,
+        (match) => `${match.season}::${match.tournament}`
+      );
 
-  const hasMetricData = availableDataPoints > 0;
+      return [...groups.entries()]
+        .map(([key, group]) => {
+          const value = averageMetric(group, metric);
+          const coverage = getMetricCoverage(group, metric);
+          const firstMatch = group
+            .slice()
+            .sort(compareMatchesChronologically)[0];
+          const [groupSeason, tournamentName] = key.split('::');
 
-  const currentScopeItems = [
-    { label: labels.season, value: season },
-    { label: labels.gender, value: selectedGenderText },
-    { label: labels.team, value: team },
-    { label: labels.tournament, value: selectedTournamentText },
-    { label: labels.opponent, value: selectedOpponentText },
-    { label: labels.metric, value: metricLabel },
-    { label: labels.matchCount, value: filtered.length },
-    { label: labels.availableDataPoints, value: availableDataPoints },
-  ];
+          if (value === null) {
+            return null;
+          }
 
-  const tournamentAverages = useMemo(() => {
-    const groups = new Map();
+          return {
+            id: key,
+            label: `${groupSeason} ${tournamentName.replace(' SVNS', '')}`,
+            value,
+            matches: group.length,
+            coverage: coverage.available,
+            date: firstMatch?.date || '',
+            tournament: tournamentName,
+            season: groupSeason,
+            opponent: '',
+          };
+        })
+        .filter(Boolean)
+        .sort((a, b) => a.date.localeCompare(b.date));
+    }
 
-    filtered.forEach((match) => {
-      if (!groups.has(match.tournament)) {
-        groups.set(match.tournament, []);
-      }
-
-      groups.get(match.tournament).push(match);
-    });
+    const groups = groupMatches(filtered, (match) => match.season);
 
     return [...groups.entries()]
-      .map(([tournamentName, matches]) => {
-        const values = matches
-          .map((match) => getMetricValue(match, metric))
-          .filter((value) => value !== null);
+      .map(([groupSeason, group]) => {
+        const value = averageMetric(group, metric);
+        const coverage = getMetricCoverage(group, metric);
 
-        if (values.length === 0) {
+        if (value === null) {
           return null;
         }
 
-        const total = values.reduce((sum, value) => sum + value, 0);
-
         return {
-          tournament: tournamentName,
-          matches: values.length,
-          average: total / values.length,
-        };
-      })
-      .filter(Boolean);
-  }, [filtered, metric]);
-
-  const opponentAverages = useMemo(() => {
-    const groups = new Map();
-
-    filtered.forEach((match) => {
-      if (!groups.has(match.opponent)) {
-        groups.set(match.opponent, []);
-      }
-
-      groups.get(match.opponent).push(match);
-    });
-
-    return [...groups.entries()]
-      .map(([opponentName, matches]) => {
-        const values = matches
-          .map((match) => getMetricValue(match, metric))
-          .filter((value) => value !== null);
-
-        if (values.length === 0) {
-          return null;
-        }
-
-        const total = values.reduce((sum, value) => sum + value, 0);
-
-        return {
-          opponent: opponentName,
-          matches: values.length,
-          average: total / values.length,
+          id: groupSeason,
+          label: groupSeason,
+          value,
+          matches: group.length,
+          coverage: coverage.available,
+          date:
+            group.slice().sort(compareMatchesChronologically)[0]?.date ||
+            '',
+          tournament: '',
+          season: groupSeason,
+          opponent: '',
         };
       })
       .filter(Boolean)
-      .sort((a, b) => b.average - a.average);
-  }, [filtered, metric]);
+      .sort((a, b) => a.season.localeCompare(b.season));
+  }, [filtered, aggregation, metric]);
 
-  const chartTooltipStyle = {
-    backgroundColor: '#0f172a',
-    border: '1px solid rgba(148, 163, 184, 0.45)',
-    borderRadius: '10px',
-    color: '#e5e7eb',
-    boxShadow: '0 10px 24px rgba(0, 0, 0, 0.28)',
-  };
+  const overallCoverage = getMetricCoverage(filtered, metric);
+  const definition = getMetricDefinition(metric);
 
-  const chartTooltipLabelStyle = {
-    color: '#f8fafc',
-    fontWeight: 800,
-  };
+  const tooltip = ({ active, payload }) => {
+    if (!active || !payload?.length) {
+      return null;
+    }
 
-  const chartTooltipItemStyle = {
-    color: '#e5e7eb',
+    const row = payload[0].payload;
+
+    return (
+      <div className="analyticsTooltip">
+        <strong>{row.label}</strong>
+
+        {aggregation === 'match' ? (
+          <>
+            <span>
+              {copy.score}: {row.team} {row.pointsFor}-
+              {row.pointsAgainst} {row.opponent}
+            </span>
+            <span>
+              {copy.result}:{' '}
+              {row.result === 'W'
+                ? copy.win
+                : row.result === 'L'
+                  ? copy.loss
+                  : row.result || '—'}
+            </span>
+            <span>
+              {row.date} / {row.tournament}
+            </span>
+          </>
+        ) : (
+          <>
+            <span>
+              {copy.matches}: {row.matches}
+            </span>
+            <span>
+              {copy.dataCoverage}: {row.coverage}/{row.matches}
+            </span>
+          </>
+        )}
+
+        <span>
+          {getMetricLabel(metric, isJapanese)}:{' '}
+          {formatMetricValue(metric, row.value)}
+        </span>
+      </div>
+    );
   };
 
   return (
     <div
-      className="app screenBackground statsTrendsScreen"
+      className="app screenBackground statsTrendsScreen analyticsScreen"
       style={{
         '--screen-bg-image': `url(${screenBgImage})`,
         '--screen-bg-mobile-image': `url(${mobileScreenBgImage})`,
@@ -492,319 +312,220 @@ export default function StatsTrends({ onBackHome, t = ja }) {
           className="backHomeButton"
           onClick={onBackHome}
         >
-          <ArrowLeft size={16} />{' '}
-          {t.navigation.backHome.replace('← ', '')}
+          {t.navigation.backHome}
         </button>
+      )}
+
+      {includesSampleData && (
+        <div className="analyticsWarning">{copy.sampleWarning}</div>
       )}
 
       <header className="hero">
         <div>
-          <h1>{labels.title}</h1>
-          <p>{labels.subtitle}</p>
+          <h1>{copy.title}</h1>
+          <p>{copy.subtitle}</p>
         </div>
-
         <div className="badge">
-          <TrendIcon size={22} /> v0.7
+          <TrendIcon size={22} /> {copy.badge}
         </div>
       </header>
 
       <section className="panel scope">
         <h2>
-          <Filter size={18} /> {labels.filters}
+          <Filter size={18} /> {copy.scope}
         </h2>
 
-        <div className="filters">
+        <div className="filters analyticsFilters">
           <label>
-            {labels.season}
+            {copy.season}
             <select
               value={season}
               onChange={(event) => setSeason(event.target.value)}
             >
-              {seasons.map((seasonName) => (
-                <option key={seasonName} value={seasonName}>
-                  {seasonName}
+              <option value={ALL}>{copy.all}</option>
+              {seasons.map((item) => (
+                <option key={item} value={item}>
+                  {item}
                 </option>
               ))}
             </select>
           </label>
 
           <label>
-            {labels.gender}
+            {copy.gender}
             <select
               value={gender}
               onChange={(event) => setGender(event.target.value)}
             >
-              <option value="Women">{labels.women}</option>
-              <option value="Men">{labels.men}</option>
+              {genders.map((item) => (
+                <option key={item} value={item}>
+                  {item === 'Women'
+                    ? copy.women
+                    : item === 'Men'
+                      ? copy.men
+                      : item}
+                </option>
+              ))}
             </select>
           </label>
 
           <label>
-            {labels.team}
+            {copy.team}
             <select
               value={team}
               onChange={(event) => setTeam(event.target.value)}
             >
-              <option value="Japan">Japan</option>
-            </select>
-          </label>
-
-          <label>
-            {labels.tournament}
-            <select
-              value={tournament}
-              onChange={(event) => setTournament(event.target.value)}
-            >
-              {tournaments.map((tournamentName) => (
-                <option key={tournamentName} value={tournamentName}>
-                  {tournamentName === 'All'
-                    ? labels.allTournaments
-                    : tournamentName}
+              {teams.map((item) => (
+                <option key={item} value={item}>
+                  {item}
                 </option>
               ))}
             </select>
           </label>
 
           <label>
-            {labels.opponent}
+            {copy.opponent}
             <select
               value={opponent}
               onChange={(event) => setOpponent(event.target.value)}
             >
-              {opponents.map((opponentName) => (
-                <option key={opponentName} value={opponentName}>
-                  {opponentName === 'All'
-                    ? labels.allOpponents
-                    : opponentName}
+              <option value={ALL}>{copy.all}</option>
+              {opponents.map((item) => (
+                <option key={item} value={item}>
+                  {item}
                 </option>
               ))}
             </select>
           </label>
 
           <label>
-            {labels.metric}
+            {copy.aggregation}
+            <select
+              value={aggregation}
+              onChange={(event) =>
+                setAggregation(event.target.value)
+              }
+            >
+              <option value="match">{copy.match}</option>
+              <option value="tournament">{copy.tournament}</option>
+              <option value="season">{copy.seasonAggregation}</option>
+            </select>
+          </label>
+
+          <label>
+            {copy.metric}
             <select
               value={metric}
               onChange={(event) => setMetric(event.target.value)}
             >
-              {metricOptions.map((item) => (
-                <option key={item.key} value={item.key}>
-                  {isJapanese ? item.labelJa : item.labelEn}
+              {TREND_METRIC_KEYS.map((metricKey) => (
+                <option key={metricKey} value={metricKey}>
+                  {getMetricLabel(metricKey, isJapanese)}
                 </option>
               ))}
             </select>
           </label>
         </div>
 
-        <div className="dataAvailabilityNotice">
-          <b>{labels.dataAvailability}</b>
-          <span>{labels.dataAvailabilityText}</span>
-          <small>{labels.dataCoverageNote}</small>
-
-          <small>
-            <strong>{labels.sourceProvider}: </strong>
-            {sourceProviderText}
-          </small>
-
-          <small>
-            <strong>{labels.fetchedAt}: </strong>
-            {latestFetchedAt}
-          </small>
-
-          <small>
-            <strong>{labels.statDefinitionVersion}: </strong>
-            {statDefinitionVersionText}
-          </small>
-
-          <small>
-            <strong>{labels.dataCoverageSummary}: </strong>
-            {coverageLevelText}
-          </small>
-
-          <small
-            className={
-              hasNoMatches || hasMixedCoverage || hasNonFullCoverage
-                ? 'coverageWarningText'
-                : 'coverageOkText'
-            }
-          >
-            {coverageStatusText}
-          </small>
-
-          <small>
-            <strong>{labels.dataTypeSummary}: </strong>
-            {dataTypeText}
-          </small>
-
-          <small
-            className={
-              hasNoMatches || hasSampleData
-                ? 'coverageWarningText'
-                : 'coverageOkText'
-            }
-          >
-            {dataTypeStatusText}
-          </small>
-        </div>
-
-        <div className="scopeSummary">
-          <b>{labels.currentScope}</b>
-
-          <div className="scopeSummaryGrid">
-            {currentScopeItems.map((item) => (
-              <div className="scopeSummaryItem" key={item.label}>
-                <span>{item.label}:</span>
-                <strong>{item.value}</strong>
-              </div>
-            ))}
-          </div>
+        <div className="analyticsScopeSummary">
+          <span>
+            {copy.matches}: <strong>{filtered.length}</strong>
+          </span>
+          <span>
+            {copy.dataCoverage}:{' '}
+            <strong>
+              {overallCoverage.available}/{overallCoverage.total}
+            </strong>
+          </span>
+          <span>
+            {copy.sources}:{' '}
+            <strong>{sourceProviders.join(' / ') || '—'}</strong>
+          </span>
         </div>
       </section>
 
-      <main className="grid">
-        <section className="panel wide">
-          <h2>
-            {labels.title}: {metricLabel}
-          </h2>
+      <section className="panel analyticsPanel">
+        <div className="analyticsPanelHeader">
+          <div>
+            <h2>{getMetricLabel(metric, isJapanese)}</h2>
+            <p>{copy.trendQuestion}</p>
+          </div>
 
-          <p className="note">
-            {metricLabel} / n={availableDataPoints} / {labels.matches}=
-            {trendRows.length}
-          </p>
+          <span className="analyticsSampleCount">
+            {copy.available}: {aggregateRows.length}
+          </span>
+        </div>
 
-          {hasMetricData ? (
-            <div className="chart">
-              <ResponsiveContainer width="100%" height={320}>
-                <RechartsLineChart
-                  data={trendRows}
-                  margin={{ top: 16, right: 20, bottom: 8, left: 0 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="matchLabel" interval={0} />
-                  <YAxis
-                    width={48}
-                    tickFormatter={(value) =>
-                      `${value}${selectedMetric.suffix}`
-                    }
-                  />
-                  <Tooltip
-                    cursor={false}
-                    labelFormatter={(value, payload) =>
-                      payload?.[0]?.payload?.matchDescription || value
-                    }
-                    formatter={(value) => [
-                      `${value}${selectedMetric.suffix}`,
-                      metricLabel,
-                    ]}
-                    contentStyle={chartTooltipStyle}
-                    labelStyle={chartTooltipLabelStyle}
-                    itemStyle={chartTooltipItemStyle}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="value"
-                    name={metricLabel}
-                    stroke="#38bdf8"
-                    strokeWidth={3}
-                    dot={{ r: 4 }}
-                    activeDot={{ r: 6 }}
-                    connectNulls={false}
-                  />
-                </RechartsLineChart>
-              </ResponsiveContainer>
+        {aggregateRows.length > 0 ? (
+          <div className="analyticsChart analyticsTrendChart">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart
+                data={aggregateRows}
+                margin={{ top: 18, right: 22, left: 8, bottom: 42 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="label"
+                  interval={0}
+                  angle={aggregateRows.length > 5 ? -22 : 0}
+                  textAnchor={
+                    aggregateRows.length > 5 ? 'end' : 'middle'
+                  }
+                  height={aggregateRows.length > 5 ? 82 : 48}
+                />
+                <YAxis
+                  tickFormatter={(value) =>
+                    formatMetricValue(metric, value)
+                  }
+                />
+                <Tooltip content={tooltip} />
+                <Line
+                  type="monotone"
+                  dataKey="value"
+                  name={getMetricLabel(metric, isJapanese)}
+                  stroke="#38bdf8"
+                  strokeWidth={3}
+                  dot={{ r: 5 }}
+                  activeDot={{ r: 7 }}
+                  connectNulls={false}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        ) : (
+          <div className="analyticsEmpty">
+            <Info size={22} />
+            <p>{copy.noData}</p>
+          </div>
+        )}
+
+        {aggregation === 'season' && aggregateRows.length <= 1 && (
+          <div className="analyticsCaution">
+            <Info size={18} />
+            <div>
+              <strong>{copy.oneSeasonNote}</strong>
             </div>
-          ) : (
-            <div className="emptyState">
-              <b>{labels.noDataTitle}</b>
-              <p>
-                {hasNoMatches ? labels.noDataBody : labels.noMetricDataBody}
-              </p>
-              <small>{labels.noDataHint}</small>
-            </div>
-          )}
-        </section>
+          </div>
+        )}
 
-        <section className="panel wide">
-          <h2>{labels.tournamentCards}</h2>
+        <div className="analyticsDefinition">
+          <div>
+            <strong>{copy.metricDefinition}</strong>
+            <span>{getMetricLabel(metric, isJapanese)}</span>
+          </div>
+          <p>{getMetricFormula(metric, isJapanese)}</p>
+          <small>
+            {definition.type === 'calculated'
+              ? copy.calculatedMetric
+              : copy.rawMetric}
+            {' · '}
+            {copy.dataCoverage}: {overallCoverage.available}/
+            {overallCoverage.total}
+          </small>
+        </div>
 
-          {tournamentAverages.length > 0 ? (
-            <div className="cards">
-              {tournamentAverages.map((item) => (
-                <div className="corr" key={item.tournament}>
-                  <span>{item.tournament}</span>
-                  <b>
-                    {item.average.toFixed(1)}
-                    {selectedMetric.suffix}
-                  </b>
-                  <small>
-                    n={item.matches} / {metricLabel}
-                  </small>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="emptyState compact">
-              <b>{labels.noDataTitle}</b>
-              <p>{labels.noData}</p>
-            </div>
-          )}
-        </section>
-
-        <section className="panel wide">
-          <h2>{labels.opponentCards}</h2>
-
-          {opponentAverages.length > 0 ? (
-            <div className="cards">
-              {opponentAverages.map((item) => (
-                <div className="corr" key={item.opponent}>
-                  <span>{item.opponent}</span>
-                  <b>
-                    {item.average.toFixed(1)}
-                    {selectedMetric.suffix}
-                  </b>
-                  <small>
-                    n={item.matches} / {metricLabel}
-                  </small>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="emptyState compact">
-              <b>{labels.noDataTitle}</b>
-              <p>{labels.noData}</p>
-            </div>
-          )}
-        </section>
-
-        <section className="panel wide">
-          <h2>
-            <Info size={18} /> {labels.next}
-          </h2>
-
-          <ol>
-            <li>
-              {isJapanese
-                ? '複数指標を同時に比較できる表示を検討する。'
-                : 'Consider a view for comparing multiple metrics at once.'}
-            </li>
-            <li>
-              {isJapanese
-                ? 'Rugby.com.au Match Stats 形式の実データ対象を拡大する。'
-                : 'Expand real-data coverage in the Rugby.com.au Match Stats format.'}
-            </li>
-            <li>
-              {isJapanese
-                ? 'データ管理画面と接続し、管理者が試合データを追加・更新できる構造を検討する。'
-                : 'Connect this screen with the data management area so administrators can add and update match data.'}
-            </li>
-            <li>
-              {isJapanese
-                ? '試合検索・動画ライブラリと連動し、スタッツ推移から対象試合を確認できる導線を検討する。'
-                : 'Consider linking stats trends with match search and the video library so users can review the relevant matches.'}
-            </li>
-          </ol>
-        </section>
-      </main>
+        <p className="analyticsFootnote">{copy.missingData}</p>
+      </section>
     </div>
   );
 }
