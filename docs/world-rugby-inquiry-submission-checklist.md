@@ -1,7 +1,7 @@
 # World Rugby Inquiry — Submission Checklist
 
 Version: v1.1  
-Step: v1.1-02B  
+Step: v1.1-02B-r1  
 Prepared: 2026-07-29  
 Status: Awaiting final owner check and submission
 
@@ -96,10 +96,16 @@ Replacing the public file does not remove an older personal address from Git his
 
 - [ ] The subject is concise.
 - [ ] The opening identifies the sender as a Japan-based rugby fan and creator.
+- [ ] The opening explains the project value: understanding how performance changes, not only what happened in one match.
+- [ ] The text identifies the analysis areas: results, scoring efficiency, attacking efficiency, discipline, defence and ball retention.
 - [ ] The feature description matches the current public prototype.
 - [ ] The text says the project is unofficial and non-commercial.
 - [ ] The text describes only a small manually entered proof-of-concept sample.
 - [ ] The text states that automated scraping is not used.
+- [ ] The text states that no confidential or restricted data is being requested.
+- [ ] The text asks whether an official route exists and what conditions would apply.
+- [ ] The text says the prototype can be adjusted if necessary.
+- [ ] The text does not include “take it offline” in the initial enquiry.
 - [ ] The text asks about detailed statistics, API/data feed/dataset and data dictionary.
 - [ ] The text asks about conditions for non-commercial public analysis.
 - [ ] The text asks about official YouTube link/embed conditions.
@@ -111,7 +117,24 @@ Replacing the public file does not remove an older personal address from Git his
 
 ---
 
-## 6. Form submission
+## 6. Reserved follow-up wording
+
+Do not include the following sentence in the initial enquiry:
+
+> If the current public prototype does not align with the applicable conditions, I would be happy to adjust it or take it offline.
+
+Use it only if World Rugby:
+
+- raises a concern about the public prototype;
+- asks what action would be taken;
+- requests modification or removal; or
+- identifies conditions that the current public version does not meet.
+
+Do not state in advance that the same dataset will continue to be used privately. First clarify whether the concern relates only to publication or also to retention and private use.
+
+---
+
+## 7. Form submission
 
 Because the exact fields may change, follow the fields displayed on the official form.
 
@@ -128,9 +151,9 @@ Because the exact fields may change, follow the fields displayed on the official
 
 ---
 
-## 7. Completion condition
+## 8. Completion condition
 
-v1.1-02B is complete when:
+v1.1-02B-r1 is complete when:
 
 ```text
 Public demo verified
