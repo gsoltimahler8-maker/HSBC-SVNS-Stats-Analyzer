@@ -15,8 +15,10 @@ import { Database, Filter, Info } from 'lucide-react';
 import { matchData as matches } from '../data/loadMatches.js';
 import ja from '../i18n/ja.js';
 import {
+  ANALYSIS_METRIC_KEYS,
   COMPARISON_METRIC_KEYS,
-  RELATIONSHIP_METRIC_KEYS,
+  METRIC_CATEGORIES,
+  RELATIONSHIP_PRESETS,
   averageMetric,
   compareMatchesChronologically,
   formatMetricValue,
@@ -44,9 +46,9 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
   const copy = {
     title: isJapanese ? 'スタッツ分析' : 'Stats Analysis',
     subtitle: isJapanese
-      ? '選択したシーズンの概要、比較、指標間の関係を分析します。'
-      : 'Analyse the selected season through overview, comparison and metric relationships.',
-    badge: isJapanese ? 'シーズン・大会分析' : 'Season & Tournament Analysis',
+      ? '結果、得点効率、攻撃効率、規律、守備を13指標で分解し、条件別に比較します。'
+      : 'Break performance into 13 indicators covering results, scoring efficiency, attack, discipline and defence.',
+    badge: isJapanese ? 'チーム・パフォーマンス分析' : 'Team Performance Analysis',
     scope: isJapanese ? '分析条件' : 'Analysis Scope',
     season: isJapanese ? 'シーズン' : 'Season',
     gender: isJapanese ? '男女区分' : 'Gender',
@@ -61,26 +63,19 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
     loss: isJapanese ? '敗戦' : 'Loss',
     matches: isJapanese ? '対象試合' : 'Matches',
     dataCoverage: isJapanese ? 'データ利用可能数' : 'Data Coverage',
-    realData: isJapanese ? '実データ' : 'Real Data',
-    sampleData: isJapanese ? 'サンプルデータ' : 'Sample Data',
-    sampleWarning: isJapanese
-      ? 'この表示範囲にはサンプルデータが含まれています。実データと混同せず、画面検証用として解釈してください。'
-      : 'This view includes sample data. Treat it as interface-validation data and do not mix it with real-data conclusions.',
-    noData: isJapanese
-      ? '現在の条件に一致する試合がありません。'
-      : 'No matches are available for the current filters.',
-    overview: isJapanese ? '概要' : 'Overview',
-    comparison: isJapanese ? '比較' : 'Comparison',
-    relationships: isJapanese ? '指標間分析' : 'Relationships',
+    fullStatsCoverage: isJapanese ? '詳細データ試合' : 'Full-stat matches',
+    overview: isJapanese ? '指標一覧' : 'Performance Profile',
+    comparison: isJapanese ? '条件別比較' : 'Comparison',
+    relationships: isJapanese ? '関連分析' : 'Relationships',
     overviewIntro: isJapanese
-      ? '選択範囲を、試合数・勝率・平均効率・規律の観点から要約します。'
-      : 'Summarises the selected scope through match count, win rate, efficiency and discipline.',
+      ? '選択範囲の13指標を、競技上の役割ごとに整理して表示します。'
+      : 'Shows all 13 indicators, organised by their performance role.',
     comparisonIntro: isJapanese
-      ? '同じ指標を大会、勝敗、対戦相手ごとに比較します。'
-      : 'Compares one metric by tournament, result or opponent.',
+      ? '13指標から一つを選び、大会、勝敗、対戦相手ごとに平均値を比較します。'
+      : 'Select one of the 13 indicators and compare its average by tournament, result or opponent.',
     relationshipsIntro: isJapanese
-      ? '1試合を1点として、二つの指標の関係を確認します。'
-      : 'Plots one point per match to review the relationship between two metrics.',
+      ? '競技上の問いが明確な組み合わせだけを、1試合1点の散布図で確認します。'
+      : 'Uses only predefined pairings with a clear rugby question, plotting one point per match.',
     compareBy: isJapanese ? '比較単位' : 'Compare by',
     metric: isJapanese ? '指標' : 'Metric',
     tournamentComparison: isJapanese ? '大会' : 'Tournament',
@@ -89,29 +84,26 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
     average: isJapanese ? '平均' : 'Average',
     available: isJapanese ? '利用可能' : 'Available',
     metricDefinition: isJapanese ? '指標定義' : 'Metric Definition',
-    rawMetric: isJapanese ? '取得値' : 'Raw metric',
     calculatedMetric: isJapanese ? '計算指標' : 'Calculated metric',
-    xAxis: isJapanese ? 'X軸' : 'X axis',
-    yAxis: isJapanese ? 'Y軸' : 'Y axis',
+    rawMetric: isJapanese ? '取得値' : 'Raw metric',
+    metricCount: isJapanese ? '13指標' : '13 metrics',
+    relationshipPreset: isJapanese ? '分析テーマ' : 'Analysis question',
     plottedMatches: isJapanese ? 'プロット可能試合' : 'Plotted matches',
-    smallSample: isJapanese
-      ? '表示結果は選択範囲内の記述的な関連です。試合数が少ないため、相関や因果関係は断定しません。'
-      : 'This is a descriptive association within the selected scope. The sample is too small for causal or firm correlation claims.',
+    noData: isJapanese
+      ? '現在の条件に一致する試合がありません。'
+      : 'No matches are available for the current filters.',
+    sampleWarning: isJapanese
+      ? 'この表示範囲にはサンプルデータが含まれています。実データと混同せず、画面検証用として解釈してください。'
+      : 'This view includes sample data. Treat it as interface-validation data and do not mix it with real-data conclusions.',
     missingData: isJapanese
       ? '必要な値が欠けている試合は計算・グラフから除外し、0として扱いません。'
       : 'Matches with missing inputs are excluded from calculations and charts rather than treated as zero.',
-    fullStatsCoverage: isJapanese ? '詳細データ試合' : 'Full-stat matches',
-    pointDifferential: isJapanese ? '平均得失点差' : 'Average point differential',
-    averagePenalties: isJapanese ? '平均反則数' : 'Average penalties',
-    averageTurnovers: isJapanese ? '平均ターンオーバー差' : 'Average turnover differential',
-    averageMetresPerCarry: isJapanese
-      ? '平均1キャリー当たりメートル'
-      : 'Average metres per carry',
-    averageTackleSuccess: isJapanese
-      ? '平均タックル成功率'
-      : 'Average tackle success',
-    winRate: isJapanese ? '勝率' : 'Win rate',
-    dataSources: isJapanese ? '主なデータソース' : 'Primary data sources',
+    smallSample: isJapanese
+      ? '表示結果は選択範囲内の記述的な関連です。試合数が少ないため、因果関係や確定的な相関は示しません。'
+      : 'This is a descriptive association within the selected scope. The sample is too small for causal or firm correlation claims.',
+    winRateResultWarning: isJapanese
+      ? '勝敗別比較では勝率が100%と0%に固定されるため、勝率は選択肢から除外しています。'
+      : 'Win Rate is excluded from result comparison because the groups would be fixed at 100% and 0%.',
   };
 
   const seasons = getUniqueValues(matches, 'season');
@@ -130,11 +122,10 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
   const [result, setResult] = useState(ALL);
   const [mode, setMode] = useState('overview');
   const [compareBy, setCompareBy] = useState('result');
-  const [comparisonMetric, setComparisonMetric] = useState(
-    'penaltiesConceded'
+  const [comparisonMetric, setComparisonMetric] = useState('pointDiff');
+  const [relationshipId, setRelationshipId] = useState(
+    RELATIONSHIP_PRESETS[0].id
   );
-  const [scatterX, setScatterX] = useState('penaltiesConceded');
-  const [scatterY, setScatterY] = useState('pointDiff');
 
   useEffect(() => {
     setTournament(ALL);
@@ -162,8 +153,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
   const tournamentScope = useMemo(
     () =>
       baseScope.filter(
-        (match) =>
-          tournament === ALL || match.tournament === tournament
+        (match) => tournament === ALL || match.tournament === tournament
       ),
     [baseScope, tournament]
   );
@@ -173,103 +163,38 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
   const filtered = useMemo(
     () =>
       tournamentScope
+        .filter((match) => opponent === ALL || match.opponent === opponent)
         .filter(
-          (match) => opponent === ALL || match.opponent === opponent
-        )
-        .filter(
-          (match) =>
-            result === ALL || getTeamResult(match) === result
+          (match) => result === ALL || getTeamResult(match) === result
         )
         .slice()
         .sort(compareMatchesChronologically),
     [tournamentScope, opponent, result]
   );
 
-  const wins = filtered.filter((match) => getTeamResult(match) === 'W');
-  const knownResults = filtered.filter((match) =>
-    ['W', 'L'].includes(getTeamResult(match))
-  );
-  const winRate = knownResults.length
-    ? (wins.length / knownResults.length) * 100
-    : null;
-
   const fullStatsCount = filtered.filter(
     (match) => match.dataCoverageLevel === 'full_match_stats'
   ).length;
 
-  const sourceProviders = [
-    ...new Set(
-      filtered
-        .map((match) => match.sourceProvider)
-        .filter(Boolean)
-    ),
-  ];
-
   const includesSampleData = filtered.some(
     (match) =>
       match.dataType === 'sample' ||
-      String(match.sourceProvider || '')
-        .toLowerCase()
-        .includes('sample')
+      String(match.sourceProvider || '').toLowerCase().includes('sample')
   );
 
-  const overviewCards = [
-    {
-      label: copy.matches,
-      value: String(filtered.length),
-      sub: `${copy.fullStatsCoverage}: ${fullStatsCount}/${filtered.length}`,
-    },
-    {
-      label: copy.winRate,
-      value: winRate === null ? '—' : `${winRate.toFixed(1)}%`,
-      sub: `${wins.length}/${knownResults.length}`,
-    },
-    {
-      label: copy.pointDifferential,
-      value: formatMetricValue(
-        'pointDiff',
-        averageMetric(filtered, 'pointDiff')
-      ),
-      sub: getMetricFormula('pointDiff', isJapanese),
-    },
-    {
-      label: copy.averagePenalties,
-      value: formatMetricValue(
-        'penaltiesConceded',
-        averageMetric(filtered, 'penaltiesConceded')
-      ),
-      sub: `${getMetricCoverage(filtered, 'penaltiesConceded').available}/${filtered.length}`,
-    },
-    {
-      label: copy.averageTurnovers,
-      value: formatMetricValue(
-        'turnoverDifferential',
-        averageMetric(filtered, 'turnoverDifferential')
-      ),
-      sub: getMetricFormula('turnoverDifferential', isJapanese),
-    },
-    {
-      label: copy.averageMetresPerCarry,
-      value: formatMetricValue(
-        'metresPerCarry',
-        averageMetric(filtered, 'metresPerCarry')
-      ),
-      sub: `${getMetricCoverage(filtered, 'metresPerCarry').available}/${filtered.length}`,
-    },
-    {
-      label: copy.averageTackleSuccess,
-      value: formatMetricValue(
-        'tackleSuccess',
-        averageMetric(filtered, 'tackleSuccess')
-      ),
-      sub: `${getMetricCoverage(filtered, 'tackleSuccess').available}/${filtered.length}`,
-    },
-    {
-      label: copy.dataSources,
-      value: sourceProviders.length ? String(sourceProviders.length) : '—',
-      sub: sourceProviders.join(' / ') || '—',
-    },
-  ];
+  const availableComparisonMetrics = useMemo(
+    () =>
+      compareBy === 'result'
+        ? COMPARISON_METRIC_KEYS.filter((metricKey) => metricKey !== 'winRate')
+        : COMPARISON_METRIC_KEYS,
+    [compareBy]
+  );
+
+  useEffect(() => {
+    if (!availableComparisonMetrics.includes(comparisonMetric)) {
+      setComparisonMetric('pointDiff');
+    }
+  }, [availableComparisonMetrics, comparisonMetric]);
 
   const comparisonGroups = useMemo(() => {
     const keyGetter =
@@ -280,55 +205,58 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
           : (match) => getTeamResult(match);
 
     const groups = groupMatches(filtered, keyGetter);
-    const rows = [...groups.entries()].map(([key, group]) => {
-      const coverage = getMetricCoverage(group, comparisonMetric);
-      const label =
-        compareBy === 'result'
-          ? key === 'W'
-            ? copy.win
-            : key === 'L'
-              ? copy.loss
-              : key
-          : key;
 
-      return {
-        key,
-        label,
-        value: averageMetric(group, comparisonMetric),
-        matches: group.length,
-        coverage: coverage.available,
-        earliestDate:
-          group.slice().sort(compareMatchesChronologically)[0]?.date || '',
-      };
-    });
+    return [...groups.entries()]
+      .map(([key, group]) => {
+        const coverage = getMetricCoverage(group, comparisonMetric);
+        const label =
+          compareBy === 'result'
+            ? key === 'W'
+              ? copy.win
+              : key === 'L'
+                ? copy.loss
+                : key
+            : key;
 
-    return rows.sort((a, b) => {
-      if (compareBy === 'result') {
-        return ['W', 'L'].indexOf(a.key) - ['W', 'L'].indexOf(b.key);
-      }
-
-      if (compareBy === 'tournament') {
-        return a.earliestDate.localeCompare(b.earliestDate);
-      }
-
-      return a.label.localeCompare(b.label);
-    });
+        return {
+          key,
+          label,
+          value: averageMetric(group, comparisonMetric),
+          matches: group.length,
+          coverage: coverage.available,
+          earliestDate:
+            group.slice().sort(compareMatchesChronologically)[0]?.date || '',
+        };
+      })
+      .filter((row) => row.value !== null)
+      .sort((a, b) => {
+        if (compareBy === 'result') {
+          return ['W', 'L'].indexOf(a.key) - ['W', 'L'].indexOf(b.key);
+        }
+        if (compareBy === 'tournament') {
+          return a.earliestDate.localeCompare(b.earliestDate);
+        }
+        return a.label.localeCompare(b.label);
+      });
   }, [filtered, compareBy, comparisonMetric, copy.win, copy.loss]);
+
+  const selectedRelationship =
+    RELATIONSHIP_PRESETS.find((preset) => preset.id === relationshipId) ||
+    RELATIONSHIP_PRESETS[0];
 
   const scatterRows = useMemo(
     () =>
       filtered
         .map((match) => ({
           ...match,
-          xValue: getMetricValue(match, scatterX),
-          yValue: getMetricValue(match, scatterY),
+          xValue: getMetricValue(match, selectedRelationship.xMetric),
+          yValue: getMetricValue(match, selectedRelationship.yMetric),
           teamResult: getTeamResult(match),
         }))
         .filter(
-          (match) =>
-            match.xValue !== null && match.yValue !== null
+          (match) => match.xValue !== null && match.yValue !== null
         ),
-    [filtered, scatterX, scatterY]
+    [filtered, selectedRelationship]
   );
 
   const winScatterRows = scatterRows.filter(
@@ -341,14 +269,6 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
     (match) => !['W', 'L'].includes(match.teamResult)
   );
 
-  const chartTooltipStyle = {
-    backgroundColor: '#0f172a',
-    border: '1px solid rgba(148, 163, 184, 0.45)',
-    borderRadius: '10px',
-    color: '#e5e7eb',
-    boxShadow: '0 10px 24px rgba(0, 0, 0, 0.28)',
-  };
-
   const comparisonTooltip = ({ active, payload }) => {
     if (!active || !payload?.length) {
       return null;
@@ -360,8 +280,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
       <div className="analyticsTooltip">
         <strong>{row.label}</strong>
         <span>
-          {copy.average}:{' '}
-          {formatMetricValue(comparisonMetric, row.value)}
+          {copy.average}: {formatMetricValue(comparisonMetric, row.value)}
         </span>
         <span>
           {copy.matches}: {row.matches}
@@ -383,19 +302,18 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
     return (
       <div className="analyticsTooltip">
         <strong>
-          {row.team} {row.pointsFor}-{row.pointsAgainst}{' '}
-          {row.opponent}
+          {row.team} {row.pointsFor}-{row.pointsAgainst} {row.opponent}
         </strong>
         <span>
           {row.date} / {row.tournament} / {row.stage}
         </span>
         <span>
-          {getMetricLabel(scatterX, isJapanese)}:{' '}
-          {formatMetricValue(scatterX, row.xValue)}
+          {getMetricLabel(selectedRelationship.xMetric, isJapanese)}:{' '}
+          {formatMetricValue(selectedRelationship.xMetric, row.xValue)}
         </span>
         <span>
-          {getMetricLabel(scatterY, isJapanese)}:{' '}
-          {formatMetricValue(scatterY, row.yValue)}
+          {getMetricLabel(selectedRelationship.yMetric, isJapanese)}:{' '}
+          {formatMetricValue(selectedRelationship.yMetric, row.yValue)}
         </span>
       </div>
     );
@@ -413,9 +331,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
         </div>
         <p>{getMetricFormula(metricKey, isJapanese)}</p>
         <small>
-          {definition.type === 'calculated'
-            ? copy.calculatedMetric
-            : copy.rawMetric}
+          {definition.type === 'calculated' ? copy.calculatedMetric : copy.rawMetric}
           {' · '}
           {copy.dataCoverage}: {coverage.available}/{coverage.total}
         </small>
@@ -432,11 +348,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
       }}
     >
       {onBackHome && (
-        <button
-          type="button"
-          className="backHomeButton"
-          onClick={onBackHome}
-        >
+        <button type="button" className="backHomeButton" onClick={onBackHome}>
           {t.navigation.backHome}
         </button>
       )}
@@ -463,10 +375,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
         <div className="filters analyticsFilters">
           <label>
             {copy.season}
-            <select
-              value={season}
-              onChange={(event) => setSeason(event.target.value)}
-            >
+            <select value={season} onChange={(event) => setSeason(event.target.value)}>
               {seasons.map((item) => (
                 <option key={item} value={item}>
                   {item}
@@ -477,17 +386,10 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
 
           <label>
             {copy.gender}
-            <select
-              value={gender}
-              onChange={(event) => setGender(event.target.value)}
-            >
+            <select value={gender} onChange={(event) => setGender(event.target.value)}>
               {genders.map((item) => (
                 <option key={item} value={item}>
-                  {item === 'Women'
-                    ? copy.women
-                    : item === 'Men'
-                      ? copy.men
-                      : item}
+                  {item === 'Women' ? copy.women : item === 'Men' ? copy.men : item}
                 </option>
               ))}
             </select>
@@ -495,10 +397,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
 
           <label>
             {copy.team}
-            <select
-              value={team}
-              onChange={(event) => setTeam(event.target.value)}
-            >
+            <select value={team} onChange={(event) => setTeam(event.target.value)}>
               {teams.map((item) => (
                 <option key={item} value={item}>
                   {item}
@@ -524,10 +423,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
 
           <label>
             {copy.opponent}
-            <select
-              value={opponent}
-              onChange={(event) => setOpponent(event.target.value)}
-            >
+            <select value={opponent} onChange={(event) => setOpponent(event.target.value)}>
               <option value={ALL}>{copy.all}</option>
               {opponents.map((item) => (
                 <option key={item} value={item}>
@@ -539,10 +435,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
 
           <label>
             {copy.result}
-            <select
-              value={result}
-              onChange={(event) => setResult(event.target.value)}
-            >
+            <select value={result} onChange={(event) => setResult(event.target.value)}>
               <option value={ALL}>{copy.all}</option>
               <option value="W">{copy.win}</option>
               <option value="L">{copy.loss}</option>
@@ -561,26 +454,13 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
             </strong>
           </span>
           <span>
-            {copy.realData}:{' '}
-            <strong>
-              {
-                filtered.filter(
-                  (match) =>
-                    match.dataType === 'real' ||
-                    !String(match.sourceProvider || '')
-                      .toLowerCase()
-                      .includes('sample')
-                ).length
-              }
-            </strong>
+            {copy.dataCoverage}:{' '}
+            <strong>{copy.metricCount}</strong>
           </span>
         </div>
       </section>
 
-      <nav
-        className="analyticsModeTabs"
-        aria-label={copy.title}
-      >
+      <nav className="analyticsModeTabs" aria-label={copy.title}>
         {[
           ['overview', copy.overview],
           ['comparison', copy.comparison],
@@ -614,22 +494,43 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
                 </div>
               </div>
 
-              <div className="analyticsKpiGrid">
-                {overviewCards.map((card) => (
-                  <article
-                    className="analyticsKpiCard"
-                    key={card.label}
-                  >
-                    <span>{card.label}</span>
-                    <strong>{card.value}</strong>
-                    <small>{card.sub}</small>
-                  </article>
+              <div className="analyticsCategoryStack">
+                {METRIC_CATEGORIES.map((category) => (
+                  <section className="analyticsMetricCategory" key={category.id}>
+                    <header>
+                      <h3>{isJapanese ? category.labelJa : category.labelEn}</h3>
+                      <p>
+                        {isJapanese
+                          ? category.descriptionJa
+                          : category.descriptionEn}
+                      </p>
+                    </header>
+
+                    <div className="analyticsMetricGrid">
+                      {category.metricKeys.map((metricKey) => {
+                        const coverage = getMetricCoverage(filtered, metricKey);
+                        const value = averageMetric(filtered, metricKey);
+
+                        return (
+                          <article className="analyticsMetricCard" key={metricKey}>
+                            <span>{getMetricLabel(metricKey, isJapanese)}</span>
+                            <strong>{formatMetricValue(metricKey, value)}</strong>
+                            <small>{getMetricFormula(metricKey, isJapanese)}</small>
+                            <div className="analyticsCoverageRow">
+                              <span>{copy.dataCoverage}</span>
+                              <b>
+                                {coverage.available}/{coverage.total}
+                              </b>
+                            </div>
+                          </article>
+                        );
+                      })}
+                    </div>
+                  </section>
                 ))}
               </div>
 
-              <p className="analyticsFootnote">
-                {copy.missingData}
-              </p>
+              <p className="analyticsFootnote">{copy.missingData}</p>
             </section>
           )}
 
@@ -645,21 +546,10 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
               <div className="analyticsControlRow">
                 <label>
                   {copy.compareBy}
-                  <select
-                    value={compareBy}
-                    onChange={(event) =>
-                      setCompareBy(event.target.value)
-                    }
-                  >
-                    <option value="tournament">
-                      {copy.tournamentComparison}
-                    </option>
-                    <option value="result">
-                      {copy.resultComparison}
-                    </option>
-                    <option value="opponent">
-                      {copy.opponentComparison}
-                    </option>
+                  <select value={compareBy} onChange={(event) => setCompareBy(event.target.value)}>
+                    <option value="tournament">{copy.tournamentComparison}</option>
+                    <option value="result">{copy.resultComparison}</option>
+                    <option value="opponent">{copy.opponentComparison}</option>
                   </select>
                 </label>
 
@@ -667,11 +557,9 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
                   {copy.metric}
                   <select
                     value={comparisonMetric}
-                    onChange={(event) =>
-                      setComparisonMetric(event.target.value)
-                    }
+                    onChange={(event) => setComparisonMetric(event.target.value)}
                   >
-                    {COMPARISON_METRIC_KEYS.map((metricKey) => (
+                    {availableComparisonMetrics.map((metricKey) => (
                       <option key={metricKey} value={metricKey}>
                         {getMetricLabel(metricKey, isJapanese)}
                       </option>
@@ -679,6 +567,10 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
                   </select>
                 </label>
               </div>
+
+              {compareBy === 'result' && (
+                <p className="analyticsInlineNote">{copy.winRateResultWarning}</p>
+              )}
 
               <div className="analyticsChart">
                 <ResponsiveContainer width="100%" height="100%">
@@ -691,22 +583,14 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
                       dataKey="label"
                       interval={0}
                       angle={comparisonGroups.length > 4 ? -20 : 0}
-                      textAnchor={
-                        comparisonGroups.length > 4 ? 'end' : 'middle'
-                      }
+                      textAnchor={comparisonGroups.length > 4 ? 'end' : 'middle'}
                       height={comparisonGroups.length > 4 ? 72 : 44}
                     />
                     <YAxis />
-                    <Tooltip
-                      content={comparisonTooltip}
-                      contentStyle={chartTooltipStyle}
-                    />
+                    <Tooltip content={comparisonTooltip} />
                     <Bar
                       dataKey="value"
-                      name={getMetricLabel(
-                        comparisonMetric,
-                        isJapanese
-                      )}
+                      name={getMetricLabel(comparisonMetric, isJapanese)}
                       fill="#22c55e"
                       radius={[6, 6, 0, 0]}
                     />
@@ -715,9 +599,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
               </div>
 
               {renderMetricDefinition(comparisonMetric)}
-              <p className="analyticsFootnote">
-                {copy.missingData}
-              </p>
+              <p className="analyticsFootnote">{copy.missingData}</p>
             </section>
           )}
 
@@ -729,93 +611,73 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
                   <p>{copy.relationshipsIntro}</p>
                 </div>
                 <span className="analyticsSampleCount">
-                  {copy.plottedMatches}: {scatterRows.length}/
-                  {filtered.length}
+                  {copy.plottedMatches}: {scatterRows.length}/{filtered.length}
                 </span>
               </div>
 
-              <div className="analyticsControlRow">
+              <div className="analyticsSingleControl">
                 <label>
-                  {copy.xAxis}
+                  {copy.relationshipPreset}
                   <select
-                    value={scatterX}
-                    onChange={(event) =>
-                      setScatterX(event.target.value)
-                    }
+                    value={relationshipId}
+                    onChange={(event) => setRelationshipId(event.target.value)}
                   >
-                    {RELATIONSHIP_METRIC_KEYS.map((metricKey) => (
-                      <option key={metricKey} value={metricKey}>
-                        {getMetricLabel(metricKey, isJapanese)}
+                    {RELATIONSHIP_PRESETS.map((preset) => (
+                      <option key={preset.id} value={preset.id}>
+                        {isJapanese ? preset.labelJa : preset.labelEn}
                       </option>
                     ))}
                   </select>
                 </label>
+              </div>
 
-                <label>
-                  {copy.yAxis}
-                  <select
-                    value={scatterY}
-                    onChange={(event) =>
-                      setScatterY(event.target.value)
-                    }
-                  >
-                    {RELATIONSHIP_METRIC_KEYS.map((metricKey) => (
-                      <option key={metricKey} value={metricKey}>
-                        {getMetricLabel(metricKey, isJapanese)}
-                      </option>
-                    ))}
-                  </select>
-                </label>
+              <div className="analyticsQuestion">
+                <strong>
+                  {isJapanese
+                    ? selectedRelationship.labelJa
+                    : selectedRelationship.labelEn}
+                </strong>
+                <p>
+                  {isJapanese
+                    ? selectedRelationship.questionJa
+                    : selectedRelationship.questionEn}
+                </p>
               </div>
 
               <div className="analyticsChart analyticsScatterChart">
                 <ResponsiveContainer width="100%" height="100%">
-                  <ScatterChart
-                    margin={{ top: 16, right: 20, left: 8, bottom: 24 }}
-                  >
+                  <ScatterChart margin={{ top: 16, right: 20, left: 8, bottom: 24 }}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis
                       type="number"
                       dataKey="xValue"
-                      name={getMetricLabel(scatterX, isJapanese)}
+                      name={getMetricLabel(selectedRelationship.xMetric, isJapanese)}
                       tickFormatter={(value) =>
-                        formatMetricValue(scatterX, value)
+                        formatMetricValue(selectedRelationship.xMetric, value)
                       }
                     />
                     <YAxis
                       type="number"
                       dataKey="yValue"
-                      name={getMetricLabel(scatterY, isJapanese)}
+                      name={getMetricLabel(selectedRelationship.yMetric, isJapanese)}
                       tickFormatter={(value) =>
-                        formatMetricValue(scatterY, value)
+                        formatMetricValue(selectedRelationship.yMetric, value)
                       }
                     />
                     <Tooltip content={scatterTooltip} />
                     <Legend />
-                    <Scatter
-                      name={copy.win}
-                      data={winScatterRows}
-                      fill="#22c55e"
-                    />
-                    <Scatter
-                      name={copy.loss}
-                      data={lossScatterRows}
-                      fill="#ef4444"
-                    />
+                    <Scatter name={copy.win} data={winScatterRows} fill="#22c55e" />
+                    <Scatter name={copy.loss} data={lossScatterRows} fill="#ef4444" />
                     {otherScatterRows.length > 0 && (
-                      <Scatter
-                        name={copy.all}
-                        data={otherScatterRows}
-                        fill="#64748b"
-                      />
+                      <Scatter name={copy.all} data={otherScatterRows} fill="#64748b" />
                     )}
                   </ScatterChart>
                 </ResponsiveContainer>
               </div>
 
               <div className="analyticsDefinitionGrid">
-                {renderMetricDefinition(scatterX)}
-                {renderMetricDefinition(scatterY)}
+                {renderMetricDefinition(selectedRelationship.xMetric)}
+                {renderMetricDefinition(selectedRelationship.yMetric)}
               </div>
 
               <div className="analyticsCaution">
