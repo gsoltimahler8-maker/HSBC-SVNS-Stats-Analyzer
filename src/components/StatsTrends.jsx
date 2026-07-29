@@ -92,6 +92,10 @@ export default function StatsTrends({ onBackHome, t = ja }) {
     winRateMatchNote: isJapanese
       ? '試合表示の勝率は、勝利を100%、敗戦を0%として試合結果を可視化します。大会・シーズン表示では通常の勝率です。'
       : 'At match level, Win Rate encodes a win as 100% and a loss as 0%. Tournament and season views show the usual aggregate win rate.',
+    xAxis: isJapanese ? 'X軸' : 'X axis',
+    yAxis: isJapanese ? 'Y軸' : 'Y axis',
+    chronologicalMatches: isJapanese ? '試合（時系列）' : 'Matches (chronological)',
+    chronologicalTournaments: isJapanese ? '大会（時系列）' : 'Tournaments (chronological)',
   };
 
   const seasons = getUniqueValues(matches, 'season').sort((a, b) =>
@@ -148,6 +152,15 @@ export default function StatsTrends({ onBackHome, t = ja }) {
   const sourceProviders = [
     ...new Set(filtered.map((match) => match.sourceProvider).filter(Boolean)),
   ];
+
+  const trendXAxisLabel =
+    aggregation === 'match'
+      ? copy.chronologicalMatches
+      : aggregation === 'tournament'
+        ? copy.chronologicalTournaments
+        : copy.seasonAggregation;
+
+  const trendYAxisLabel = getMetricLabel(metric, isJapanese);
 
   const aggregateRows = useMemo(() => {
     if (aggregation === 'match') {
@@ -432,11 +445,23 @@ export default function StatsTrends({ onBackHome, t = ja }) {
         )}
 
         {aggregateRows.length > 0 ? (
-          <div className="analyticsChart analyticsTrendChart">
+          <>
+            <div className="analyticsAxisGuide" aria-label={`${copy.xAxis}: ${trendXAxisLabel}; ${copy.yAxis}: ${trendYAxisLabel}`}>
+              <span>
+                <b>{copy.xAxis}</b>
+                {trendXAxisLabel}
+              </span>
+              <span>
+                <b>{copy.yAxis}</b>
+                {trendYAxisLabel}
+              </span>
+            </div>
+
+            <div className="analyticsChart analyticsTrendChart">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
                 data={aggregateRows}
-                margin={{ top: 18, right: 22, left: 8, bottom: 42 }}
+                margin={{ top: 18, right: 24, left: 38, bottom: 72 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
@@ -444,9 +469,33 @@ export default function StatsTrends({ onBackHome, t = ja }) {
                   interval={0}
                   angle={aggregateRows.length > 5 ? -22 : 0}
                   textAnchor={aggregateRows.length > 5 ? 'end' : 'middle'}
-                  height={aggregateRows.length > 5 ? 82 : 48}
+                  height={aggregateRows.length > 5 ? 104 : 70}
+                  label={{
+                    value: trendXAxisLabel,
+                    position: 'insideBottom',
+                    offset: -20,
+                    style: {
+                      fill: '#334155',
+                      fontSize: 12,
+                      fontWeight: 700,
+                    },
+                  }}
                 />
-                <YAxis tickFormatter={(value) => formatMetricValue(metric, value)} />
+                <YAxis
+                  width={72}
+                  tickFormatter={(value) => formatMetricValue(metric, value)}
+                  label={{
+                    value: trendYAxisLabel,
+                    angle: -90,
+                    position: 'insideLeft',
+                    style: {
+                      fill: '#334155',
+                      fontSize: 12,
+                      fontWeight: 700,
+                      textAnchor: 'middle',
+                    },
+                  }}
+                />
                 <Tooltip content={tooltip} />
                 <Line
                   type="monotone"
@@ -460,7 +509,8 @@ export default function StatsTrends({ onBackHome, t = ja }) {
                 />
               </LineChart>
             </ResponsiveContainer>
-          </div>
+            </div>
+          </>
         ) : (
           <div className="analyticsEmpty">
             <Info size={22} />
