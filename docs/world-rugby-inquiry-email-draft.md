@@ -1,20 +1,19 @@
-# World Rugby Inquiry — Email Draft
+# World Rugby Inquiry — Public Repository Template
 
-## Recommended identity line
-
-> I am an independent rugby fan based in Japan and the creator of SVNS Stats Analyzer, an unofficial, non-commercial rugby sevens analytics prototype.
+> This repository copy intentionally omits the sender's personal email address.
+> Fill the placeholders only in a private submission copy. Do not commit the completed private copy.
 
 ## Subject
 
-Inquiry about HSBC SVNS match statistics and an independent analytics prototype
+Question about HSBC SVNS match data for an independent analytics project
 
 ## Draft
 
 Dear World Rugby team,
 
-My name is Hironobu Otsuka. I’m a rugby fan based in Japan, and I’ve built a small independent project called SVNS Stats Analyzer.
+My name is [FULL NAME]. I’m a rugby fan based in Japan, and I’ve built a small independent project called SVNS Stats Analyzer.
 
-I created the project because I wanted a simple way to see how a sevens team’s performance changes across matches, tournaments and seasons. It is an unofficial, non-commercial web app that combines match statistics, longer-term trends, match search and links to publicly available match videos. The app is currently available in Japanese and English.
+I created it because I wanted a simple way to see how a sevens team’s performance changes across matches and tournaments. It is an unofficial, non-commercial web app that currently shows key performance indicators, comparisons and trends, together with match search and links to publicly available match videos. It is designed to support multi-season analysis when more consistent data is available. The app is currently available in Japanese and English.
 
 The public statistics I have found through World Rugby, RugbyPass and HSBC SVNS are useful for scores and basic match information, but they appear to be limited for the type of analysis I am trying to build. I may, of course, have overlooked an existing official source.
 
@@ -42,7 +41,13 @@ Thank you very much for your time.
 
 Kind regards,
 
-Hironobu Otsuka
+[FULL NAME]
 Creator, SVNS Stats Analyzer
 Japan
-gsoltimahler8@gmail.com
+[PERSONAL EMAIL]
+
+## Public project contact
+
+The public contact address shown in the application remains:
+
+svnsstatsanalyzer@gmail.com
