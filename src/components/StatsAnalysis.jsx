@@ -35,6 +35,62 @@ import '../analytics.css';
 
 const ALL = 'All';
 
+const TEAM_ABBREVIATIONS = {
+  Argentina: 'ARG',
+  Australia: 'AUS',
+  Belgium: 'BEL',
+  Brazil: 'BRA',
+  Canada: 'CAN',
+  Chile: 'CHI',
+  China: 'CHN',
+  Fiji: 'FIJ',
+  France: 'FRA',
+  Georgia: 'GEO',
+  Germany: 'GER',
+  'Great Britain': 'GBR',
+  'Hong Kong': 'HKG',
+  'Hong Kong China': 'HKG',
+  Ireland: 'IRL',
+  Japan: 'JPN',
+  Kenya: 'KEN',
+  'New Zealand': 'NZL',
+  Portugal: 'POR',
+  Samoa: 'SAM',
+  'South Africa': 'RSA',
+  Spain: 'ESP',
+  Tonga: 'TGA',
+  Uruguay: 'URU',
+  USA: 'USA',
+  'United States': 'USA',
+};
+
+const getTeamAbbreviation = (teamName) =>
+  TEAM_ABBREVIATIONS[teamName] || String(teamName || '').slice(0, 3).toUpperCase();
+
+const useCompactChartLabels = () => {
+  const [isCompact, setIsCompact] = useState(() =>
+    typeof window !== 'undefined'
+      ? window.matchMedia('(max-width: 640px)').matches
+      : false
+  );
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return undefined;
+    }
+
+    const mediaQuery = window.matchMedia('(max-width: 640px)');
+    const update = (event) => setIsCompact(event.matches);
+
+    setIsCompact(mediaQuery.matches);
+    mediaQuery.addEventListener?.('change', update);
+
+    return () => mediaQuery.removeEventListener?.('change', update);
+  }, []);
+
+  return isCompact;
+};
+
 const selectLatestSeason = (seasons) =>
   seasons.slice().sort((a, b) => b.localeCompare(a))[0] || '';
 
@@ -129,6 +185,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
   const [relationshipId, setRelationshipId] = useState(
     RELATIONSHIP_PRESETS[0].id
   );
+  const compactChartLabels = useCompactChartLabels();
 
   useEffect(() => {
     setTournament(ALL);
@@ -268,6 +325,11 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
     selectedRelationship.yMetric,
     isJapanese
   );
+
+  const compactOpponentTicks =
+    compactChartLabels && compareBy === 'opponent';
+  const angledComparisonTicks =
+    !compactOpponentTicks && comparisonGroups.length > 4;
 
   const scatterRows = useMemo(
     () =>
@@ -612,40 +674,27 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
                     data={comparisonGroups}
-                    margin={{ top: 16, right: 20, left: 34, bottom: 62 }}
+                    margin={{
+                      top: 16,
+                      right: 16,
+                      left: 4,
+                      bottom: angledComparisonTicks ? 42 : 10,
+                    }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis
                       dataKey="label"
                       interval={0}
-                      angle={comparisonGroups.length > 4 ? -20 : 0}
-                      textAnchor={comparisonGroups.length > 4 ? 'end' : 'middle'}
-                      height={comparisonGroups.length > 4 ? 92 : 64}
-                      label={{
-                        value: comparisonXAxisLabel,
-                        position: 'insideBottom',
-                        offset: -18,
-                        style: {
-                          fill: '#334155',
-                          fontSize: 12,
-                          fontWeight: 700,
-                        },
-                      }}
+                      angle={angledComparisonTicks ? -20 : 0}
+                      textAnchor={angledComparisonTicks ? 'end' : 'middle'}
+                      height={angledComparisonTicks ? 72 : 40}
+                      tickFormatter={(value) =>
+                        compactOpponentTicks
+                          ? getTeamAbbreviation(value)
+                          : value
+                      }
                     />
-                    <YAxis
-                      width={72}
-                      label={{
-                        value: comparisonYAxisLabel,
-                        angle: -90,
-                        position: 'insideLeft',
-                        style: {
-                          fill: '#334155',
-                          fontSize: 12,
-                          fontWeight: 700,
-                          textAnchor: 'middle',
-                        },
-                      }}
-                    />
+                    <YAxis width={compactChartLabels ? 48 : 58} />
                     <Tooltip content={comparisonTooltip} />
                     <Bar
                       dataKey="value"
@@ -716,7 +765,9 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
 
               <div className="analyticsChart analyticsScatterChart">
                 <ResponsiveContainer width="100%" height="100%">
-                  <ScatterChart margin={{ top: 16, right: 24, left: 38, bottom: 58 }}>
+                  <ScatterChart
+                    margin={{ top: 16, right: 18, left: 4, bottom: 12 }}
+                  >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis
                       type="number"
@@ -725,16 +776,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
                       tickFormatter={(value) =>
                         formatMetricValue(selectedRelationship.xMetric, value)
                       }
-                      label={{
-                        value: relationshipXAxisLabel,
-                        position: 'insideBottom',
-                        offset: -18,
-                        style: {
-                          fill: '#334155',
-                          fontSize: 12,
-                          fontWeight: 700,
-                        },
-                      }}
+                      height={34}
                     />
                     <YAxis
                       type="number"
@@ -743,18 +785,7 @@ export default function StatsAnalysis({ onBackHome, t = ja }) {
                       tickFormatter={(value) =>
                         formatMetricValue(selectedRelationship.yMetric, value)
                       }
-                      width={72}
-                      label={{
-                        value: relationshipYAxisLabel,
-                        angle: -90,
-                        position: 'insideLeft',
-                        style: {
-                          fill: '#334155',
-                          fontSize: 12,
-                          fontWeight: 700,
-                          textAnchor: 'middle',
-                        },
-                      }}
+                      width={compactChartLabels ? 48 : 58}
                     />
                     <Tooltip content={scatterTooltip} />
                     <Legend />
