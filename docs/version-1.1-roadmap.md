@@ -1,1117 +1,1239 @@
 # SVNS Stats Analyzer
+# Version 1.1–2.0 Roadmap
 
-# Version1.1 Roadmap — Architecture, Handover, Analytics and Official-Data Readiness
-
-Version: v1.1  
-Status: Planned  
-Revision: World Rugby / RugbyPass handover and analytics information architecture  
-Created: 2026-07-26  
-Updated: 2026-07-27  
-Previous release: v1.0 Completed
+**Updated:** 2026-08-18  
+**Current release:** v1.0 completed  
+**Current development line:** v1.1  
+**Current active step:** v1.1-03 World Rugby enquiry / response tracking  
+**Long-term product direction:** Stats Database → **Fan-facing Sevens Analysis Workspace**
 
 ---
 
-## 1. Version1.1の定義
+## 1. Roadmap purpose
 
-Version1.1は、Version1.0で完成した初期MVPを維持しながら、World Rugby、RugbyPass、World Rugbyが指定するデータ提供者・デジタル運用者・開発委託先、または同等の組織が、次のいずれを選んでも扱いやすい状態へ整える工程とする。
-
-RugbyPassが実際にどのデータ権利・システム運用・技術判断を担うかは現時点では確定していない。したがって、RugbyPassへの移管を前提とはせず、World Rugbyから案内され得るデータ・デジタル・実装側の候補として扱う。
-
-1. 現在のコードを限定pilotとして利用する
-2. 公式データへ接続して継続開発する
-3. 別の技術基盤へ内部再実装する
-4. 開発委託、利用許諾、運用、譲渡を協議する
-
-目標は、World Rugbyの内部環境を推測して先回り実装することではない。
-
-目標は、アプリの仕様、データ契約、分析ロジック、設計判断、テスト、運用条件を明確にし、評価・移植・再実装・引継ぎを容易にすることである。
-
----
-
-## 2. 優先順位
-
-Version1.1の優先順位は次のとおり。
+SVNS Stats Analyzerは、単なる公開スタッツ閲覧アプリではなく、最終的に以下を自然に行き来できるファン向け分析環境へ発展させる。
 
 ```text
-1. World Rugby問い合わせ準備
-2. Architecture・Handover文書
-3. Secure Development基盤
-4. Data Provider／Adapter分離
-5. Schema・Data Dictionary
-6. Test・再現可能build
-7. 多言語化基盤
-8. 分析・検索改善
-9. 回答に応じた公式データ接続
-10. Version1.1 validation・完了報告
+Official / public match data
+↓
+Derived Metrics
+↓
+Match / Tournament / Season comparison
+↓
+Official / public video
+↓
+Video-tagged Event Data
+↓
+Cross-match Event Search
+↓
+Team / Player / Opponent Profiles
+↓
+Tactical Interpretation
 ```
 
-フランス語・スペイン語の追加は維持するが、Architecture、Security、Data Contract、Testより後に置く。
+競争軸は「World Rugby内部の分析より高度であること」ではない。
+
+中心価値は以下とする。
+
+- 一般ファン向けであること
+- SVNSに特化すること
+- 男女SVNSを同じ思想で扱えること
+- 大会・試合・チーム・選手を横断できること
+- 分析根拠を元スタッツや映像まで遡れること
+- 映像と数値を往復できること
+- 裏側が高度化しても操作を複雑にしないこと
 
 ---
 
-## 3. Version1.1の主要目標
+# 2. 現在地
 
-### 3.1 World Rugbyへの照会
+## v1.0 — COMPLETED
 
-完成したVersion1.0を提示し、次を確認する。
+2026-07-26完了。
 
-- HSBC SVNSの詳細な公式試合スタッツの有無
-- 公式API、data feed、downloadable datasetの有無
-- 指標定義またはdata dictionaryの有無
-- 限定的・非商用の公開分析に適用される条件
-- データ権利者および適切な担当部署
-- 将来の技術的協議が可能か
+主要機能：
 
-初回問い合わせでは、pilot、提携、売却、移管を主要求にしない。
+- Home
+- Stats Analysis
+- Stats Trends
+- Match Search
+- Video
+- About / Data and Video Sources
+- 日本語 / 英語
+- PWA
+- GitHub Pages公開
+- 非公式・非提携表示
+- 出典追跡
+- 小規模proof of conceptデータ
+- 公式公開YouTube動画へのリンク / 標準埋め込み
 
-相手が具体的な関心を示した場合に限り、後続のやり取りで次を検討する。
+CSV / Excel / PDF公開出力は削除済み。
 
-- 有償pilot
-- 開発委託
-- 利用ライセンス
-- 保守・運用契約
-- World Rugby側でのhosting
-- コードまたは関連資産の譲渡
+---
 
-### 3.2 World Rugby・RugbyPass・指定委託先への引継ぎ容易性
+## v1.1-01 — COMPLETED
 
-World Rugby、RugbyPass、または指定された開発・運用委託先が、React、GitHub Pages、現在のデータ形式を採用しない場合でも、次を再利用できる状態を目指す。
+### Baseline / Issue Register
 
-- product scopeと利用者像
-- 画面仕様と画面遷移
-- Stats Analysis／Stats Trendsの情報設計
-- データスキーマとprovenance
-- 指標定義と派生指標計算
-- 集約・filter・comparison rule
-- validation rule
-- provider contractとAPI接続点
-- 翻訳辞書とrugby terminology
-- test caseとacceptance criteria
-- 設計判断、既知の制約、未確定事項
-- build、deploy、release、rollback手順
+- v1.0 baseline固定
+- 公開アプリ / リポジトリ記録
+- v1.1 issue register整備
 
-コードの全面採用だけを成功条件としない。別技術基盤への再実装、限定pilot、委託開発、ライセンス、保守運用、商業条件付き譲渡のいずれにも転用できる設計資産を作る。
+---
 
-### 3.3 セキュアな開発工程
+## v1.1-02A — COMPLETED
 
-現状は認証、決済、個人情報、書込みAPIを持たない静的PWAである。
+### Public Demo Readiness / Analysis Model Revision
 
-したがってVersion1.1では、存在しない内部要件を推測して認証や本番DBを作るのではなく、現在の攻撃面に対応する。
+13のコア指標を中心にStats Analysis / Stats Trendsを整理。
 
-主対象：
+### Results & Scoring
 
-- dependency vulnerability
-- supply-chain risk
-- GitHub Actions改変
-- secret誤登録
-- 公開データの完全性
-- Service Worker更新
-- 外部リンク・YouTube埋め込み
-- repository権限
+1. Points Differential
+2. Win Rate
+3. Points per Match
+4. Tries per Match
 
-### 3.4 データ接続の交換可能性
+### Scoring Efficiency
 
-画面が`matches.json`や特定提供元へ直接依存しない構造へ移行する。
+5. Points per 100 Metres
+6. Tries per 100 Metres
 
-将来的に次を同一UIへ接続できる設計を目指す。
+### Attacking Efficiency
+
+7. Metres per Carry
+8. Clean Breaks per 100 Carries
+9. Defenders Beaten per Carry
+
+### Possession & Discipline
+
+10. Turnover Differential
+11. Penalties per Match
+
+### Defence & Retention
+
+12. Tackle Success
+13. Ruck Success
+
+Comparison：
+
+- Tournament
+- Result
+- Opponent
+
+Relationships：自由X/Yではなくpreset方式。
+
+Trends：
+
+- Match
+- Tournament
+- Season
+
+スマホでは必要に応じて対戦国を3文字略称表示。
+
+---
+
+## v1.1-02B — COMPLETED
+
+### World Rugby enquiry preparation
+
+- 初回問い合わせ文面
+- 公開 / 私用連絡先分離
+- 公式問い合わせフォーム送信準備
+- データ・動画利用方針整理
+
+---
+
+## v1.1-03 — ACTIVE
+
+### World Rugby enquiry / response tracking
 
 ```text
-静的JSON
-手入力データ
-World Rugby API
-許諾済みdata feed
-CSV等の内部import
-内部database API
+Initial submission: 2026-07-29
+Route: World Rugby official Contact Us form
+Category: Research
+Language: English
+Response: Pending
 ```
 
-公開CSV／Excel／PDF出力を再導入することとは別である。
+現在の運用：
 
+```text
+Public prototype: 維持
+Public data expansion: 凍結
+Large feature expansion: 保留
+Architecture / documentation work: 継続可
+```
 
-### 3.5 組織中立の分析プロダクト構造
+### Follow-up方針
 
-World RugbyまたはRugbyPass側が画面構成、hosting、認証、データ基盤を変更しても、分析ロジックを再利用できるよう、次を分離する。
+初回問い合わせから約3週間後も返信がない場合、一度だけ簡潔なfollow-upを行う。
+
+第2回問い合わせでは：
+
+- 7月29日の問い合わせへのfollow-up
+- 到達確認
+- 適切なdata / digital / competition担当へのrouting依頼
+- 現在のプロジェクトを短く再説明
+- 将来のVideo + Stats / Analysis Workspace構想を1〜2文だけ提示
+- 公式データ経路 / API / Data Feed / Data Dictionary / 利用条件を再確認
+
+を行う。
+
+AI / MLや詳細なevent-tagging構想は、相手から説明を求められた段階で提示する。
+
+前回問い合わせ後に動画機能を追加したとは書かない。動画機能は初回問い合わせ前から存在していた。
+
+---
+
+# 3. World Rugby回答待ち期間の開発原則
+
+## 継続してよい作業
+
+- bug fix
+- Architecture / Handover
+- Data Provider分離
+- Schema / Data Dictionary
+- Derived Metrics整理
+- tests
+- reproducible build
+- accessibility
+- responsive UI refinement
+- localisation architecture
+- local / private prototype
+
+## 凍結または保留
+
+- Rugby Australia由来データの大規模追加
+- 対象大会・チームの大量拡張
+- scraping
+- public export
+- public API提供
+- 大規模宣伝
+- 公式サービスと誤認される表示
+- 権利範囲を広げる公開機能
+
+---
+
+# 4. v1.1 — Architecture / Handover / Maintainability
+
+v1.1は「機能を増やす版」よりも、「現在のアプリを交換可能・理解可能・保守可能にする版」と位置づける。
+
+---
+
+## v1.1-04 — Current Architecture & Handover Inventory
+
+現行アプリを文書化する。
+
+記録対象：
+
+- screen構成
+- navigation
+- data flow
+- main components
+- data loading
+- analytics calculation path
+- chart rendering
+- video components
+- localisation
+- PWA / build / deployment
+- current source assumptions
+- known limitations
+- technical debt
+
+想定成果物：
+
+```text
+docs/current-architecture-and-handover.md
+```
+
+最低限、次の流れを第三者が把握できる状態にする。
+
+```text
+matches.json
+→ normalization / loading
+→ derived metrics
+→ aggregation
+→ filter / comparison
+→ visualisation
+```
+
+---
+
+## v1.1-05 — Secure Development / Repository Hygiene
+
+確認：
+
+- public / private情報分離
+- 個人情報
+- secrets
+- GitHub Actions permission
+- dependencies
+- deployment workflow
+- public source files
+
+この工程だけのために認証機能を作らない。
+
+---
+
+## v1.1-06 — Data Provider / Adapter Separation
+
+目標構造：
+
+```text
+Provider
+↓
+Provider Adapter
+↓
+Canonical Data Model
+↓
+Derived Metrics
+↓
+Analysis / Trends / Search
+```
+
+UIや分析ロジックをRugby Australia固有形式へ直接依存させない。
+
+将来候補：
+
+- World Rugby公式データ
+- RugbyPass
+- designated data provider
+- manual import
+- event-level provider
+
+特定providerの実在・採用を前提にしない。
+
+---
+
+## v1.1-07 — Canonical Schema / Data Dictionary
+
+定義対象：
+
+- season
+- tournament
+- match
+- team
+- opponent
+- player
+- team match stats
+- source
+- video source
+- data coverage
+- missing-value semantics
+
+各field / metricについて：
+
+- name
+- type
+- unit
+- nullable
+- raw / calculated
+- source
+- formula
+- denominator rule
+- coverage
+- definition version
+
+### 必須原則
+
+- missing = `null`
+- missingを`0`にしない
+- denominator 0 = `null`
+- aggregate ratioは必要に応じて分子・分母をpoolして再計算
+- roundingは表示時のみ
+
+---
+
+## v1.1-08 — Derived Metrics Engine Separation
+
+以下を明確に分離する。
 
 ```text
 Canonical Data Model
 Derived Metrics Engine
-Aggregation Service
-Filter / Comparison Rules
-Visualization Configuration
-Presentation Components
-Navigation / Drill-down
+Aggregation
+Filter / Comparison
+Visualisation Configuration
+Presentation
 ```
 
-特に、Stats AnalysisとStats Trendsは同一の派生指標・集約処理を共有し、表示目的だけを分ける。
+13コア指標のformulaを複数componentへ重複実装しない。
+
+---
+
+## v1.1-09 — Tests / Reproducible Build
+
+test対象：
+
+- normalization
+- derived metrics
+- missing values
+- zero denominator
+- pooled aggregation
+- match / tournament / season grouping
+- comparison filters
+- relationship presets
+- mobile opponent labels
+
+併せて：
+
+- install
+- local run
+- build
+- test
+- deploy
+- rollback
+
+を文書化。
+
+---
+
+## v1.1-10 — Localisation Architecture
+
+現在の日本語 / 英語を維持しつつ、拡張可能なi18n構造にする。
+
+次候補：
+
+- French
+- Spanish
+
+将来候補：
+
+- Portuguese (Brazil)
+- Italian
+- Simplified Chinese
+- Traditional Chinese / Hong Kong
+- Arabic（RTL対応後）
+- Georgian
+
+metric logicに言語文字列を混在させない。
+
+---
+
+## v1.1-11 — Information Architecture Design
+
+トップレベル機能タブを増殖させない。
+
+現在型：
 
 ```text
-Stats Analysis
-= 選択範囲の概要・比較・指標間関係
-
-Stats Trends
-= Match → Tournament → Seasonの時系列変化
+Home / Stats / Trends / Search / Video / Analysis / AI ...
 ```
 
-第三者データの権利と、自作したコード、UI、仕様、データモデル、分析ロジック、文書、ブランド資産は分けて管理する。
-
----
----
-
-## 4. Version1.1で行わないこと
-
-World Rugbyの要件が判明する前に、次を本実装しない。
-
-- World Rugby SSO
-- ユーザー認証
-- role-based access control
-- 本番database
-- API Gateway
-- cloud infrastructure
-- enterprise audit log
-- 公開管理画面
-- 課金
-- 個人情報管理
-- 自動scraping
-- 大規模な第三者データ複製
-- CSV、Excel、PDF公開出力
-- World Rugby公認を示す表示
-- 無償の全面譲渡
-- 権利関係が不明な状態での商業運用
-
-これらは、相手の技術・契約・セキュリティ要件が確認できた後に判断する。
-
----
-
-# 5. 実施工程
-
-## v1.1-01 Version1.0基準状態・課題台帳
-
-### 目的
-
-Version1.0の公開状態を変更前の基準点として固定する。
-
-### 作業
-
-- 公開URL
-- repository URL
-- 対象commit
-- Version1.0 completion report
-- 既知のUI課題
-- 重大不具合
-- 改善要望
-- v1.0.x hotfixとv1.1変更の境界
-- branch・commit運用
-
-### 完了条件
-
-- Version1.0の基準状態が文書化されている
-- 重大不具合と機能改善が分離されている
-- Version1.1の作業対象が明確
-
----
-
-## v1.1-02 World Rugby問い合わせ資料
-
-### 目的
-
-完成済みproof of conceptを伴う正式なデータ照会を準備する。
-
-### 説明事項
-
-- RugbypassおよびHSBC SVNSの一般公開スタッツは、分析用途には項目数・粒度が限定的
-- 初期prototypeでは、便宜的・暫定的にRugby Australiaの公開スタッツを少数試合分だけ手入力
-- source attributionを明記
-- 自動scrapingなし
-- 公開data exportなし
-- 本来は適切なWorld Rugby公式データを使用したい
-
-### 主質問
-
-1. 公開画面より詳細なHSBC SVNS match statisticsを保持しているか
-2. 公式API、data feed、download手段はあるか
-3. data dictionaryまたはmetric definitionはあるか
-4. 限定的・非商用の公開分析に適用される条件は何か
-5. 適切なdata、digital、Game Systems、Information Management担当へ取り次げるか
-
-### 添付・提示情報
-
-- 公開デモURL
-- About
-- Data and Video Sources
-- Terms / Privacy / Disclaimer
-- GitHub repository
-- 主要画面の短い説明
-- データ構造の概要
-
-### 完了条件
-
-- 英文問い合わせが確定
-- URLが確認済み
-- pilot、売却、移管を初回の主要求にしていない
-
----
-
-## v1.1-03 問い合わせ送信・対応記録
-
-### 目的
-
-送信、返信、解釈、次の対応を記録する。
-
-### 時間軸
+から、将来はentity-centredへ。
 
 ```text
-送信後0～14日：通常待機
-15～21日：必要に応じて一度だけfollow-up
-22日以降：無回答scenarioへ移行可能
+Home
+Matches
+Teams
+Players
+Analysis
 ```
 
-### 記録項目
+例：
 
-- 送信日
-- 送信先
-- 使用した本文
-- 自動返信
-- 人的返信
-- 原文
-- 確認できた事実
-- こちらの解釈
-- 次に必要な対応
+### Match
+- Overview
+- Video
+- Stats
+- Players
+- Analysis
 
-無回答は許諾と扱わない。
+### Team
+- Overview
+- Results
+- Stats
+- Trends
+- Players
 
-### 完了条件
+### Player
+- Overview
+- Match Log
+- Stats
+- Trends
+- Comparison
 
-- 送信記録がある
-- 返信または無回答の状態が明確
-- 後続Decision Gateで利用できる
+この工程では大規模UI実装ではなく、情報設計を固める。
 
 ---
 
-## v1.1-04 Architecture・Handover文書
+## v1.1-12 — v1.1 Validation / Completion
 
-### 目的
+確認：
 
-現在のコードを使う場合にも、別基盤へ再実装する場合にも利用できる設計資産を作る。
+- Architecture documentation
+- Provider abstraction
+- Schema / Data Dictionary
+- Shared Derived Metrics Engine
+- Tests
+- Reproducible build
+- Current public UI
+- Source traceability
+- World Rugby response status
+- unresolved data / rights issues
 
-### 作成文書
+完了時：
 
 ```text
-System Context
-Container / Component overview
-画面遷移図
-データフロー
-データライフサイクル
-主要directory構成
-build・deploy flow
-PWA / Service Worker構成
-外部依存関係
-第三者サービス
-既知の制約
-移植時の注意
+Version 1.1: COMPLETED
 ```
 
-### Architecture Decision Record
+---
 
-主要判断をADRとして残す。
+# 5. v1.2 — Match Analysis Workspace
+
+v1.2以降は「Stats Database」から「Sevens Analysis Workspace」への移行を始める。
+
+中心ユーザー行動：
+
+```text
+映像を見る
+↓
+気になる
+↓
+その場でスタッツを見る
+↓
+過去平均と比較
+↓
+Trendsを見る
+↓
+他試合を探す
+↓
+映像へ戻る
+```
+
+---
+
+## v1.2-01 — Workspace Shell
+
+PC：
+
+```text
+┌──────────────────────┬──────────────────────┐
+│ Official YouTube     │ Analysis Panel       │
+│ Video                │ Stats / Team /       │
+│                      │ Player / Analysis    │
+└──────────────────────┴──────────────────────┘
+```
+
+スマホ：
+
+```text
+Video
+↓
+Analysis Cards
+↓
+Stats / Players / Analysis
+```
+
+---
+
+## v1.2-02 — Match vs Baseline Comparison
+
+動画を見ながら：
+
+- current match
+- season average
+- tournament average
+- opponent-specific average（十分なsampleがある場合）
+
+を比較。
+
+例：
+
+```text
+Turnovers Conceded
+Current match: 5
+Season average: 3.2
+Difference: +56%
+```
+
+統計的有意性を検定していない場合、有意差とは表現しない。
+
+---
+
+## v1.2-03 — Video Dock / Persistent Player
 
 候補：
 
-- GitHub Pagesを採用した理由
-- React / Viteを採用した理由
-- 静的JSONを初期データ源とした理由
-- PWA化した理由
-- public exportを撤回した理由
-- YouTube埋め込み方針
-- REAL / SAMPLEの区別
-- 多言語辞書構造
-- Stats AnalysisをOverview／Comparison／Relationshipsへ分ける理由
-- Stats TrendsをMatch／Tournament／Season集約へ分ける理由
-- 派生指標を表示componentから分離する理由
-- 小標本では因果推論を行わない方針
-- 欠損値を0として扱わない方針
+- Small
+- Medium
+- Analysis Split
 
-### Analytics Architecture
+画面遷移中も必要な範囲で動画文脈を維持する。
 
-次の責務を独立したmoduleまたは明確なinterfaceとして整理する。
-
-```text
-DerivedMetricsEngine
-AggregationService
-FilterService
-ComparisonService
-RelationshipDatasetBuilder
-TrendDatasetBuilder
-CoverageService
-ProvenanceService
-VisualizationConfig
-```
-
-World Rugby、RugbyPass、または指定委託先が別UIへ作り替える場合でも、同じ計算結果とvalidationを再利用できる状態にする。
-
-### Handover項目
-
-- local setup
-- validate
-- test
-- build
-- deploy
-- release
-- rollback
-- Service Worker更新
-- data追加
-- video追加
-- translation追加
-- incident対応
-
-### 完了条件
-
-- コードを読まなくても全体構造を説明できる
-- 別技術スタックへ再実装するための入力資料になる
-- 設計判断の理由が追跡できる
+YouTube player上に独自UIを重ねることは原則避ける。
 
 ---
 
-## v1.1-05 Secure Development基盤
+## v1.2-04 — Data → Video Navigation
 
-### 目的
+```text
+Trendsで異常発見
+↓
+大会
+↓
+試合
+↓
+Video + relevant stats
+```
 
-現在の公開静的PWAに適したsecurity controlと証跡を整える。
-
-### repository・CI
-
-- Dependabot alerts
-- Dependabot security updates
-- dependency review
-- code scanning
-- secret scanning
-- lockfile固定
-- GitHub Actions permission最小化
-- third-party Actionのcommit SHA固定
-- branch protectionの検討
-- release前security check
-
-### application
-
-- Content Security Policyの検討・導入
-- external linkの`rel`確認
-- iframe originとtitle
-- Service Worker cache更新方針
-- user-controlled HTMLを描画しない
-- error messageにsecretを含めない
-- dependency license確認
-
-### 文書
-
-- `SECURITY.md`
-- vulnerability reporting
-- supported version
-- incident response outline
-- dependency / license inventory
-- threat model
-
-### 基準
-
-OWASP ASVS、NIST SSDF、Secure by Designを参照するが、現在の機能に適用可能な項目だけを採用する。
-
-### 完了条件
-
-- repositoryでsecurity checkが自動化されている
-- 脆弱性報告経路がある
-- 現行PWAのthreat modelが文書化されている
-- security controlの未対応理由が説明できる
+を実現。
 
 ---
 
-## v1.1-06 Data Provider／Adapter分離
+# 6. v1.3 — YouTube Time Integration / Manual Event Tagging
 
-### 目的
+新しいデータ層：
 
-UI・分析ロジックを特定のデータ取得方法から分離する。
+> **Video-tagged Event Data**
 
-### 構造案
+映像本体は公式公開YouTube側に保持する。
 
-```text
-Data Source
-  ↓
-Provider / Adapter
-  ↓
-Normalization
-  ↓
-Validation
-  ↓
-Canonical Match Model
-  ↓
-Derived Metrics / Aggregation / Coverage
-  ↓
-Analysis / Search / Trends / Video UI
-```
+Analyzer側は：
 
-### Provider候補
+- video ID
+- timestamp
+- event metadata
 
-- StaticJsonProvider
-- ManualDataProvider
-- WorldRugbyApiProvider（interfaceのみ）
-- InternalApiProvider（interfaceのみ）
+を保持する。
 
-### 要件
-
-- UI componentがsource固有fieldを直接参照しない
-- providerがcanonical modelへ変換
-- provider errorを統一形式で返す
-- loading / empty / partial / unavailableを区別
-- source metadataとprovenanceを保持
-- 派生指標計算はprovider固有fieldを参照しない
-- Stats AnalysisとStats Trendsが同じcanonical metricを使用する
-- interfaceのmockを用意
-
-### 完了条件
-
-- 現行JSON providerで既存画面が動く
-- 別providerの追加が画面変更を最小限にできる
-- World Rugby API仕様が判明した際に接続点が明確
+動画ファイルを自前でdownload / host / redistributeしない。
 
 ---
 
-## v1.1-07 Schema・Data Dictionary
+## v1.3-01 — Playback Time Read / Seek
 
-### 目的
+Stage 1：
 
-指標名の一致を、定義の一致と誤認しないデータ契約を作る。
-
-### Schema
-
-- canonical match schema
-- video schema
-- source metadata
-- provenance
-- acquiredAt
-- sourceVersion
-- coverageLevel
-- nullability
-- enum
-- schema version
-
-### Data Dictionary
-
-各metricについて次を記録する。
-
-```text
-key
-display name
-definition
-unit
-raw / calculated
-team / player
-null allowed
-valid range
-source-specific difference
-usable chart
-comparison caveat
-validation rule
-```
-
-### 優先raw metric
-
-```text
-pointsFor
-pointsAgainst
-tries
-conversions
-carries
-passes
-offloads
-cleanBreaks
-defendersBeaten
-metres
-tackles
-missedTackles
-turnoversWon
-turnoversConceded
-rucksWon
-rucksLost
-possession
-territory
-penaltiesConceded
-yellowCards
-redCards
-```
-
-### 現行データから算出する優先derived metric
-
-```text
-pointsDifferential
-= pointsFor - pointsAgainst
-
-metresPerCarry
-= metres / carries
-
-defendersBeatenPerCarry
-= defendersBeaten / carries
-
-cleanBreaksPer100Carries
-= cleanBreaks / carries * 100
-
-triesPer100Metres
-= tries / metres * 100
-
-pointsPer100Metres
-= pointsFor / metres * 100
-
-metresPerTry
-= metres / tries
-
-tackleSuccess
-= tackles / (tackles + missedTackles) * 100
-
-ruckSuccess
-= rucksWon / (rucksWon + rucksLost) * 100
-
-turnoverDifferential
-= turnoversWon - turnoversConceded
-
-penaltiesPerMatch
-= penaltiesConceded
-```
-
-### 派生指標の計算規則
-
-- 必要なraw metricが欠損している場合は`null`
-- 分母が0の場合は`null`
-- 欠損値を0へ変換しない
-- 単位をmetric definitionへ記録する
-- 丸めは保存時ではなく表示時に行う
-- sourceごとの定義差を保持する
-- calculated metricであることをUIに表示できる
-- 小標本で因果関係を断定しない
-
-### 現段階でconversion rateとして扱わないもの
-
-```text
-tries / turnoversWon
-triesConceded / penaltiesConceded
-```
-
-これらは同一ポゼッション内のイベント連鎖を確認できないため、Turnover-to-Try ConversionまたはPenalty-to-Try Concession Rateとは呼ばない。
-
-必要な場合でも単なる試合単位ratioとして明示し、Version1.1の中心指標にはしない。
-
-### 完了条件
-
-- 未取得値を0として扱わない
-- source差異が追跡できる
-- schema versionがある
-- providerとvalidationが同じ契約を使用する
+- 現在再生時刻取得
+- 保存時刻へのジャンプ
+- `youtube_video_id`管理
+- 動画利用不能時のgraceful fallback
 
 ---
 
-## v1.1-08 Test・再現可能build
+## v1.3-02 — Event Schema
 
-### 目的
-
-作者の環境に依存せず、第三者が同じ結果を再現できる状態にする。
-
-### 固定
-
-- Node version
-- package manager version
-- lockfile
-- build command
-- base path
-- environment variable一覧
-
-### Test
-
-- raw-to-derived metric calculation unit test
-- division-by-zero / null propagation test
-- aggregation level test（Match / Tournament / Season）
-- win / loss comparison dataset test
-- relationship dataset test
-- normalization test
-- provider contract test
-- schema validation test
-- translation key test
-- component smoke test
-- main navigation E2E
-- Match Search E2E
-- Video Library E2E
-- PWA build check
-- no-export regression test
-
-### CI flow
+基本案：
 
 ```text
-install
-lint
-validate data
-validate translation
-unit test
-component test
-E2E smoke
-security check
-build
-deploy
+event_id
+match_id
+youtube_video_id
+timestamp
+event_type
+event_subtype
+team_id
+player_id
+opponent_id
+sequence_id
+memo
+tagging_date
+source_channel
+video_duration
 ```
 
-### 完了条件
+将来候補：
 
-- clean cloneから文書どおりbuildできる
-- 主要分析結果にtestがある
-- provider差し替え時のregressionを検出できる
-- third partyが同じ手順を実行できる
+```text
+field_zone
+attack_direction
+preceding_event_id
+following_event_id
+result
+confidence
+review_status
+```
+
+映像ソースと分析データを別管理する。
 
 ---
 
-## v1.1-09 多言語化・分析情報設計・検索改善
+## v1.3-03 — Manual Event Tagging MVP
 
-### 優先順位
+最初はタグを絞る。
 
-Architecture、Security、Provider、Schema、Data Dictionary、Testの基盤を整えた後に実装する。
+初期候補：
 
-### 9.1 多言語化基盤
+- Line Break
+- Offload
+- Turnover Won
+- Turnover Conceded
+- Penalty
+- Try
+- Restart
 
-- locale registry
-- English fallback
-- translation key validation
-- `Intl.DateTimeFormat`
-- `Intl.NumberFormat`
-- `html lang`
-- 将来の`dir=rtl`
-- rugby terminology glossary
-
-### Version1.1対象言語
-
-```text
-日本語
-英語
-フランス語
-スペイン語
-```
-
-法的文書の翻訳は参考訳と正式版を区別する。
-
-### 9.2 共通分析filter
-
-Stats AnalysisとStats Trendsで、可能な範囲で同じfilter modelを使用する。
-
-```text
-Team
-Gender
-Season
-Tournament
-Opponent
-Stage
-Result
-Data Type
-```
-
-各画面は、対象試合数、data coverage、source、definition versionを表示できるようにする。
-
-### 9.3 Stats Analysis — Season and Tournament Analysis
-
-#### 役割
-
-最新または選択した1シーズンを既定範囲として、選択範囲の概要、カテゴリー比較、指標間の関連を分析する。
-
-時間推移そのものを主役にせず、「選択範囲では何が異なっていたか」を扱う。
-
-#### 分析モード
-
-利用者には次の3モードとして表示する。
-
-```text
-Overview
-Comparison
-Relationships
-```
-
-当初の分析要素は次のように整理する。
-
-```text
-Season Overview        → Overview
-Tournament Comparison  → Comparison / Tournament
-Win-Loss Comparison    → Comparison / Result
-Opponent Comparison    → Comparison / Opponent
-Relationship Explorer  → Relationships
-```
-
-#### Overview
-
-主な表示候補：
-
-```text
-Matches
-Win Rate
-Average Points Differential
-Average Penalties Conceded
-Average Turnover Differential
-Average Metres per Carry
-Average Tackle Success
-Data Coverage
-```
-
-KPI cardから該当するComparisonまたはRelationshipsへ移動できる構造を検討する。
-
-#### Comparison
-
-比較単位を選択する。
-
-```text
-Tournament
-Result
-Opponent
-```
-
-その後、指標を1つ選択し、平均値、対象試合数、coverageを表示する。
-
-主なmetric：
-
-```text
-Points Differential
-Penalties Conceded
-Turnover Differential
-Metres per Carry
-Defenders Beaten per Carry
-Clean Breaks per 100 Carries
-Tries per 100 Metres
-Points per 100 Metres
-Metres per Try
-Tackle Success
-Ruck Success
-```
-
-異なる単位のmetricを無理に一つの軸へ重ねない。
-
-#### Relationships
-
-X軸・Y軸を選択するscatter plotとする。
-
-既定表示：
-
-```text
-X = Penalties Conceded
-Y = Points Differential
-```
-
-各点は1試合とし、次をtooltipまたはdrill-downで表示する。
-
-```text
-Opponent
-Tournament
-Date
-Score
-Win / Loss
-X metric value
-Y metric value
-Coverage
-Source
-```
-
-表示するのは対象試合内のassociationであり、因果関係ではない。
-
-試合数が少ない場合は、sample sizeとdescriptive-only noticeを表示する。
-
-### 9.4 Stats Trends — Long-term Performance Trends
-
-#### 役割
-
-同じmetricが、試合、大会、シーズンの順にどのように変化したかを追跡する。
-
-#### Aggregation
-
-```text
-Match
-Tournament
-Season
-```
-
-- Match：各試合の値
-- Tournament：大会内の1試合平均または率
-- Season：シーズン内の1試合平均、率、効率、differential
-
-大会数・試合数が異なるため、長期比較では原則として総数を用いない。
-
-#### 既定表示
-
-複数シーズンが十分に存在しない間：
-
-```text
-Aggregation = Match
-Season = Latest
-Metric = Points Differential
-```
-
-複数シーズンが蓄積した後は、Season表示を長期分析の中心にできる。
-
-#### 主なmetric
-
-```text
-Points Differential
-Win Rate
-Points per Match
-Tries per Match
-Penalties per Match
-Turnover Differential
-Metres per Carry
-Defenders Beaten per Carry
-Clean Breaks per 100 Carries
-Tries per 100 Metres
-Points per 100 Metres
-Tackle Success
-Ruck Success
-```
-
-#### 対戦相手と大会形式への対応
-
-- opponent filter
-- same-opponent comparison
-- tournament format note
-- season format note
-- source / definition change warning
-- mixed-source comparison warning
-
-#### Drill-down
-
-```text
-Season
-  ↓ Stats Analysisで該当シーズンを開く
-Tournament
-  ↓ 該当大会の試合一覧
-Match
-  ↓ Match Details
-  ↓ Video
-  ↓ Source
-```
-
-### 9.5 AnalysisとTrendsの重複防止
-
-```text
-Stats Analysis
-= 平均比較、勝敗比較、大会比較、相手別比較、指標間関係
-
-Stats Trends
-= 試合順、大会順、シーズン順、継続変化、同一相手の経年変化
-```
-
-同じ大会平均を使用する場合でも、Analysisではカテゴリーとして並列比較し、Trendsでは競技順・時間順に表示する。
-
-### 9.6 Penaltiesの扱い
-
-現在のデータでは、次を優先する。
-
-```text
-Penalties Conceded vs Points Differential
-Average Penalties in Wins vs Losses
-Penalties per Match over Time
-```
-
-勝率との関係は補助表示とし、少数試合では得失点差を主なoutcomeとする。
-
-「ペナルティが敗戦を引き起こした」とは表示せず、対象試合内の関連として扱う。
-
-### 9.7 Data Coverage・Definition・Provenance
-
-各分析結果から次を確認できるようにする。
-
-```text
-Available matches / selected matches
-Source provider
-Definition version
-Raw or calculated
-Formula
-Missing-data rule
-Comparison caveat
-```
-
-World Rugby、RugbyPass、または指定data providerへ接続した場合に、source変更によるseries breakを検出・表示できる構造とする。
-
-### 9.8 その他の改善
-
-- Match Search date sort
-- source表示
-- missing metric表示
-- videoなしfallback
-- smartphoneの軽微な調整
-- chart pointからMatch Details / Videoへの移動
-- analysis modeをURLまたはstateで再現可能にする
-
-### 完了条件
-
-- 四言語で主要画面が使用可能
-- translation key不足なし
-- Stats AnalysisがOverview／Comparison／Relationshipsで動作
-- Stats TrendsがMatch／Tournament／Seasonで動作
-- 両画面が同じ派生指標計算を共有
-- 欠損値を0として描画しない
-- coverage、definition、sourceを追跡できる
-- 分析結果から試合詳細・映像・sourceへdrill-downできる
-- Version1.0の主要導線を壊していない
+実利用で価値を確認してから追加する。
 
 ---
 
-## v1.1-10 Decision Gate・条件付き接続・完了確認
+## v1.3-04 — Match Event Timeline
 
-### Scenario A：World Rugbyが前向き
-
-- 技術担当との要件確認
-- data sampleまたはAPI specification確認
-- NDA・利用条件確認
-- read-only限定接続
-- 小規模technical validation
-- 相手が具体的関心を示した段階で商業条件を検討
-
-商業条件候補：
+例：
 
 ```text
-paid pilot
-commissioned development
-non-exclusive license
-maintenance and operation
-hosting
-exclusive transfer
+03:24  JPN  Line Break       ▶
+03:31  JPN  Offload          ▶
+03:36  JPN  Try              ▶
+05:12  AUS  Turnover Won     ▶
 ```
 
-### Scenario B：RugbyPass・別権利者・指定委託先へ案内
-
-- World Rugbyからの案内先と担当範囲を記録
-- RugbyPass、data provider、digital partner、開発委託先のどこへ案内されたかを区別
-- データ利用許諾とコード・UI・運用協議を分離
-- 利用範囲を限定して照会
-- 現行公開版と将来のデータ拡張を分離
-- 回答前の大量登録を行わない
-- 相手の技術標準へ合わせる場合も、canonical schemaとanalysis contractを維持する
-
-### Scenario C：無回答・利用不可
-
-- 無回答を許諾と扱わない
-- 公開継続、縮小、Unpublish、private化を判断
-- 非公開・個人利用への移行手順を準備
-- 大量公開・自動取得を行わない
-- Architecture、Test、Data Dictionaryは個人ツールとして維持
-
-### 自動確認
-
-- security check
-- provider contract
-- schema validation
-- translation validation
-- match / video validation
-- unit / component / E2E
-- PWA build
-- public exportがない
-- unofficial notice
-- required documents
-- asset path
-
-### 手動確認
-
-- four-language UI
-- PC
-- Android
-- iPhone / iPad
-- PWA update
-- offline redisplay
-- Console error
-- external link
-- long translated labels
-- provider error state
-
-### 完了条件
-
-- buildとdeployがGreen
-- manual checklistがPASS
-- World Rugbyの回答状態が記録されている
-- 公開・非公開の判断が明記されている
-- 既知の制約が次版へ引き継がれている
+▶で該当時刻へjump。
 
 ---
 
-## 6. 推奨時間軸
+## v1.3-05 — Cross-match Event Search
 
-World Rugbyの返答時期は制御できないため、固定日ではなく経過期間で管理する。
+例：
 
 ```text
-Week 0      v1.1-01 基準状態
-Week 0～1   v1.1-02 問い合わせ資料
-Week 1      v1.1-03 送信
-Week 1～3   v1.1-04 Architecture文書
-Week 2～4   v1.1-05 Secure Development
-Week 3～6   v1.1-06 Provider／Adapter
-Week 4～7   v1.1-07 Schema／Data Dictionary
-Week 5～8   v1.1-08 Test／Build
-Week 7～11  v1.1-09 i18n／分析情報設計／検索改善
-返信後       v1.1-10 Decision Gate／条件付き接続
+Team: Japan Women
+Event: Line Break
+Season: 2026
 ```
 
-World Rugbyの返信が早い場合でも、内部要件が判明するまでは認証、DB、SSO、クラウド基盤を先行実装しない。
+```text
+Dubai       vs AUS   03:24 ▶
+Dubai       vs FRA   05:18 ▶
+Cape Town   vs NZL   01:42 ▶
+Singapore   vs CAN   04:51 ▶
+```
+
+「日本女子の今季すべてのLine Breakを映像で確認する」のような横断探索を可能にする。
 
 ---
 
-## 7. Must / Should / Could / Not now
+# 7. v1.4 — Sevens Event Analysis
 
-### Must
+## v1.4-01 — Sevens-specific Tactical Taxonomy
 
-- World Rugby問い合わせ
-- World Rugby／RugbyPass／指定委託先へ引き継げる設計資産
-- Architecture・Handover文書
-- Secure Development基盤
-- Provider／Adapter分離
-- Schema・Data Dictionary
-- Test・再現可能build
-- Decision Gate
-- Version1.1完了報告
+15人制体系をそのまま移植しない。
 
-### Should
+### Attack Creation候補
 
-- フランス語
-- スペイン語
-- Stats Analysis：Overview／Comparison／Relationships
-- Stats Trends：Match／Tournament／Season
-- scatter plot軸切替
-- penaltiesと得失点差の関連表示
-- coverage／definition／provenance表示
-- Match Search sort
-- provider error state
+- 2v1 creation
+- 3v2 creation
+- Individual beat
+- Change of angle
+- Switch
+- Scissors
+- Loop / Wrap
+- Overs line
+- Unders line
+- Miss pass
+- Decoy
+- Width creation
+- Defensive manipulation
 
-### Could
+### Break / Continuity候補
 
-- Portuguese locale準備
-- RTL基盤
-- OpenAPI形式のprovider contract
-- 男子データの少数追加
-- Storybook等のcomponent catalogue
+- Line Break
+- Clean Break
+- Support Available
+- Support Unavailable
+- Successful Offload
+- Failed Offload
+- Recycle
+- Breakdown Retention
+- Continuity Maintained
+- Continuity Lost
 
-### Not now
+### Defence候補
+
+- Missed Tackle
+- Dominant Tackle
+- Defensive Turnover
+- Line Integrity Maintained
+- Defensive Disconnect
+- Over-chase
+- Defender Bite
+- Sweeper Involvement
+- Cover Defence
+- Breakdown Commitment
+
+### Possession / Restart候補
+
+- Turnover Won
+- Turnover Conceded
+- Penalty Won
+- Penalty Conceded
+- Kick-off / Restart
+- Restart Won
+- Restart Lost
+- Scrum
+- Lineout
+
+UIへ最初から全タグを出さない。
+
+---
+
+## v1.4-02 — Event-derived Metrics
+
+候補：
+
+- Line Break → Try Conversion Rate
+- Line Break → Support Success Rate
+- Offload Success Rate
+- Break後のPossession Retention
+- Break後の平均得点
+- Turnover → Try Conversion
+- Restart Win Rate
+- Continuity Loss after Break
+
+全指標を元イベントまで遡れるようにする。
+
+---
+
+## v1.4-03 — Event Sequence Model
+
+例：
+
+```text
+Line Break
+↓
+Support Available
+↓
+Successful Offload
+↓
+Continuity
+↓
+Try
+```
+
+sequence_idで一連の攻撃を管理する。
+
+---
+
+## v1.4-04 — Event Trends Integration
+
+既存Trendsへevent-derived dataを接続。
+
+例：
+
+```text
+Dubai
+Switch usage       8
+Loop / Wrap        6
+Individual beat   11
+
+Cape Town
+Switch usage       5
+Loop / Wrap        3
+Individual beat   14
+```
+
+「戦術選択がどう変化したか」を追跡する。
+
+因果断定ではなく、映像再確認の候補を提示する。
+
+---
+
+# 8. v1.5 — Team / Player / Opponent Profiles
+
+## v1.5-01 — Team Style Fingerprint
+
+候補dimension：
+
+- Tempo
+- Width
+- Pass dependence
+- Carry dependence
+- Offload tendency
+- Break creation
+- Break conversion
+- Turnover attack
+- Defensive pressure
+- Restart effectiveness
+
+必ず定義と根拠を明示する。
+
+---
+
+## v1.5-02 — Player Role Profile
+
+候補：
+
+- Break Creator
+- Finisher
+- Distributor
+- Connector
+- Direct Carrier
+- Support Runner
+- Defensive Stopper
+- Turnover Specialist
+
+役割名を先に作って当てはめるのではなく、特徴量を先に計算する。
+
+---
+
+## v1.5-03 — Player Similarity
+
+- similarity feature space明示
+- sample size / coverage警告
+- similar players
+- role-cluster neighbours
+- style differences
+
+を表示。
+
+---
+
+## v1.5-04 — Opponent Matchup Analysis
+
+Team × Opponentで通常時との差を見る。
+
+例：
+
+```text
+Japan vs France
+Turnover Conceded ↑
+Width Creation ↓
+Break Conversion ↓
+```
+
+相手による変化と因果を混同しない。
+
+---
+
+## v1.5-05 — Match Anomaly Detection
+
+「そのチームの通常状態からどれだけ外れた試合か」を検出。
+
+候補：
+
+- pass rate
+- carry rate
+- line breaks
+- turnovers conceded
+- defence
+- restart
+- event-derived tactical metrics
+
+Anomaly = unusualであり、badとは限らない。
+
+---
+
+## v1.5-06 — Emerging Player Detector
+
+十分なplayer-level dataが得られた後に検討。
+
+補正候補：
+
+- playing time
+- opponent
+- team context
+- tournament
+- recent trend
+
+単純ランキングにはしない。
+
+---
+
+# 9. v1.6 — Tactical Interpretation / Analysis Engine
+
+最終的な分析階層：
+
+```text
+Raw Match Stats
+↓
+Derived Metrics
+↓
+Video-tagged Events
+↓
+Event Sequences
+↓
+Team / Player / Opponent Profiles
+↓
+Tactical Interpretation
+```
+
+解釈結果は元データへ遡れる必要がある。
+
+例：
+
+```text
+Japan created more line breaks than Australia.
+
+However, Japan converted fewer breaks into tries
+and lost continuity more often after the break.
+
+Review tagged events:
+03:24
+05:18
+06:02
+```
+
+まずevidenceを示し、その後interpretationを示す。
+
+---
+
+# 10. AI / ML Policy
+
+AI搭載自体を目的にしない。
+
+優先順位：
+
+1. Team Style Fingerprint
+2. Player Similarity
+3. Match Anomaly Detection
+4. Emerging Player Detector
+5. Matchup Model
+6. Win / Result Prediction
+
+勝敗予測は優先度を低くする。
+
+理由：
+
+- 試合時間が短い
+- 選手入れ替え影響が大きい
+- Card影響が大きい
+- sampleが限られる
+- 偶然性が比較的大きい
+
+予測を出す場合はuncertaintyを明示する。
+
+### Human-first tagging
+
+```text
+Human tagging
+↓
+Structured data
+↓
+Calculation
+↓
+Rule-based analysis
+↓
+Optional AI explanation
+```
+
+十分なreviewed training dataが蓄積した場合のみ、AIによる：
+
+- tag candidate
+- event candidate detection
+- classification assistance
+
+を検討。
+
+---
+
+# 11. v2.0 — Data Platform / Controlled Automation
+
+v2.0は規模が必要になった時点で開始。
+
+候補：
+
+- database
+- canonical team / player / match IDs
+- controlled authentication
+- admin / review workflow
+- audit log
+- event review status
+- semi-automated import
+- official API integration（利用可能な場合）
+- provenance preservation（許可範囲内）
+- background processing
+- data-quality monitoring
+
+要件がない段階では：
 
 - SSO
-- authentication
-- production database
-- enterprise cloud
-- admin console
-- automatic ingestion
-- public data export
-- payment
-- complete transfer without commercial agreement
+- enterprise admin
+- complex cloud architecture
+- multi-user permission system
+
+を先に作らない。
 
 ---
 
-## 8. Version1.1完了時の到達点
+# 12. World Rugby回答による分岐
+
+## Branch A — Official data route / permission available
+
+優先：
+
+1. 利用条件確認
+2. official provider adapter
+3. official IDs → canonical IDs mapping
+4. Data Dictionary取込
+5. historical coverage確認
+6. permitted backfill
+7. event-level data access確認
+8. manual tagging範囲再評価
+
+公式event dataが得られる場合、manual taggingは公式データにないtactical conceptへ集中する。
+
+---
+
+## Branch B — Public use permitted with conditions
+
+対応：
+
+- attribution
+- source links
+- coverage limits
+- update rules
+- branding restrictions
+- disclaimer
+
+を実装してcontrolled data expansionを再開。
+
+---
+
+## Branch C — Current public use incompatible
+
+必要に応じて：
+
+- public prototype修正
+- affected data削除
+- source strategy変更
+- public prototype停止
+
+Private利用が自動的に許可されるとは仮定せず、問題のscopeを確認する。
+
+---
+
+## Branch D — No response
+
+継続：
+
+- Architecture
+- Tests
+- Provider abstraction
+- Schema
+- local / private prototypes
+
+Public data expansionは慎重に維持。
+
+未回答点を記録したうえで、必要なら後に別の適切なorganisation / rights holderへ問い合わせる。
+
+---
+
+# 13. Product Principles
+
+## Fan-facing first
+
+プロ分析ツールそのものを複製するのではなく、一般SVNSファンが使える形にする。
+
+## Evidence before interpretation
+
+全分析結果をraw stats / formula / source / video tagへ遡れるようにする。
+
+## Video and analysis are separate layers
+
+公式公開YouTube映像を標準埋め込みで利用し、動画ファイル自体は自前保持しない。
+
+## Keep UI simple
+
+ユーザーが意識する基本操作は：
 
 ```text
-World Rugbyへの照会が完了している
-回答または無回答の状態が記録されている
-システム構造と設計判断が文書化されている
-別技術基盤への再実装に必要な仕様が整理されている
-Provider／Adapterでデータ接続が分離されている
-Schema、Data Dictionary、Derived Metrics Engineが整備されている
-Stats AnalysisがOverview／Comparison／Relationshipsで整理されている
-Stats TrendsがMatch／Tournament／Seasonで整理されている
-両画面が同じ分析・集約処理を共有している
-Security checkとTestが自動化されている
-第三者がclean cloneからbuildできる
-World Rugby、RugbyPass、指定委託先が再実装・移植に使える文書がある
-日本語・英語・フランス語・スペイン語の基盤がある
-回答に応じた公開・非公開・公式接続方針が確定している
+Watch
+Compare
+Explore
+Search
+Review
 ```
 
-World Rugbyとの契約、有償pilot、正式運用、売却の成立はVersion1.1の必須完了条件ではない。
+## Entity-centred navigation
 
-相手が関心を示した場合は、技術工程と商業交渉を分けて進める。
+機能名をトップタブとして増やさない。
+
+## Sevens-specific design
+
+優先概念：
+
+- space
+- numerical advantage
+- break creation
+- support
+- continuity
+- restart
+- defensive spacing
+- transition
+
+---
+
+# 14. Priority Summary
+
+## Now — v1.1
+
+```text
+v1.1-03 World Rugby follow-up / response tracking
+v1.1-04 Architecture & Handover Inventory
+v1.1-05 Secure Development
+v1.1-06 Data Provider / Adapter Separation
+v1.1-07 Schema / Data Dictionary
+v1.1-08 Derived Metrics Engine Separation
+v1.1-09 Tests / Reproducible Build
+v1.1-10 Localisation Architecture
+v1.1-11 Information Architecture Design
+v1.1-12 Validation / Completion
+```
+
+## Next
+
+```text
+v1.2 Match Analysis Workspace
+v1.3 YouTube Time Integration / Manual Event Tagging
+v1.4 Sevens Event Analysis
+v1.5 Team / Player / Opponent Profiles
+v1.6 Tactical Interpretation / Analysis Engine
+```
+
+## Later / Scale dependent
+
+```text
+AI / ML assistance
+Official event-data integration
+Database / review workflow
+Semi-automation
+v2.0 platform architecture
+```
+
+---
+
+# 15. Final Target
+
+SVNS Stats Analyzerを、
+
+> **「SVNSの公開スタッツを検索・比較するアプリ」**
+
+から、
+
+> **「スタッツ・派生指標・公式公開映像・イベントデータ・横断検索・戦術解釈を結ぶ、ファン向けSevens Analysis Workspace」**
+
+へ発展させる。
+
+最終的な中心ループ：
+
+```text
+映像を見る
+↓
+気になる
+↓
+スタッツを見る
+↓
+通常時と比較する
+↓
+Trendsを見る
+↓
+関連試合 / イベントを探す
+↓
+映像へ戻る
+```
+
+逆方向：
+
+```text
+データで異常を発見
+↓
+大会 / 試合へ移動
+↓
+関連イベント時刻へジャンプ
+↓
+実際の映像で確認
+```
+
+この双方向ループをSVNS Stats Analyzerの長期的な製品アイデンティティとする。
