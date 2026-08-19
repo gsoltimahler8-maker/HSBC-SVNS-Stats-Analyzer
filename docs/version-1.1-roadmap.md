@@ -1,73 +1,75 @@
 # SVNS Stats Analyzer
 # Version 1.1–2.0 Roadmap
 
-**Updated:** 2026-08-18  
+**Updated:** 2026-08-19  
 **Current release:** v1.0 completed  
 **Current development line:** v1.1  
 **Current active step:** v1.1-03 World Rugby enquiry / response tracking  
-**Long-term product direction:** Stats Database → **Fan-facing Sevens Analysis Workspace**
+**Long-term product direction:** Fan-facing **Sevens Analysis Workspace** with a two-layer analytics architecture
 
 ---
 
 ## 1. Roadmap purpose
 
-SVNS Stats Analyzerは、単なる公開スタッツ閲覧アプリではなく、最終的に以下を自然に行き来できるファン向け分析環境へ発展させる。
+This roadmap defines how SVNS Stats Analyzer should evolve without losing the architectural discipline established for v1.1.
+
+The project will develop through two analytical layers:
+
+### Layer 1 — Quantitative Analysis
+Use Rugby.com.au Match Centre-derived aggregated match statistics as far as they can responsibly support analysis.
+
+### Layer 2 — Video-tagged Tactical Analysis
+Use official/public YouTube video and manually or semi-automatically tagged events only where aggregate statistics cannot explain the observed change.
+
+The core analytical loop is:
 
 ```text
-Official / public match data
-↓
-Derived Metrics
-↓
-Match / Tournament / Season comparison
-↓
-Official / public video
-↓
-Video-tagged Event Data
-↓
-Cross-match Event Search
-↓
-Team / Player / Opponent Profiles
-↓
-Tactical Interpretation
+Raw Match Stats
+→ Derived Metrics
+→ Opponent-adjusted Performance
+→ Style Fingerprint
+→ Matchup Analysis
+→ Trend / Change Detection
+→ Targeted Video Review
+→ Video-tagged Tactical Explanation
 ```
 
-競争軸は「World Rugby内部の分析より高度であること」ではない。
+The project should remain:
 
-中心価値は以下とする。
-
-- 一般ファン向けであること
-- SVNSに特化すること
-- 男女SVNSを同じ思想で扱えること
-- 大会・試合・チーム・選手を横断できること
-- 分析根拠を元スタッツや映像まで遡れること
-- 映像と数値を往復できること
-- 裏側が高度化しても操作を複雑にしないこと
+- independent;
+- unofficial;
+- non-commercial unless the operating model changes later;
+- transparent about source, coverage and missingness;
+- conservative about rights and permitted use;
+- evidence-traceable;
+- reimplementable by another development team or data provider;
+- fan-facing rather than a clone of a professional team-analysis system.
 
 ---
 
-# 2. 現在地
+# 2. Current status
 
 ## v1.0 — COMPLETED
 
-2026-07-26完了。
+Version 1.0 was completed on 2026-07-26.
 
-主要機能：
+The public prototype includes:
 
-- Home
-- Stats Analysis
-- Stats Trends
-- Match Search
-- Video
-- About / Data and Video Sources
-- 日本語 / 英語
-- PWA
-- GitHub Pages公開
-- 非公式・非提携表示
-- 出典追跡
-- 小規模proof of conceptデータ
-- 公式公開YouTube動画へのリンク / 標準埋め込み
+- Home;
+- Stats Analysis;
+- Stats Trends;
+- Match Search;
+- Video Library / player access;
+- About / source information;
+- Japanese / English;
+- PWA support;
+- GitHub Pages deployment;
+- unofficial / non-affiliation notices;
+- source traceability;
+- a small proof-of-concept real-data set;
+- official/public YouTube links and standard embeds.
 
-CSV / Excel / PDF公開出力は削除済み。
+Public CSV / Excel / PDF export was removed.
 
 ---
 
@@ -75,61 +77,44 @@ CSV / Excel / PDF公開出力は削除済み。
 
 ### Baseline / Issue Register
 
-- v1.0 baseline固定
-- 公開アプリ / リポジトリ記録
-- v1.1 issue register整備
+Established the v1.0 baseline and the v1.1 issue register.
 
 ---
 
 ## v1.1-02A — COMPLETED
 
-### Public Demo Readiness / Analysis Model Revision
+### Public Demo Readiness / Core Analysis Model
 
-13のコア指標を中心にStats Analysis / Stats Trendsを整理。
+Stats Analysis and Stats Trends were revised around 13 core indicators.
 
 ### Results & Scoring
-
 1. Points Differential
 2. Win Rate
 3. Points per Match
 4. Tries per Match
 
 ### Scoring Efficiency
-
 5. Points per 100 Metres
 6. Tries per 100 Metres
 
 ### Attacking Efficiency
-
 7. Metres per Carry
 8. Clean Breaks per 100 Carries
 9. Defenders Beaten per Carry
 
 ### Possession & Discipline
-
 10. Turnover Differential
 11. Penalties per Match
 
 ### Defence & Retention
-
 12. Tackle Success
 13. Ruck Success
 
-Comparison：
+Comparison supports Tournament / Result / Opponent.
 
-- Tournament
-- Result
-- Opponent
+Relationship analysis uses predefined pairs rather than arbitrary X/Y selection.
 
-Relationships：自由X/Yではなくpreset方式。
-
-Trends：
-
-- Match
-- Tournament
-- Season
-
-スマホでは必要に応じて対戦国を3文字略称表示。
+Trends support Match / Tournament / Season.
 
 ---
 
@@ -137,10 +122,7 @@ Trends：
 
 ### World Rugby enquiry preparation
 
-- 初回問い合わせ文面
-- 公開 / 私用連絡先分離
-- 公式問い合わせフォーム送信準備
-- データ・動画利用方針整理
+Prepared the first enquiry package, project description, source/video explanation and submission checklist.
 
 ---
 
@@ -149,205 +131,191 @@ Trends：
 ### World Rugby enquiry / response tracking
 
 ```text
-Initial submission: 2026-07-29
+Initial enquiry submitted: 2026-07-29
 Route: World Rugby official Contact Us form
 Category: Research
 Language: English
-Response: Pending
+Status: Response pending
 ```
 
-現在の運用：
+While unresolved:
 
 ```text
-Public prototype: 維持
-Public data expansion: 凍結
-Large feature expansion: 保留
-Architecture / documentation work: 継続可
+Public prototype: Remains available for review
+Public data expansion: Frozen
+Major public data redistribution: Deferred
+Architecture / documentation / tests: Continue
 ```
 
-### Follow-up方針
+### Follow-up
 
-初回問い合わせから約3週間後も返信がない場合、一度だけ簡潔なfollow-upを行う。
+The second enquiry should remain primarily:
 
-第2回問い合わせでは：
+- a follow-up to the 29 July enquiry;
+- a request to confirm receipt;
+- a request for routing to the appropriate data / digital / competition team;
+- a concise restatement of the official-data questions.
 
-- 7月29日の問い合わせへのfollow-up
-- 到達確認
-- 適切なdata / digital / competition担当へのrouting依頼
-- 現在のプロジェクトを短く再説明
-- 将来のVideo + Stats / Analysis Workspace構想を1〜2文だけ提示
-- 公式データ経路 / API / Data Feed / Data Dictionary / 利用条件を再確認
+The future Video + Stats / Analysis Workspace may be mentioned briefly.
 
-を行う。
+Do not claim that video functionality was added after the first enquiry.
 
-AI / MLや詳細なevent-tagging構想は、相手から説明を求められた段階で提示する。
-
-前回問い合わせ後に動画機能を追加したとは書かない。動画機能は初回問い合わせ前から存在していた。
+Do not lead with AI / ML plans.
 
 ---
 
-# 3. World Rugby回答待ち期間の開発原則
+# 3. Development constraints while data-use questions remain unresolved
 
-## 継続してよい作業
+## Continue
 
-- bug fix
-- Architecture / Handover
-- Data Provider分離
-- Schema / Data Dictionary
-- Derived Metrics整理
-- tests
-- reproducible build
-- accessibility
-- responsive UI refinement
-- localisation architecture
-- local / private prototype
+- bug fixes;
+- architecture documentation;
+- schema work;
+- data-provider abstraction;
+- derived-metric validation;
+- tests;
+- reproducible builds;
+- responsive UI improvements;
+- accessibility;
+- localisation architecture;
+- local/private analytical prototypes that do not expand public data exposure.
 
-## 凍結または保留
+## Freeze / defer
 
-- Rugby Australia由来データの大規模追加
-- 対象大会・チームの大量拡張
-- scraping
-- public export
-- public API提供
-- 大規模宣伝
-- 公式サービスと誤認される表示
-- 権利範囲を広げる公開機能
+- large-scale addition of Rugby.com.au-derived public data;
+- bulk tournament/team coverage expansion;
+- automated scraping;
+- public export;
+- public API distribution;
+- large-scale promotion;
+- official-looking branding;
+- large new public redistribution surfaces.
 
 ---
 
 # 4. v1.1 — Architecture / Handover / Maintainability
 
-v1.1は「機能を増やす版」よりも、「現在のアプリを交換可能・理解可能・保守可能にする版」と位置づける。
+v1.1 remains a structural release. The new two-layer analytical roadmap does **not** interrupt this work.
 
 ---
 
 ## v1.1-04 — Current Architecture & Handover Inventory
 
-現行アプリを文書化する。
+Document:
 
-記録対象：
+- screens;
+- navigation;
+- confirmed data flow;
+- main components;
+- data-loading path;
+- analytics calculation path;
+- chart components;
+- video components;
+- localisation;
+- PWA / build / deployment;
+- current source assumptions;
+- current limitations;
+- known technical debt.
 
-- screen構成
-- navigation
-- data flow
-- main components
-- data loading
-- analytics calculation path
-- chart rendering
-- video components
-- localisation
-- PWA / build / deployment
-- current source assumptions
-- known limitations
-- technical debt
-
-想定成果物：
+Target:
 
 ```text
 docs/current-architecture-and-handover.md
 ```
 
-最低限、次の流れを第三者が把握できる状態にする。
-
-```text
-matches.json
-→ normalization / loading
-→ derived metrics
-→ aggregation
-→ filter / comparison
-→ visualisation
-```
+Do not invent filenames or implementation paths that have not been confirmed from the repository.
 
 ---
 
-## v1.1-05 — Secure Development / Repository Hygiene
+## v1.1-05 — Secure Development & Repository Hygiene
 
-確認：
+Review:
 
-- public / private情報分離
-- 個人情報
-- secrets
-- GitHub Actions permission
-- dependencies
-- deployment workflow
-- public source files
+- public/private information separation;
+- accidental personal data exposure;
+- secrets;
+- GitHub Actions permissions;
+- dependency hygiene;
+- public source files;
+- deployment workflow.
 
-この工程だけのために認証機能を作らない。
+Do not add authentication solely for this step.
 
 ---
 
 ## v1.1-06 — Data Provider / Adapter Separation
 
-目標構造：
+Target conceptual boundary:
 
 ```text
 Provider
 ↓
 Provider Adapter
 ↓
-Canonical Data Model
+Canonical Match Model
 ↓
 Derived Metrics
 ↓
 Analysis / Trends / Search
 ```
 
-UIや分析ロジックをRugby Australia固有形式へ直接依存させない。
+UI and analytics must not depend directly on a Rugby.com.au-specific field layout.
 
-将来候補：
+Possible future providers may include:
 
-- World Rugby公式データ
-- RugbyPass
-- designated data provider
-- manual import
-- event-level provider
+- World Rugby;
+- RugbyPass;
+- a designated official data provider;
+- manual import;
+- a future event-level source.
 
-特定providerの実在・採用を前提にしない。
+No provider role should be assumed until confirmed.
 
 ---
 
 ## v1.1-07 — Canonical Schema / Data Dictionary
 
-定義対象：
+Formalise:
 
-- season
-- tournament
-- match
-- team
-- opponent
-- player
-- team match stats
-- source
-- video source
-- data coverage
-- missing-value semantics
+- match;
+- tournament;
+- season;
+- team;
+- opponent;
+- player;
+- team match stats;
+- source;
+- video source;
+- data coverage;
+- metric definitions;
+- provenance.
 
-各field / metricについて：
+For each raw field / metric record:
 
-- name
-- type
-- unit
-- nullable
-- raw / calculated
-- source
-- formula
-- denominator rule
-- coverage
-- definition version
+- name;
+- type;
+- unit;
+- nullable;
+- raw / calculated;
+- source;
+- formula;
+- denominator rules;
+- coverage notes;
+- definition version.
 
-### 必須原則
+Mandatory rules:
 
-- missing = `null`
-- missingを`0`にしない
-- denominator 0 = `null`
-- aggregate ratioは必要に応じて分子・分母をpoolして再計算
-- roundingは表示時のみ
+- missing = `null`;
+- missing must never be coerced to `0`;
+- denominator `0` = `null`;
+- pooled numerator/denominator aggregation for ratio metrics where mathematically appropriate;
+- rounding only at display time.
 
 ---
 
 ## v1.1-08 — Derived Metrics Engine Separation
 
-以下を明確に分離する。
+Separate:
 
 ```text
 Canonical Data Model
@@ -358,70 +326,69 @@ Visualisation Configuration
 Presentation
 ```
 
-13コア指標のformulaを複数componentへ重複実装しない。
+All screens must consume the same metric definitions.
+
+No formula duplication across components.
 
 ---
 
 ## v1.1-09 — Tests / Reproducible Build
 
-test対象：
+Add tests for:
 
-- normalization
-- derived metrics
-- missing values
-- zero denominator
-- pooled aggregation
-- match / tournament / season grouping
-- comparison filters
-- relationship presets
-- mobile opponent labels
+- raw-to-canonical normalization;
+- derived metrics;
+- missing values;
+- zero denominators;
+- pooled aggregation;
+- match/tournament/season grouping;
+- comparison filters;
+- relationship presets;
+- display formatting;
+- future baseline calculations.
 
-併せて：
+Document:
 
-- install
-- local run
-- build
-- test
-- deploy
-- rollback
-
-を文書化。
+- install;
+- local run;
+- build;
+- test;
+- deploy;
+- rollback.
 
 ---
 
 ## v1.1-10 — Localisation Architecture
 
-現在の日本語 / 英語を維持しつつ、拡張可能なi18n構造にする。
+Preserve Japanese / English and make the structure scalable.
 
-次候補：
+Priority later:
 
-- French
-- Spanish
+- French;
+- Spanish.
 
-将来候補：
+Additional candidates:
 
-- Portuguese (Brazil)
-- Italian
-- Simplified Chinese
-- Traditional Chinese / Hong Kong
-- Arabic（RTL対応後）
-- Georgian
-
-metric logicに言語文字列を混在させない。
+- Portuguese (Brazil);
+- Italian;
+- Simplified Chinese;
+- Traditional Chinese / Hong Kong;
+- Arabic after RTL support is designed;
+- Georgian later if justified.
 
 ---
 
 ## v1.1-11 — Information Architecture Design
 
-トップレベル機能タブを増殖させない。
+Do not immediately rebuild the whole UI.
 
-現在型：
+Design migration from feature-centred navigation:
 
 ```text
 Home / Stats / Trends / Search / Video / Analysis / AI ...
 ```
 
-から、将来はentity-centredへ。
+toward entity-centred navigation:
 
 ```text
 Home
@@ -431,49 +398,28 @@ Players
 Analysis
 ```
 
-例：
+Principle:
 
-### Match
-- Overview
-- Video
-- Stats
-- Players
-- Analysis
-
-### Team
-- Overview
-- Results
-- Stats
-- Trends
-- Players
-
-### Player
-- Overview
-- Match Log
-- Stats
-- Trends
-- Comparison
-
-この工程では大規模UI実装ではなく、情報設計を固める。
+> organise around what the user wants to examine, not which technical feature they want to open.
 
 ---
 
 ## v1.1-12 — v1.1 Validation / Completion
 
-確認：
+Validate:
 
-- Architecture documentation
-- Provider abstraction
-- Schema / Data Dictionary
-- Shared Derived Metrics Engine
-- Tests
-- Reproducible build
-- Current public UI
-- Source traceability
-- World Rugby response status
-- unresolved data / rights issues
+- architecture documentation;
+- adapter boundary;
+- schema / dictionary;
+- shared metric engine;
+- tests;
+- reproducible build;
+- source traceability;
+- public UI stability;
+- World Rugby response status;
+- known unresolved data-use questions.
 
-完了時：
+Then mark:
 
 ```text
 Version 1.1: COMPLETED
@@ -481,142 +427,336 @@ Version 1.1: COMPLETED
 
 ---
 
-# 5. v1.2 — Match Analysis Workspace
+# 5. Analytics architecture after v1.1
 
-v1.2以降は「Stats Database」から「Sevens Analysis Workspace」への移行を始める。
-
-中心ユーザー行動：
+The project now follows a deliberate two-layer model.
 
 ```text
-映像を見る
-↓
-気になる
-↓
-その場でスタッツを見る
-↓
-過去平均と比較
-↓
-Trendsを見る
-↓
-他試合を探す
-↓
-映像へ戻る
+Layer 1: Quantitative Analysis
+    broad coverage / lower manual cost
+
+Layer 2: Video-tagged Tactical Analysis
+    selected matches / higher analytical depth
 ```
+
+The purpose is **not** to manually tag every match.
+
+Layer 1 identifies where deeper review is valuable.
 
 ---
 
-## v1.2-01 — Workspace Shell
+# 6. v1.2 — Quantitative Analysis Layer
 
-PC：
+v1.2 fully exploits the aggregate statistics before introducing expensive manual tactical tagging.
+
+---
+
+## v1.2-01 — Derived Metrics Expansion
+
+Candidates supported directly by confirmed aggregate fields include:
 
 ```text
-┌──────────────────────┬──────────────────────┐
-│ Official YouTube     │ Analysis Panel       │
-│ Video                │ Stats / Team /       │
-│                      │ Player / Analysis    │
-└──────────────────────┴──────────────────────┘
+Carry Efficiency = Metres / Carries
+Break Rate = Clean Breaks / Carries
+Defender Beat Rate = Defenders Beaten / Carries
+Offload Rate = Offloads / Carries
+Passes per Carry = Passes / Carries
+Tackle Success = Tackles / (Tackles + Missed Tackles)
+Turnover Balance = Turnovers Won - Turnovers Conceded
 ```
 
-スマホ：
+Additional metrics may be added only when their numerator and denominator are actually available and clearly defined.
+
+### Naming guardrails
+
+Do **not** call an aggregate ratio a true event conversion rate unless event linkage exists.
+
+For example:
+
+```text
+Tries / Clean Breaks
+```
+
+may be displayed as an aggregate relationship/ratio if analytically useful, but must not be labelled "Line Break → Try Conversion" without sequence-level evidence.
+
+Similarly, `Points per possession` and `Metres per possession` require a clearly defined possession-count denominator; possession percentage alone is insufficient.
+
+---
+
+## v1.2-02 — Metric Relationship / Structural Analysis
+
+Use combinations of indicators to describe how a statistical profile is formed.
+
+Examples:
+
+- high Metres/Carry × low Break Rate;
+- high Break Rate × high Offload Rate;
+- low possession share × high scoring efficiency;
+- high Missed Tackle Rate × high Turnovers Won;
+- high Passes/Carry × low Offload Rate.
+
+Purpose:
+
+- move beyond rankings;
+- identify profile structure;
+- generate hypotheses for later video review.
+
+No causal claims.
+
+---
+
+## v1.2-03 — Baseline & Normalisation Model
+
+Before Style Fingerprint and opponent adjustment, define:
+
+- season baseline;
+- tournament baseline;
+- team baseline;
+- opponent baseline;
+- minimum sample size;
+- leave-one-match-out rule where appropriate;
+- percentile and/or z-score transformation;
+- mixed-season handling;
+- coverage thresholds.
+
+A target match should normally be excluded from the opponent baseline used to assess that same match.
+
+---
+
+## v1.2-04 — Opponent-adjusted Performance
+
+Compare actual performance with the opponent's normal concession / production profile.
+
+Conceptual forms:
+
+```text
+Adjusted Attack
+= Actual Attack - Opponent Expected Concession
+
+Adjusted Defence
+= Opponent Actual Attack - Opponent Expected Attack
+```
+
+The exact sign convention and display direction must be documented per metric.
+
+Goals:
+
+- reduce overrating of performances against weak opposition;
+- identify unexpectedly strong/weak performances;
+- create a fairer input for fingerprint and matchup analysis.
+
+Potential future outputs:
+
+- raw difference;
+- percentage difference;
+- percentile;
+- standardized score.
+
+---
+
+## v1.2-05 — Team Style Fingerprint
+
+Construct a multi-dimensional team profile from normalized aggregate metrics.
+
+Candidate dimensions:
+
+### Ball Movement
+- Passes / Carry
+- Offloads / Carry
+
+### Penetration
+- Metres / Carry
+- Clean Breaks / Carry
+- Defenders Beaten / Carry
+
+### Security
+- Turnovers Conceded
+- Ruck Success
+
+### Defence
+- Tackle Success
+- Missed Tackle Rate
+- Turnovers Won
+
+### Possession / Efficiency
+Use only indicators whose denominators are valid and available.
+
+Outputs:
+
+- Team Style Fingerprint;
+- tournament-by-tournament change;
+- season trend;
+- opponent-specific change.
+
+Fingerprint axes should be based on normalized values rather than raw metrics with incompatible scales.
+
+---
+
+## v1.2-06 — Matchup Analysis
+
+Combine one team's attack profile with the opponent's defence profile.
+
+Examples:
+
+- Offload-heavy attack × defence with high Missed Tackle Rate;
+- high Passes/Carry attack × turnover-pressure defence;
+- high-penetration attack × high Tackle Success defence.
+
+Goal:
+
+> identify which team types or profile combinations produce unusual outcomes, rather than simply ranking "strong" and "weak" teams.
+
+Matchup outputs must include sample-size and baseline warnings.
+
+---
+
+## v1.2-07 — Trend / Change Detection
+
+Detect meaningful changes across tournaments / seasons.
+
+Candidate signals:
+
+- sharp Offload Rate decline;
+- Passes/Carry increase;
+- Break Rate rise;
+- Turnover Balance deterioration;
+- defensive-profile shift;
+- fingerprint-axis movement.
+
+Purpose:
+
+> detect statistical signs of tactical or behavioural change.
+
+Do not infer a concrete tactical shape (for example a loop, scissors or a specific phase structure) from aggregate data alone.
+
+---
+
+## v1.2-08 — Quantitative Analysis Validation
+
+Validate:
+
+- metric definitions;
+- coverage;
+- baseline construction;
+- opponent-adjustment direction;
+- normalization;
+- fingerprint stability;
+- matchup sample sizes;
+- false positive rate of change detection;
+- explanatory labels.
+
+Only after this validation should the application treat Layer 1 as a reliable screening mechanism for deeper video work.
+
+---
+
+# 7. v1.3 — Match Analysis Workspace
+
+v1.3 turns Layer 1 outputs into a fan-facing workflow.
+
+---
+
+## v1.3-01 — Workspace Shell
+
+Desktop concept:
+
+```text
+┌─────────────────────────┬────────────────────────┐
+│                         │                        │
+│ Official YouTube Video  │ Analysis Panel         │
+│                         │                        │
+│                         │ Stats / Team / Player  │
+│                         │ Trends / Analysis      │
+└─────────────────────────┴────────────────────────┘
+```
+
+Mobile concept:
 
 ```text
 Video
 ↓
-Analysis Cards
+Analysis cards
 ↓
-Stats / Players / Analysis
+Stats / Players / Analysis switch
 ```
 
 ---
 
-## v1.2-02 — Match vs Baseline Comparison
+## v1.3-02 — Match vs Baseline Comparison
 
-動画を見ながら：
+While watching a match, compare:
 
-- current match
-- season average
-- tournament average
-- opponent-specific average（十分なsampleがある場合）
+- current match;
+- season baseline;
+- tournament baseline;
+- opponent-adjusted expectation where valid.
 
-を比較。
-
-例：
+Example:
 
 ```text
 Turnovers Conceded
-Current match: 5
-Season average: 3.2
-Difference: +56%
+Current Match: 5
+Season Baseline: 3.2
+Relative Difference: +56%
 ```
 
-統計的有意性を検定していない場合、有意差とは表現しない。
+Do not imply statistical significance unless a statistical test supports it.
 
 ---
 
-## v1.2-03 — Video Dock / Persistent Player
+## v1.3-03 — Persistent Video / Video Dock
 
-候補：
+Evaluate:
 
-- Small
-- Medium
-- Analysis Split
+- Small;
+- Medium;
+- Analysis Split.
 
-画面遷移中も必要な範囲で動画文脈を維持する。
+Use the standard YouTube player UI.
 
-YouTube player上に独自UIを重ねることは原則避ける。
+Custom analysis controls should remain outside the video surface unless technically and contractually appropriate.
 
 ---
 
-## v1.2-04 — Data → Video Navigation
+## v1.3-04 — Data → Video Navigation
+
+Layer 1 result:
 
 ```text
-Trendsで異常発見
+Fingerprint shift / anomaly
 ↓
-大会
+Tournament
 ↓
-試合
+Match
 ↓
-Video + relevant stats
+Video + relevant metrics
 ```
 
-を実現。
+This implements the first half of the bidirectional analytical loop.
 
 ---
 
-# 6. v1.3 — YouTube Time Integration / Manual Event Tagging
+# 8. v1.4 — Video-tagged Tactical Layer
 
-新しいデータ層：
+Layer 2 is used selectively for matches identified by Layer 1 or otherwise judged analytically important.
 
-> **Video-tagged Event Data**
-
-映像本体は公式公開YouTube側に保持する。
-
-Analyzer側は：
-
-- video ID
-- timestamp
-- event metadata
-
-を保持する。
-
-動画ファイルを自前でdownload / host / redistributeしない。
+The project does not aim to manually code every available match.
 
 ---
 
-## v1.3-01 — Playback Time Read / Seek
+## v1.4-01 — YouTube Time Read / Seek
 
-Stage 1：
+- read current playback position;
+- jump to a stored time code;
+- preserve `youtube_video_id`;
+- handle unavailable/changed video gracefully.
 
-- 現在再生時刻取得
-- 保存時刻へのジャンプ
-- `youtube_video_id`管理
-- 動画利用不能時のgraceful fallback
+The video remains hosted and delivered by the official/public YouTube source.
 
 ---
 
-## v1.3-02 — Event Schema
+## v1.4-02 — Video Event Schema
 
-基本案：
+Minimum candidate structure:
 
 ```text
 event_id
@@ -635,7 +775,7 @@ source_channel
 video_duration
 ```
 
-将来候補：
+Optional later fields:
 
 ```text
 field_zone
@@ -645,48 +785,49 @@ following_event_id
 result
 confidence
 review_status
+phase
+tactical_tag
 ```
 
-映像ソースと分析データを別管理する。
+Video source and event metadata must remain separate.
 
 ---
 
-## v1.3-03 — Manual Event Tagging MVP
+## v1.4-03 — Manual Event Tagging MVP
 
-最初はタグを絞る。
+Begin with a deliberately small set, for example:
 
-初期候補：
+- Line Break;
+- Offload;
+- Turnover;
+- Penalty;
+- Try;
+- Restart;
+- Tackle Miss;
+- Support.
 
-- Line Break
-- Offload
-- Turnover Won
-- Turnover Conceded
-- Penalty
-- Try
-- Restart
-
-実利用で価値を確認してから追加する。
+Do not activate the full tactical taxonomy immediately.
 
 ---
 
-## v1.3-04 — Match Event Timeline
+## v1.4-04 — Match Event Timeline
 
-例：
+Example:
 
 ```text
-03:24  JPN  Line Break       ▶
-03:31  JPN  Offload          ▶
-03:36  JPN  Try              ▶
-05:12  AUS  Turnover Won     ▶
+03:24  JPN  Line Break      ▶
+03:31  JPN  Offload         ▶
+03:36  JPN  Try             ▶
+05:12  AUS  Turnover Won    ▶
 ```
 
-▶で該当時刻へjump。
+Selecting an event jumps to the corresponding YouTube playback position.
 
 ---
 
-## v1.3-05 — Cross-match Event Search
+## v1.4-05 — Cross-match Event Search
 
-例：
+Example:
 
 ```text
 Team: Japan Women
@@ -694,25 +835,23 @@ Event: Line Break
 Season: 2026
 ```
 
-```text
-Dubai       vs AUS   03:24 ▶
-Dubai       vs FRA   05:18 ▶
-Cape Town   vs NZL   01:42 ▶
-Singapore   vs CAN   04:51 ▶
-```
+Results may link directly to relevant video timestamps.
 
-「日本女子の今季すべてのLine Breakを映像で確認する」のような横断探索を可能にする。
+This is a core future differentiator.
 
 ---
 
-# 7. v1.4 — Sevens Event Analysis
+# 9. v1.5 — Event / Sequence Analysis
 
-## v1.4-01 — Sevens-specific Tactical Taxonomy
+---
 
-15人制体系をそのまま移植しない。
+## v1.5-01 — Sevens-specific Tactical Taxonomy
 
-### Attack Creation候補
+Do not copy a 15-a-side taxonomy wholesale.
 
+Candidate groups:
+
+### Attack Creation
 - 2v1 creation
 - 3v2 creation
 - Individual beat
@@ -727,8 +866,7 @@ Singapore   vs CAN   04:51 ▶
 - Width creation
 - Defensive manipulation
 
-### Break / Continuity候補
-
+### Break / Continuity
 - Line Break
 - Clean Break
 - Support Available
@@ -740,8 +878,7 @@ Singapore   vs CAN   04:51 ▶
 - Continuity Maintained
 - Continuity Lost
 
-### Defence候補
-
+### Defence
 - Missed Tackle
 - Dominant Tackle
 - Defensive Turnover
@@ -753,8 +890,7 @@ Singapore   vs CAN   04:51 ▶
 - Cover Defence
 - Breakdown Commitment
 
-### Possession / Restart候補
-
+### Possession / Restart
 - Turnover Won
 - Turnover Conceded
 - Penalty Won
@@ -765,30 +901,34 @@ Singapore   vs CAN   04:51 ▶
 - Scrum
 - Lineout
 
-UIへ最初から全タグを出さない。
+Only a validated subset should be enabled in the interface.
 
 ---
 
-## v1.4-02 — Event-derived Metrics
+## v1.5-02 — Event-derived Metrics
 
-候補：
+True sequence-dependent metrics become possible here.
 
-- Line Break → Try Conversion Rate
-- Line Break → Support Success Rate
-- Offload Success Rate
-- Break後のPossession Retention
-- Break後の平均得点
-- Turnover → Try Conversion
-- Restart Win Rate
-- Continuity Loss after Break
+Candidates:
 
-全指標を元イベントまで遡れるようにする。
+- Line Break → Try Conversion Rate;
+- Line Break → Support Success Rate;
+- Offload Success Rate;
+- Break-after Possession Retention;
+- Break-after Average Points;
+- Turnover → Try Conversion;
+- Restart Win Rate;
+- Continuity Loss after Break.
+
+Each metric must be traceable to its tagged events.
 
 ---
 
-## v1.4-03 — Event Sequence Model
+## v1.5-03 — Event Sequence Model
 
-例：
+Connect related events explicitly.
+
+Example:
 
 ```text
 Line Break
@@ -797,336 +937,411 @@ Support Available
 ↓
 Successful Offload
 ↓
-Continuity
+Continuity Maintained
 ↓
 Try
 ```
 
-sequence_idで一連の攻撃を管理する。
+Use sequence IDs rather than assuming causal chains from temporal proximity alone.
 
 ---
 
-## v1.4-04 — Event Trends Integration
+## v1.5-04 — Event Trends
 
-既存Trendsへevent-derived dataを接続。
+Integrate tagged-event indicators with the existing trends framework.
 
-例：
+Example:
 
 ```text
 Dubai
-Switch usage       8
-Loop / Wrap        6
-Individual beat   11
+Switch usage        8
+Loop / Wrap          6
+Individual beat     11
 
 Cape Town
-Switch usage       5
-Loop / Wrap        3
-Individual beat   14
+Switch usage        5
+Loop / Wrap          3
+Individual beat     14
 ```
 
-「戦術選択がどう変化したか」を追跡する。
+This does not prove causality.
 
-因果断定ではなく、映像再確認の候補を提示する。
-
----
-
-# 8. v1.5 — Team / Player / Opponent Profiles
-
-## v1.5-01 — Team Style Fingerprint
-
-候補dimension：
-
-- Tempo
-- Width
-- Pass dependence
-- Carry dependence
-- Offload tendency
-- Break creation
-- Break conversion
-- Turnover attack
-- Defensive pressure
-- Restart effectiveness
-
-必ず定義と根拠を明示する。
+It identifies tactical patterns for evidence-based review.
 
 ---
 
-## v1.5-02 — Player Role Profile
+# 10. v1.6 — Integrated Team / Player / Opponent Analysis
 
-候補：
-
-- Break Creator
-- Finisher
-- Distributor
-- Connector
-- Direct Carrier
-- Support Runner
-- Defensive Stopper
-- Turnover Specialist
-
-役割名を先に作って当てはめるのではなく、特徴量を先に計算する。
+This phase combines Layer 1 breadth with Layer 2 depth.
 
 ---
 
-## v1.5-03 — Player Similarity
+## v1.6-01 — Enhanced Team Style Fingerprint
 
-- similarity feature space明示
-- sample size / coverage警告
-- similar players
-- role-cluster neighbours
-- style differences
+Merge validated aggregate indicators with selected event-derived indicators.
 
-を表示。
+Potential dimensions:
+
+- Ball Movement;
+- Penetration;
+- Security;
+- Break Creation;
+- Break Conversion;
+- Support Continuity;
+- Defensive Pressure;
+- Restart Effectiveness;
+- Efficiency.
 
 ---
 
-## v1.5-04 — Opponent Matchup Analysis
+## v1.6-02 — Player Role Profile
 
-Team × Opponentで通常時との差を見る。
+Potential descriptive roles:
 
-例：
+- Break Creator;
+- Finisher;
+- Distributor;
+- Connector;
+- Direct Carrier;
+- Support Runner;
+- Defensive Stopper;
+- Turnover Specialist.
+
+Do not force players into predefined roles before feature calculation.
+
+---
+
+## v1.6-03 — Player Similarity
+
+Use a documented feature space and include coverage/sample-size warnings.
+
+Possible outputs:
+
+- nearest style neighbours;
+- role-cluster neighbours;
+- dimensions of similarity and difference.
+
+---
+
+## v1.6-04 — Enhanced Matchup Analysis
+
+Combine:
 
 ```text
-Japan vs France
-Turnover Conceded ↑
-Width Creation ↓
-Break Conversion ↓
+Layer 1 attack/defence profile
++
+Layer 2 tactical/event profile
++
+Opponent baseline
 ```
 
-相手による変化と因果を混同しない。
+The objective remains explanatory matchup analysis, not deterministic prediction.
 
 ---
 
-## v1.5-05 — Match Anomaly Detection
+## v1.6-05 — Match Anomaly Detection
 
-「そのチームの通常状態からどれだけ外れた試合か」を検出。
+Identify matches that materially diverge from a team's normal profile.
 
-候補：
+Anomaly means "unusual relative to baseline", not "bad".
 
-- pass rate
-- carry rate
-- line breaks
-- turnovers conceded
-- defence
-- restart
-- event-derived tactical metrics
+Potential inputs:
 
-Anomaly = unusualであり、badとは限らない。
-
----
-
-## v1.5-06 — Emerging Player Detector
-
-十分なplayer-level dataが得られた後に検討。
-
-補正候補：
-
-- playing time
-- opponent
-- team context
-- tournament
-- recent trend
-
-単純ランキングにはしない。
+- Passes/Carry;
+- Offload Rate;
+- Break Rate;
+- Turnover Balance;
+- defensive indicators;
+- restart indicators;
+- event-derived tactical indicators.
 
 ---
 
-# 9. v1.6 — Tactical Interpretation / Analysis Engine
+## v1.6-06 — Emerging Player Detector
 
-最終的な分析階層：
+Only after adequate player-level coverage exists.
+
+Potential adjustments:
+
+- playing time;
+- opponent;
+- team context;
+- tournament;
+- recent trend.
+
+Do not disguise a simple scoring leaderboard as AI.
+
+---
+
+# 11. v1.7 — Tactical Interpretation / Analysis Engine
+
+Target analytical stack:
 
 ```text
 Raw Match Stats
 ↓
 Derived Metrics
 ↓
-Video-tagged Events
+Opponent-adjusted Performance
+↓
+Style Fingerprint / Matchup / Change Detection
+↓
+Selected Video-tagged Events
 ↓
 Event Sequences
-↓
-Team / Player / Opponent Profiles
 ↓
 Tactical Interpretation
 ```
 
-解釈結果は元データへ遡れる必要がある。
+Evidence should be surfaced before interpretation.
 
-例：
+Example form:
 
 ```text
-Japan created more line breaks than Australia.
+Layer 1 detected a decline in Japan's Offload Rate after Singapore.
 
-However, Japan converted fewer breaks into tries
-and lost continuity more often after the break.
+Selected tagged matches show fewer successful continuity actions after line breaks.
 
-Review tagged events:
+Review evidence:
 03:24
 05:18
 06:02
 ```
 
-まずevidenceを示し、その後interpretationを示す。
+Every interpretation should be traceable to:
+
+- raw stats;
+- formula / baseline;
+- tagged video evidence where applicable.
 
 ---
 
-# 10. AI / ML Policy
+# 12. Advanced future candidates
 
-AI搭載自体を目的にしない。
+Only after sufficient event data and coverage exist:
 
-優先順位：
+- Possession / Sequence analysis;
+- Phase-based analysis;
+- Player combination effect;
+- Lineup interaction;
+- Pass network, if sender/receiver data exists;
+- Spatial analysis, if position data exists;
+- Expected Possession Value / EPV, if event and location data are sufficient;
+- Tactical State transition models.
 
-1. Team Style Fingerprint
-2. Player Similarity
-3. Match Anomaly Detection
-4. Emerging Player Detector
-5. Matchup Model
-6. Win / Result Prediction
+Do not simulate unavailable spatial/sequence data from aggregate statistics.
 
-勝敗予測は優先度を低くする。
+---
 
-理由：
+# 13. AI / ML policy
 
-- 試合時間が短い
-- 選手入れ替え影響が大きい
-- Card影響が大きい
-- sampleが限られる
-- 偶然性が比較的大きい
+Advanced analysis does **not** mean "add AI".
 
-予測を出す場合はuncertaintyを明示する。
+Priority order:
 
-### Human-first tagging
+1. Data quality
+2. Schema / Dictionary
+3. Reproducible derived metrics
+4. Baseline / normalization
+5. Opponent adjustment
+6. Style Fingerprint
+7. Matchup
+8. Trend / Change Detection
+9. Video-tagged Tactical Layer
+10. AI / ML assistance only where justified
+
+Initial event workflow:
 
 ```text
 Human tagging
 ↓
-Structured data
+Structured event data
 ↓
 Calculation
 ↓
-Rule-based analysis
+Rule-based / statistical analysis
 ↓
-Optional AI explanation
+Optional AI explanation or tagging assistance
 ```
 
-十分なreviewed training dataが蓄積した場合のみ、AIによる：
+Only after enough reviewed training data exists should AI assist with:
 
-- tag candidate
-- event candidate detection
-- classification assistance
+- event candidate suggestions;
+- tag suggestions;
+- classification assistance.
 
-を検討。
+Win probability remains low priority because sevens has short matches, high rotation, strong card effects, limited samples and substantial variance.
 
----
-
-# 11. v2.0 — Data Platform / Controlled Automation
-
-v2.0は規模が必要になった時点で開始。
-
-候補：
-
-- database
-- canonical team / player / match IDs
-- controlled authentication
-- admin / review workflow
-- audit log
-- event review status
-- semi-automated import
-- official API integration（利用可能な場合）
-- provenance preservation（許可範囲内）
-- background processing
-- data-quality monitoring
-
-要件がない段階では：
-
-- SSO
-- enterprise admin
-- complex cloud architecture
-- multi-user permission system
-
-を先に作らない。
+Any prediction must expose uncertainty.
 
 ---
 
-# 12. World Rugby回答による分岐
+# 14. v2.0 — Data Platform / Controlled Automation
+
+v2.0 begins only when scale justifies persistent backend infrastructure.
+
+Potential scope:
+
+- database;
+- canonical team/player/match IDs;
+- event storage;
+- controlled authentication where needed;
+- admin/review workflow;
+- audit log;
+- event review status;
+- semi-automated import;
+- official API integration if available;
+- source provenance preservation where permitted;
+- data-quality monitoring;
+- background processing.
+
+Do not build enterprise infrastructure before real requirements exist.
+
+---
+
+# 15. World Rugby response branches
 
 ## Branch A — Official data route / permission available
 
-優先：
+1. clarify conditions;
+2. implement official provider adapter;
+3. map official IDs;
+4. ingest data dictionary;
+5. validate historical coverage;
+6. backfill where permitted;
+7. assess event-level access;
+8. reassess manual tagging scope.
 
-1. 利用条件確認
-2. official provider adapter
-3. official IDs → canonical IDs mapping
-4. Data Dictionary取込
-5. historical coverage確認
-6. permitted backfill
-7. event-level data access確認
-8. manual tagging範囲再評価
-
-公式event dataが得られる場合、manual taggingは公式データにないtactical conceptへ集中する。
+If official event data becomes available, manual tags should focus on tactical concepts not already represented in the official feed.
 
 ---
 
 ## Branch B — Public use permitted with conditions
 
-対応：
+Implement required:
 
-- attribution
-- source links
-- coverage limits
-- update rules
-- branding restrictions
-- disclaimer
+- attribution;
+- source links;
+- coverage limits;
+- update rules;
+- branding restrictions;
+- disclaimers.
 
-を実装してcontrolled data expansionを再開。
+Then resume controlled public data expansion.
 
 ---
 
 ## Branch C — Current public use incompatible
 
-必要に応じて：
+Possible actions:
 
-- public prototype修正
-- affected data削除
-- source strategy変更
-- public prototype停止
+- modify the public prototype;
+- remove affected data;
+- change source strategy;
+- take the public prototype offline where required.
 
-Private利用が自動的に許可されるとは仮定せず、問題のscopeを確認する。
+Do not assume private use is automatically permitted; clarify the scope first.
 
 ---
 
 ## Branch D — No response
 
-継続：
+Continue:
 
-- Architecture
-- Tests
-- Provider abstraction
-- Schema
-- local / private prototypes
+- architecture;
+- schema;
+- tests;
+- provider abstraction;
+- Layer 1 local/private prototypes.
 
-Public data expansionは慎重に維持。
+Keep public data expansion conservative.
 
-未回答点を記録したうえで、必要なら後に別の適切なorganisation / rights holderへ問い合わせる。
+Consider another appropriate data-rights or governing-body route only after documenting the unanswered points.
 
 ---
 
-# 13. Product Principles
+# 16. Product principles
 
-## Fan-facing first
+## 16.1 Aggregate first, video selectively
 
-プロ分析ツールそのものを複製するのではなく、一般SVNSファンが使える形にする。
+Do not manually analyse every match if aggregate data can screen the field first.
 
-## Evidence before interpretation
+```text
+All matches
+→ Layer 1 screening
+→ selected matches
+→ Layer 2 review
+```
 
-全分析結果をraw stats / formula / source / video tagへ遡れるようにする。
+This is a core operating principle.
 
-## Video and analysis are separate layers
+---
 
-公式公開YouTube映像を標準埋め込みで利用し、動画ファイル自体は自前保持しない。
+## 16.2 Fan-facing first
 
-## Keep UI simple
+The project should make sevens easier to explore and understand.
 
-ユーザーが意識する基本操作は：
+Do not reproduce a professional analyst tool merely because professional tools exist.
+
+---
+
+## 16.3 Evidence before interpretation
+
+Every analytical conclusion should be traceable to:
+
+- raw stats;
+- metric formula;
+- baseline/normalization rule;
+- opponent-adjustment rule;
+- source;
+- tagged video evidence where applicable.
+
+---
+
+## 16.4 No false tactical precision
+
+Aggregate data may support descriptors such as:
+
+- high movement / low movement;
+- high penetration / low penetration;
+- high offload / low offload;
+- possession-heavy / efficiency-heavy.
+
+Aggregate data alone should **not** be used to assert:
+
+- phase shape;
+- receiver positioning;
+- pass routes;
+- field zone;
+- exact breakdown phase;
+- specific loop/scissors usage.
+
+Those belong in Layer 2.
+
+---
+
+## 16.5 Video and analysis remain separate layers
+
+Use official/public embedded video.
+
+Do not normally:
+
+- download;
+- host;
+- copy;
+- redistribute
+
+video files.
+
+Store analysis metadata and timestamps separately.
+
+---
+
+## 16.6 Keep the UI simple
+
+Backend sophistication must not turn into user-interface complexity.
+
+Primary user actions should remain understandable:
 
 ```text
 Watch
@@ -1136,104 +1351,108 @@ Search
 Review
 ```
 
-## Entity-centred navigation
+---
 
-機能名をトップタブとして増やさない。
+## 16.7 Sevens-specific design
 
-## Sevens-specific design
+Prioritise:
 
-優先概念：
+- space;
+- numerical advantage;
+- break creation;
+- support;
+- continuity;
+- restart;
+- defensive spacing;
+- transition.
 
-- space
-- numerical advantage
-- break creation
-- support
-- continuity
-- restart
-- defensive spacing
-- transition
+Do not import 15-a-side concepts without validation.
 
 ---
 
-# 14. Priority Summary
+# 17. Priority summary
 
-## Now — v1.1
+## NOW — v1.1 foundation
 
 ```text
 v1.1-03 World Rugby follow-up / response tracking
 v1.1-04 Architecture & Handover Inventory
 v1.1-05 Secure Development
-v1.1-06 Data Provider / Adapter Separation
+v1.1-06 Data Provider / Adapter
 v1.1-07 Schema / Data Dictionary
-v1.1-08 Derived Metrics Engine Separation
-v1.1-09 Tests / Reproducible Build
-v1.1-10 Localisation Architecture
-v1.1-11 Information Architecture Design
-v1.1-12 Validation / Completion
+v1.1-08 Derived Metrics Engine separation
+v1.1-09 Tests / reproducible build
+v1.1-10 Localisation architecture
+v1.1-11 Information Architecture design
+v1.1-12 v1.1 completion
 ```
 
-## Next
+## NEXT — Layer 1
 
 ```text
-v1.2 Match Analysis Workspace
-v1.3 YouTube Time Integration / Manual Event Tagging
-v1.4 Sevens Event Analysis
-v1.5 Team / Player / Opponent Profiles
-v1.6 Tactical Interpretation / Analysis Engine
+v1.2 Quantitative Analysis Layer
+  Derived Metrics
+  Structural Relationships
+  Baseline / Normalisation
+  Opponent-adjusted Performance
+  Team Style Fingerprint
+  Matchup Analysis
+  Trend / Change Detection
 ```
 
-## Later / Scale dependent
+## THEN — fan-facing workflow
+
+```text
+v1.3 Match Analysis Workspace
+```
+
+## THEN — Layer 2
+
+```text
+v1.4 Video-tagged Tactical Layer
+v1.5 Event / Sequence Analysis
+v1.6 Integrated Team / Player / Opponent Analysis
+v1.7 Tactical Interpretation / Analysis Engine
+```
+
+## LATER / SCALE-DEPENDENT
 
 ```text
 AI / ML assistance
-Official event-data integration
-Database / review workflow
-Semi-automation
-v2.0 platform architecture
+Possession / phase analysis
+Player combination / lineup interaction
+Pass networks
+Spatial analysis
+EPV
+v2.0 database / controlled automation
 ```
 
 ---
 
-# 15. Final Target
+# 18. Final target
 
-SVNS Stats Analyzerを、
+SVNS Stats Analyzer should evolve from:
 
-> **「SVNSの公開スタッツを検索・比較するアプリ」**
+> **a public-stats comparison app**
 
-から、
+into:
 
-> **「スタッツ・派生指標・公式公開映像・イベントデータ・横断検索・戦術解釈を結ぶ、ファン向けSevens Analysis Workspace」**
+> **a fan-facing Sevens Rugby Analytics Platform that quantitatively screens all available matches, identifies meaningful changes and matchup patterns, and lets the user descend into targeted official-video analysis only when deeper tactical explanation is needed.**
 
-へ発展させる。
-
-最終的な中心ループ：
+The intended user loop is:
 
 ```text
-映像を見る
+Explore aggregate data
 ↓
-気になる
+Find a change / anomaly / matchup pattern
 ↓
-スタッツを見る
+Open the relevant match
 ↓
-通常時と比較する
+Watch official/public video
 ↓
-Trendsを見る
+Inspect or add tagged evidence
 ↓
-関連試合 / イベントを探す
-↓
-映像へ戻る
+Return to quantitative analysis with better context
 ```
 
-逆方向：
-
-```text
-データで異常を発見
-↓
-大会 / 試合へ移動
-↓
-関連イベント時刻へジャンプ
-↓
-実際の映像で確認
-```
-
-この双方向ループをSVNS Stats Analyzerの長期的な製品アイデンティティとする。
+This two-layer loop is the main long-term analytical identity of SVNS Stats Analyzer.
