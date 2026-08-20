@@ -1,0 +1,53 @@
+name: Rugby Match Stats Probe
+
+on:
+  push:
+    branches:
+      - probe/rugby-match-stats
+    paths:
+      - '.github/workflows/rugby-match-stats-probe.yml'
+      - 'scripts/diagnostics/rugby_match_stats_probe.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+
+      - name: Probe Rugby.com.au Match Stats
+        env:
+          TARGET_URL: https://www.rugby.com.au/match-centre/112/2026/951419?tab=Match-Stats
+          OUT_DIR: artifacts/rugby-match-stats-probe
+        run: node scripts/diagnostics/rugby_match_stats_probe.mjs
+
+      - name: Show summary
+        if: always()
+        run: |
+          echo '--- summary.json ---'
+          cat artifacts/rugby-match-stats-probe/summary.json || true
+          echo '--- candidate network URLs ---'
+          node -e "const fs=require('fs'); const p='artifacts/rugby-match-stats-probe/network-candidates.json'; if(fs.existsSync(p)){for(const x of JSON.parse(fs.readFileSync(p,'utf8'))) console.log(x.status, x.resourceType, x.url)}"
+
+      - name: Upload probe artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rugby-match-stats-probe-951419
+          path: artifacts/rugby-match-stats-probe/
+          if-no-files-found: warn
+          retention-days: 7
