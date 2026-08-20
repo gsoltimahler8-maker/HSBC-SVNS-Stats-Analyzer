@@ -1,55 +1,12 @@
-const REQUIRED_FIELDS = [
-  'id',
-  'season',
-  'tournament',
-  'date',
-  'gender',
-  'stage',
-  'team',
-  'opponent',
-  'result',
-  'pointsFor',
-  'pointsAgainst',
-  'sourceProvider',
-  'sourceUrl',
-  'fetchedAt',
-  'dataCoverageLevel',
-  'dataCoverageSource',
-  'statDefinitionVersion',
-];
-
-const NUMERIC_FIELDS = [
-  'pointsFor',
-  'pointsAgainst',
-  'tries',
-  'carries',
-  'passes',
-  'offloads',
-  'cleanBreaks',
-  'defendersBeaten',
-  'tackles',
-  'missedTackles',
-  'turnoversWon',
-  'turnoversConceded',
-  'rucksWon',
-  'rucksLost',
-  'possession',
-  'territory',
-  'penaltiesConceded',
-  'yellowCards',
-  'redCards',
-];
-
-const PERCENTAGE_FIELDS = ['possession', 'territory'];
-
-const ALLOWED_GENDERS = ['Women', 'Men'];
-const ALLOWED_RESULTS = ['W', 'L', 'D', 'NC'];
-const ALLOWED_COVERAGE_LEVELS = [
-  'full_match_stats',
-  'limited_data',
-  'results_only',
-  'unknown',
-];
+import {
+  CANONICAL_COVERAGE_LEVELS,
+  CANONICAL_DATA_TYPES,
+  CANONICAL_GENDERS,
+  CANONICAL_NUMERIC_FIELDS,
+  CANONICAL_PERCENTAGE_FIELDS,
+  CANONICAL_REQUIRED_FIELDS,
+  CANONICAL_RESULTS,
+} from '../data/schema/canonicalMatchSchema.js';
 
 function isBlank(value) {
   return value === undefined || value === null || value === '';
@@ -82,7 +39,7 @@ function addIssue(issues, severity, matchId, field, message) {
 }
 
 function validateRequiredFields(match, issues) {
-  REQUIRED_FIELDS.forEach((field) => {
+  CANONICAL_REQUIRED_FIELDS.forEach((field) => {
     if (isBlank(match[field])) {
       addIssue(
         issues,
@@ -124,36 +81,62 @@ function validateExternalIds(match, issues) {
 }
 
 function validateEnums(match, issues) {
-  if (!isBlank(match.gender) && !ALLOWED_GENDERS.includes(match.gender)) {
+  if (!isBlank(match.gender) && !CANONICAL_GENDERS.includes(match.gender)) {
     addIssue(
       issues,
       'error',
       match.id || 'UNKNOWN_MATCH_ID',
       'gender',
-      `Invalid gender "${match.gender}". Allowed values: ${ALLOWED_GENDERS.join(', ')}.`
+      `Invalid gender "${match.gender}". Allowed values: ${CANONICAL_GENDERS.join(', ')}.`
     );
   }
 
-  if (!isBlank(match.result) && !ALLOWED_RESULTS.includes(match.result)) {
+  if (!isBlank(match.result) && !CANONICAL_RESULTS.includes(match.result)) {
     addIssue(
       issues,
       'error',
       match.id || 'UNKNOWN_MATCH_ID',
       'result',
-      `Invalid result "${match.result}". Allowed values: ${ALLOWED_RESULTS.join(', ')}.`
+      `Invalid result "${match.result}". Allowed values: ${CANONICAL_RESULTS.join(', ')}.`
     );
   }
 
   if (
     !isBlank(match.dataCoverageLevel) &&
-    !ALLOWED_COVERAGE_LEVELS.includes(match.dataCoverageLevel)
+    !CANONICAL_COVERAGE_LEVELS.includes(match.dataCoverageLevel)
   ) {
     addIssue(
       issues,
       'error',
       match.id || 'UNKNOWN_MATCH_ID',
       'dataCoverageLevel',
-      `Invalid dataCoverageLevel "${match.dataCoverageLevel}". Allowed values: ${ALLOWED_COVERAGE_LEVELS.join(', ')}.`
+      `Invalid dataCoverageLevel "${match.dataCoverageLevel}". Allowed values: ${CANONICAL_COVERAGE_LEVELS.join(', ')}.`
+    );
+  }
+
+  if (!isBlank(match.dataType) && !CANONICAL_DATA_TYPES.includes(match.dataType)) {
+    addIssue(
+      issues,
+      'error',
+      match.id || 'UNKNOWN_MATCH_ID',
+      'dataType',
+      `Invalid dataType "${match.dataType}". Allowed values: ${CANONICAL_DATA_TYPES.join(', ')}.`
+    );
+  }
+}
+
+function validateCompatibilityFields(match, issues) {
+  if (
+    !isBlank(match.teamResult) &&
+    !isBlank(match.result) &&
+    match.teamResult !== match.result
+  ) {
+    addIssue(
+      issues,
+      'warning',
+      match.id || 'UNKNOWN_MATCH_ID',
+      'teamResult',
+      'teamResult differs from canonical result. The canonical source of truth is result.'
     );
   }
 }
@@ -181,7 +164,7 @@ function validateDates(match, issues) {
 }
 
 function validateNumericFields(match, issues) {
-  NUMERIC_FIELDS.forEach((field) => {
+  CANONICAL_NUMERIC_FIELDS.forEach((field) => {
     const value = match[field];
 
     if (value === null || value === undefined) return;
@@ -210,7 +193,7 @@ function validateNumericFields(match, issues) {
 }
 
 function validatePercentageFields(match, issues) {
-  PERCENTAGE_FIELDS.forEach((field) => {
+  CANONICAL_PERCENTAGE_FIELDS.forEach((field) => {
     const value = match[field];
 
     if (value === null || value === undefined) return;
@@ -255,7 +238,11 @@ function validateSourceFields(match, issues) {
     }
   }
 
-  if (match.sourceProvider === 'Sample data' && match.sourceUrl.includes('example.com')) {
+  if (
+    match.sourceProvider === 'Sample data' &&
+    typeof match.sourceUrl === 'string' &&
+    match.sourceUrl.includes('example.com')
+  ) {
     addIssue(
       issues,
       'warning',
@@ -311,6 +298,7 @@ export function validateMatch(match) {
   validateRequiredFields(match, issues);
   validateExternalIds(match, issues);
   validateEnums(match, issues);
+  validateCompatibilityFields(match, issues);
   validateDates(match, issues);
   validateNumericFields(match, issues);
   validatePercentageFields(match, issues);
