@@ -1,4 +1,4 @@
-name: Rugby Results Pagination Probe
+name: Rugby Japan Women Full Bulk Collect
 
 on:
   push:
@@ -6,16 +6,16 @@ on:
       - probe/rugby-match-stats
     paths:
       - '.github/workflows/rugby-match-stats-probe.yml'
-      - 'scripts/diagnostics/rugby_results_pagination_probe.mjs'
+      - 'scripts/diagnostics/rugby_japan_women_bulk_collect.mjs'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  pagination-probe:
+  bulk-collect:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
 
     steps:
       - uses: actions/checkout@v4
@@ -28,32 +28,47 @@ jobs:
         run: |
           corepack enable
           corepack prepare pnpm@10 --activate
-          rm -rf /tmp/rugby-results-pagination
-          mkdir -p /tmp/rugby-results-pagination
-          cp scripts/diagnostics/rugby_results_pagination_probe.mjs /tmp/rugby-results-pagination/probe.mjs
-          cd /tmp/rugby-results-pagination
+          rm -rf /tmp/rugby-japan-women-bulk
+          mkdir -p /tmp/rugby-japan-women-bulk
+          cp scripts/diagnostics/rugby_japan_women_bulk_collect.mjs /tmp/rugby-japan-women-bulk/collect.mjs
+          cd /tmp/rugby-japan-women-bulk
           printf '{"private":true,"type":"module"}\n' > package.json
           pnpm add playwright@1.55.0
           pnpm exec playwright install --with-deps chromium
 
-      - name: Probe Results pagination and GraphQL variables
+      - name: Collect all discoverable Japan Women 7s Results and Match Stats
         env:
-          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-results-pagination-probe
+          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-japan-women-full-bulk-collect
         run: |
-          cd /tmp/rugby-results-pagination
-          node probe.mjs
+          cd /tmp/rugby-japan-women-bulk
+          node collect.mjs
 
-      - name: Show pagination summary
+      - name: Show full bulk collection summary
         if: always()
         run: |
-          echo '--- Results pagination summary ---'
-          cat artifacts/rugby-results-pagination-probe/summary.json || true
+          echo '--- full bulk collection summary ---'
+          cat artifacts/rugby-japan-women-full-bulk-collect/summary.json || true
+          echo '--- QA flagged matches ---'
+          node - <<'NODE'
+          const fs = require('fs');
+          const p = 'artifacts/rugby-japan-women-full-bulk-collect/matches.json';
+          if (fs.existsSync(p)) {
+            const xs = JSON.parse(fs.readFileSync(p, 'utf8'));
+            for (const x of xs.filter(x => x.dataQuality !== 'ok')) {
+              console.log(x.fixtureId, x.dateTime, x.dataQuality, x.homeTeam, x.homeScore, '-', x.awayScore, x.awayTeam, 'statCount='+x.statCount);
+            }
+          }
+          NODE
+          echo '--- oldest matches ---'
+          head -n 8 artifacts/rugby-japan-women-full-bulk-collect/matches.csv || true
+          echo '--- newest matches ---'
+          tail -n 8 artifacts/rugby-japan-women-full-bulk-collect/matches.csv || true
 
-      - name: Upload pagination probe artifacts
+      - name: Upload full bulk collection artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: rugby-results-pagination-probe
-          path: artifacts/rugby-results-pagination-probe/
+          name: rugby-japan-women-full-bulk-collect
+          path: artifacts/rugby-japan-women-full-bulk-collect/
           if-no-files-found: warn
-          retention-days: 7
+          retention-days: 14
