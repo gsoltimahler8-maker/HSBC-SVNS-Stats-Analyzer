@@ -1,4 +1,4 @@
-name: Rugby Japan Women Full Bulk Collect
+name: Rugby Bordeaux 2026 Complete Data Audit
 
 on:
   push:
@@ -6,16 +6,16 @@ on:
       - probe/rugby-match-stats
     paths:
       - '.github/workflows/rugby-match-stats-probe.yml'
-      - 'scripts/diagnostics/rugby_japan_women_bulk_collect.mjs'
+      - 'scripts/diagnostics/rugby_bordeaux_2026_complete_audit.mjs'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  bulk-collect:
+  complete-audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 25
 
     steps:
       - uses: actions/checkout@v4
@@ -28,47 +28,61 @@ jobs:
         run: |
           corepack enable
           corepack prepare pnpm@10 --activate
-          rm -rf /tmp/rugby-japan-women-bulk
-          mkdir -p /tmp/rugby-japan-women-bulk
-          cp scripts/diagnostics/rugby_japan_women_bulk_collect.mjs /tmp/rugby-japan-women-bulk/collect.mjs
-          cd /tmp/rugby-japan-women-bulk
+          rm -rf /tmp/rugby-bordeaux-complete-audit
+          mkdir -p /tmp/rugby-bordeaux-complete-audit
+          cp scripts/diagnostics/rugby_bordeaux_2026_complete_audit.mjs /tmp/rugby-bordeaux-complete-audit/audit.mjs
+          cd /tmp/rugby-bordeaux-complete-audit
           printf '{"private":true,"type":"module"}\n' > package.json
           pnpm add playwright@1.55.0
           pnpm exec playwright install --with-deps chromium
 
-      - name: Collect all discoverable Japan Women 7s Results and Match Stats
+      - name: Audit Bordeaux 2026 Women complete Match Centre data
         env:
-          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-japan-women-full-bulk-collect
+          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-bordeaux-2026-complete-audit
         run: |
-          cd /tmp/rugby-japan-women-bulk
-          node collect.mjs
+          cd /tmp/rugby-bordeaux-complete-audit
+          node audit.mjs
 
-      - name: Show full bulk collection summary
+      - name: Show Bordeaux complete audit summary
         if: always()
         run: |
-          echo '--- full bulk collection summary ---'
-          cat artifacts/rugby-japan-women-full-bulk-collect/summary.json || true
-          echo '--- QA flagged matches ---'
           node - <<'NODE'
           const fs = require('fs');
-          const p = 'artifacts/rugby-japan-women-full-bulk-collect/matches.json';
-          if (fs.existsSync(p)) {
-            const xs = JSON.parse(fs.readFileSync(p, 'utf8'));
-            for (const x of xs.filter(x => x.dataQuality !== 'ok')) {
-              console.log(x.fixtureId, x.dateTime, x.dataQuality, x.homeTeam, x.homeScore, '-', x.awayScore, x.awayTeam, 'statCount='+x.statCount);
-            }
+          const p = 'artifacts/rugby-bordeaux-2026-complete-audit/summary.json';
+          if (!fs.existsSync(p)) {
+            console.log('summary.json not found');
+            process.exit(0);
           }
+          const s = JSON.parse(fs.readFileSync(p, 'utf8'));
+          console.log(JSON.stringify({
+            audit: s.audit,
+            competitionId: s.competitionId,
+            season: s.season,
+            discoveredLinkCount: s.discoveredLinkCount,
+            collectedCount: s.collectedCount,
+            failureCount: s.failureCount,
+            statsPresentCount: s.statsPresentCount,
+            pointsSummaryPresentCount: s.pointsSummaryPresentCount,
+            commentaryPresentCount: s.commentaryPresentCount,
+            lineupPresentCount: s.lineupPresentCount,
+            stagePotentialConflictCount: s.stagePotentialConflictCount,
+            stagePotentialConflictFixtures: s.stagePotentialConflictFixtures,
+            matchDataTopLevelKeys: s.matchDataTopLevelKeys,
+            commentaryPathFrequency: s.commentaryPathFrequency,
+            pointsSummaryPathFrequency: s.pointsSummaryPathFrequency,
+            lineupPathFrequency: s.lineupPathFrequency,
+            stagePathFrequency: s.stagePathFrequency,
+            failures: s.failures
+          }, null, 2));
           NODE
-          echo '--- oldest matches ---'
-          head -n 8 artifacts/rugby-japan-women-full-bulk-collect/matches.csv || true
-          echo '--- newest matches ---'
-          tail -n 8 artifacts/rugby-japan-women-full-bulk-collect/matches.csv || true
+          echo '--- audit CSV sample ---'
+          head -n 25 artifacts/rugby-bordeaux-2026-complete-audit/matches-audit.csv || true
 
-      - name: Upload full bulk collection artifacts
+      - name: Upload Bordeaux complete audit artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: rugby-japan-women-full-bulk-collect
-          path: artifacts/rugby-japan-women-full-bulk-collect/
+          name: rugby-bordeaux-2026-complete-audit
+          path: artifacts/rugby-bordeaux-2026-complete-audit/
           if-no-files-found: warn
           retention-days: 14
