@@ -1,4 +1,4 @@
-name: Rugby Results Discovery Probe
+name: Rugby Results Network Probe
 
 on:
   push:
@@ -6,16 +6,16 @@ on:
       - probe/rugby-match-stats
     paths:
       - '.github/workflows/rugby-match-stats-probe.yml'
-      - 'scripts/diagnostics/rugby_results_discovery_probe.mjs'
+      - 'scripts/diagnostics/rugby_results_network_probe.mjs'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  discovery-probe:
+  network-probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
       - uses: actions/checkout@v4
@@ -24,22 +24,38 @@ jobs:
         with:
           node-version: 22
 
-      - name: Probe Rugby.com.au fixtures-results Next.js data
-        env:
-          OUT_DIR: artifacts/rugby-results-discovery-probe
-        run: node scripts/diagnostics/rugby_results_discovery_probe.mjs
+      - name: Prepare isolated Playwright environment
+        run: |
+          corepack enable
+          corepack prepare pnpm@10 --activate
+          rm -rf /tmp/rugby-results-network-probe
+          mkdir -p /tmp/rugby-results-network-probe
+          cp scripts/diagnostics/rugby_results_network_probe.mjs /tmp/rugby-results-network-probe/probe.mjs
+          cd /tmp/rugby-results-network-probe
+          printf '{"private":true,"type":"module"}\n' > package.json
+          pnpm add playwright@1.55.0
+          pnpm exec playwright install --with-deps chromium
 
-      - name: Show Results discovery summary
+      - name: Probe fixtures-results network traffic
+        env:
+          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-results-network-probe
+        run: |
+          cd /tmp/rugby-results-network-probe
+          node probe.mjs
+
+      - name: Show Results network summary
         if: always()
         run: |
-          echo '--- fixtures-results discovery summary ---'
-          cat artifacts/rugby-results-discovery-probe/summary.json || true
+          echo '--- Results network summary ---'
+          cat artifacts/rugby-results-network-probe/summary.json || true
+          echo '--- candidate body files ---'
+          find artifacts/rugby-results-network-probe -maxdepth 1 -type f -name 'candidate-*.txt' -printf '%f\n' | sort || true
 
-      - name: Upload Results discovery artifacts
+      - name: Upload Results network artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: rugby-results-discovery-probe
-          path: artifacts/rugby-results-discovery-probe/
+          name: rugby-results-network-probe
+          path: artifacts/rugby-results-network-probe/
           if-no-files-found: warn
           retention-days: 7
