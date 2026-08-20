@@ -14,7 +14,7 @@ Full name:
 Hironobu Otsuka
 
 Submission sender:
-gsoltimahler8@gmail.com
+[PRIVATE SENDER EMAIL — intentionally not stored in the public repository]
 
 Public project contact:
 svnsstatsanalyzer@gmail.com
@@ -63,7 +63,7 @@ Checks:
 - [ ] The private completed copy is not uploaded to the public repository.
 - [ ] The public template contains placeholders rather than the personal email address.
 - [ ] The application continues to publish only `svnsstatsanalyzer@gmail.com`.
-- [ ] The enquiry is submitted from `gsoltimahler8@gmail.com`.
+- [ ] The enquiry is submitted from the private sender address recorded outside the public repository.
 
 Replacing the public file does not remove an older personal address from Git history. Full history removal is a separate privacy-cleanup operation.
 
@@ -113,7 +113,7 @@ Replacing the public file does not remove an older personal address from Git his
 - [ ] The text does not ask for endorsement, partnership or sponsorship.
 - [ ] The text does not offer free transfer of code or ownership.
 - [ ] Both public URLs are correct.
-- [ ] Sender name and personal email are correct in the private copy.
+- [ ] Sender name and private sender address are correct in the private copy.
 
 ---
 
@@ -139,7 +139,7 @@ Do not state in advance that the same dataset will continue to be used privately
 Because the exact fields may change, follow the fields displayed on the official form.
 
 - [ ] Enter `Hironobu Otsuka` as the sender name.
-- [ ] Enter `gsoltimahler8@gmail.com` as the reply address.
+- [ ] Enter the private sender address recorded outside the public repository as the reply address.
 - [ ] Use the prepared subject when a subject field is available.
 - [ ] When no subject field is available, place the subject on the first line of the message.
 - [ ] Paste the private completed submission copy.
