@@ -97,3 +97,5 @@ console.log(JSON.stringify({
 }, null, 2));
 
 await browser.close();
+
+// Probe trigger marker: workflow already exists on this branch before this push.
