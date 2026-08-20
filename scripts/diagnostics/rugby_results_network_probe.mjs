@@ -2,7 +2,7 @@ import { chromium } from 'playwright';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-const targetUrl = 'https://www.rugby.com.au/fixtures-results';
+const targetUrl = process.env.TARGET_URL || 'https://www.rugby.com.au/fixtures-results?team=420&comp=All&tab=Results';
 const outDir = process.env.OUT_DIR || 'artifacts/rugby-results-network-probe';
 await fs.mkdir(outDir, { recursive: true });
 
@@ -16,10 +16,39 @@ const page = await context.newPage();
 const network = [];
 let responseSeq = 0;
 
+function safeJsonParse(text) {
+  try { return JSON.parse(text); } catch { return null; }
+}
+
+function collectJapanObjects(value, currentPath = '$', out = [], depth = 0) {
+  if (depth > 12 || out.length >= 100) return out;
+  if (value == null) return out;
+
+  if (Array.isArray(value)) {
+    value.forEach((v, i) => collectJapanObjects(v, `${currentPath}[${i}]`, out, depth + 1));
+    return out;
+  }
+
+  if (typeof value === 'object') {
+    const preview = JSON.stringify(value);
+    if (/Japan Women 7s|\"420\"|teamId[^0-9]*420/i.test(preview)) {
+      out.push({ path: currentPath, keys: Object.keys(value), preview: preview.slice(0, 2500) });
+    }
+    for (const [k, v] of Object.entries(value)) {
+      collectJapanObjects(v, `${currentPath}.${k}`, out, depth + 1);
+    }
+  }
+  return out;
+}
+
 page.on('response', async (response) => {
   const request = response.request();
   const type = request.resourceType();
   if (!['xhr', 'fetch', 'document'].includes(type)) return;
+
+  const reqHeaders = request.headers();
+  const postData = request.postData() || '';
+  const parsedPostData = safeJsonParse(postData);
 
   const item = {
     seq: ++responseSeq,
@@ -28,22 +57,55 @@ page.on('response', async (response) => {
     method: request.method(),
     resourceType: type,
     contentType: response.headers()['content-type'] || '',
+    requestContentType: reqHeaders['content-type'] || '',
+    postDataLength: postData.length,
   };
+
+  if (parsedPostData && typeof parsedPostData === 'object') {
+    item.graphqlOperationName = parsedPostData.operationName || null;
+    item.graphqlVariables = parsedPostData.variables || null;
+    item.graphqlQueryPreview = typeof parsedPostData.query === 'string' ? parsedPostData.query.slice(0, 3000) : null;
+  }
 
   try {
     if (type === 'xhr' || type === 'fetch' || item.contentType.toLowerCase().includes('json')) {
       const body = await response.text();
       item.bodyLength = body.length;
-      item.bodyPreview = body.slice(0, 50000);
+      item.bodyPreview = body.slice(0, 30000);
 
-      const haystack = `${item.url}\n${body}`.toLowerCase();
+      const haystack = `${item.url}\n${postData}\n${body}`.toLowerCase();
       const terms = ['fixture', 'result', 'match', 'competition', 'japan women 7s', '"420"', '951419', '950722'];
       item.matchedTerms = terms.filter((term) => haystack.includes(term));
 
       if (item.matchedTerms.length) {
         const safeName = `candidate-${String(item.seq).padStart(3, '0')}.txt`;
-        await fs.writeFile(path.join(outDir, safeName), `URL: ${item.url}\nSTATUS: ${item.status}\nTYPE: ${item.resourceType}\nMATCHED: ${item.matchedTerms.join(', ')}\n\n${body}`);
+        const requestSection = [
+          `URL: ${item.url}`,
+          `STATUS: ${item.status}`,
+          `METHOD: ${item.method}`,
+          `TYPE: ${item.resourceType}`,
+          `MATCHED: ${item.matchedTerms.join(', ')}`,
+          `REQUEST CONTENT-TYPE: ${item.requestContentType}`,
+          '',
+          '=== REQUEST POST DATA ===',
+          postData || '(none)',
+          '',
+          '=== RESPONSE BODY ===',
+          body,
+        ].join('\n');
+        await fs.writeFile(path.join(outDir, safeName), requestSection);
         item.savedBody = safeName;
+
+        const parsedBody = safeJsonParse(body);
+        if (parsedBody) {
+          const japanObjects = collectJapanObjects(parsedBody);
+          if (japanObjects.length) {
+            const jsonName = `candidate-${String(item.seq).padStart(3, '0')}-japan-objects.json`;
+            await fs.writeFile(path.join(outDir, jsonName), JSON.stringify(japanObjects, null, 2));
+            item.japanObjectsFile = jsonName;
+            item.japanObjectCount = japanObjects.length;
+          }
+        }
       }
     }
   } catch (error) {
@@ -54,33 +116,9 @@ page.on('response', async (response) => {
 });
 
 let navigationError = null;
-let clickedResults = false;
-let clickError = null;
-
 try {
   await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 90000 });
-  await page.waitForTimeout(5000);
-
-  // Prefer an accessible Results tab/button/link if one exists.
-  const candidates = [
-    page.getByRole('tab', { name: /^Results$/i }),
-    page.getByRole('button', { name: /^Results$/i }),
-    page.getByRole('link', { name: /^Results$/i }),
-    page.getByText(/^Results$/i).first(),
-  ];
-  for (const locator of candidates) {
-    try {
-      if (await locator.count()) {
-        await locator.first().click({ timeout: 5000 });
-        clickedResults = true;
-        break;
-      }
-    } catch (error) {
-      clickError = String(error);
-    }
-  }
-
-  await page.waitForTimeout(12000);
+  await page.waitForTimeout(15000);
 } catch (error) {
   navigationError = String(error);
 }
@@ -94,31 +132,51 @@ const likelyApi = candidates.filter((x) => {
   const u = x.url.toLowerCase();
   return x.resourceType !== 'document' && !u.includes('google') && !u.includes('doubleclick') && !u.includes('analytics');
 });
+const graphqlCandidates = likelyApi.filter((x) => x.url.includes('graphcdn.app'));
+const nextResultsCandidates = likelyApi.filter((x) => x.url.includes('/_next/data/') && x.url.includes('fixtures-results.json'));
 
-const knownFixtureMentions = ['951419', '950722', 'Japan Women 7s'].filter((x) => bodyText.includes(x));
+const matchCentreLinks = [...new Set((html.match(/\/match-centre\/\d+\/\d+\/\d+/g) || []))].sort();
 
 const summary = {
   targetUrl,
   finalUrl: page.url(),
   title,
   navigationError,
-  clickedResults,
-  clickError,
   bodyHasResultsText: bodyText.includes('Results'),
   bodyHasJapanWomen7s: bodyText.includes('Japan Women 7s'),
-  knownFixtureMentions,
   networkCount: network.length,
   candidateCount: candidates.length,
   likelyApiCount: likelyApi.length,
-  likelyApi: likelyApi.slice(0, 30).map((x) => ({
+  graphqlCandidateCount: graphqlCandidates.length,
+  nextResultsCandidateCount: nextResultsCandidates.length,
+  matchCentreLinkCount: matchCentreLinks.length,
+  matchCentreLinks: matchCentreLinks.slice(0, 100),
+  graphqlCandidates: graphqlCandidates.slice(0, 20).map((x) => ({
     seq: x.seq,
     status: x.status,
-    resourceType: x.resourceType,
+    method: x.method,
     url: x.url,
-    contentType: x.contentType,
+    requestContentType: x.requestContentType,
+    postDataLength: x.postDataLength,
+    operationName: x.graphqlOperationName,
+    variables: x.graphqlVariables,
+    queryPreview: x.graphqlQueryPreview,
     bodyLength: x.bodyLength,
     matchedTerms: x.matchedTerms,
     savedBody: x.savedBody,
+    japanObjectCount: x.japanObjectCount || 0,
+    japanObjectsFile: x.japanObjectsFile || null,
+  })),
+  nextResultsCandidates: nextResultsCandidates.slice(0, 20).map((x) => ({
+    seq: x.seq,
+    status: x.status,
+    method: x.method,
+    url: x.url,
+    bodyLength: x.bodyLength,
+    matchedTerms: x.matchedTerms,
+    savedBody: x.savedBody,
+    japanObjectCount: x.japanObjectCount || 0,
+    japanObjectsFile: x.japanObjectsFile || null,
   })),
   capturedAt: new Date().toISOString(),
 };
