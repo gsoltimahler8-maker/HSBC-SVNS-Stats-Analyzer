@@ -16,6 +16,13 @@ import {
   groupMatches,
 } from '../src/utils/analyticsMetrics.js';
 
+const assertClose = (actual, expected, epsilon = 1e-12) => {
+  assert.ok(
+    Math.abs(actual - expected) <= epsilon,
+    `expected ${actual} to be within ${epsilon} of ${expected}`
+  );
+};
+
 const winMatch = {
   id: 'm1',
   date: '2026-01-01',
@@ -80,15 +87,15 @@ test('derived metric formulas preserve current match-level behavior', () => {
   assert.equal(getMetricValue(lossMatch, 'winRate'), 0);
   assert.equal(getMetricValue(winMatch, 'pointsPerMatch'), 28);
   assert.equal(getMetricValue(winMatch, 'triesPerMatch'), 4);
-  assert.equal(getMetricValue(winMatch, 'pointsPer100Metres'), 14);
-  assert.equal(getMetricValue(winMatch, 'triesPer100Metres'), 2);
-  assert.equal(getMetricValue(winMatch, 'metresPerCarry'), 10);
-  assert.equal(getMetricValue(winMatch, 'cleanBreaksPer100Carries'), 20);
-  assert.equal(getMetricValue(winMatch, 'defendersBeatenPerCarry'), 0.3);
+  assertClose(getMetricValue(winMatch, 'pointsPer100Metres'), 14);
+  assertClose(getMetricValue(winMatch, 'triesPer100Metres'), 2);
+  assertClose(getMetricValue(winMatch, 'metresPerCarry'), 10);
+  assertClose(getMetricValue(winMatch, 'cleanBreaksPer100Carries'), 20);
+  assertClose(getMetricValue(winMatch, 'defendersBeatenPerCarry'), 0.3);
   assert.equal(getMetricValue(winMatch, 'turnoverDifferential'), 2);
   assert.equal(getMetricValue(winMatch, 'penaltiesPerMatch'), 2);
-  assert.equal(getMetricValue(winMatch, 'tackleSuccess'), 90);
-  assert.equal(getMetricValue(winMatch, 'ruckSuccess'), 90);
+  assertClose(getMetricValue(winMatch, 'tackleSuccess'), 90);
+  assertClose(getMetricValue(winMatch, 'ruckSuccess'), 90);
 });
 
 test('missing inputs and zero denominators remain null rather than zero', () => {
@@ -111,10 +118,15 @@ test('missing inputs and zero denominators remain null rather than zero', () => 
 });
 
 test('ratio aggregation uses pooled numerator and denominator', () => {
-  const pooled = aggregateMetric([winMatch, lossMatch], 'metresPerCarry');
+  const rows = [
+    { metres: 200, carries: 20 },
+    { metres: 50, carries: 10 },
+  ];
+  const pooled = aggregateMetric(rows, 'metresPerCarry');
+  const meanOfMatchRatios = (10 + 5) / 2;
 
-  assert.equal(pooled, 250 / 40);
-  assert.notEqual(pooled, (10 + 2.5) / 2);
+  assertClose(pooled, 250 / 30);
+  assert.notEqual(pooled, meanOfMatchRatios);
 });
 
 test('zero-denominator rows are excluded from pooled aggregation', () => {
