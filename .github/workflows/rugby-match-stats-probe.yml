@@ -1,4 +1,4 @@
-name: Rugby Bordeaux 2026 Complete Data Audit
+name: Rugby Bordeaux 2026 Canonical CSV Export
 
 on:
   push:
@@ -6,14 +6,14 @@ on:
       - probe/rugby-match-stats
     paths:
       - '.github/workflows/rugby-match-stats-probe.yml'
-      - 'scripts/diagnostics/rugby_bordeaux_2026_complete_audit.mjs'
+      - 'scripts/diagnostics/rugby_bordeaux_2026_canonical_export.mjs'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  complete-audit:
+  canonical-export:
     runs-on: ubuntu-latest
     timeout-minutes: 25
 
@@ -28,61 +28,42 @@ jobs:
         run: |
           corepack enable
           corepack prepare pnpm@10 --activate
-          rm -rf /tmp/rugby-bordeaux-complete-audit
-          mkdir -p /tmp/rugby-bordeaux-complete-audit
-          cp scripts/diagnostics/rugby_bordeaux_2026_complete_audit.mjs /tmp/rugby-bordeaux-complete-audit/audit.mjs
-          cd /tmp/rugby-bordeaux-complete-audit
+          rm -rf /tmp/rugby-bordeaux-canonical-export
+          mkdir -p /tmp/rugby-bordeaux-canonical-export
+          cp scripts/diagnostics/rugby_bordeaux_2026_canonical_export.mjs /tmp/rugby-bordeaux-canonical-export/export.mjs
+          cd /tmp/rugby-bordeaux-canonical-export
           printf '{"private":true,"type":"module"}\n' > package.json
           pnpm add playwright@1.55.0
           pnpm exec playwright install --with-deps chromium
 
-      - name: Audit Bordeaux 2026 Women complete Match Centre data
+      - name: Export Bordeaux 2026 Women raw JSON and analysis CSVs
         env:
-          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-bordeaux-2026-complete-audit
+          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-bordeaux-2026-canonical-export
         run: |
-          cd /tmp/rugby-bordeaux-complete-audit
-          node audit.mjs
+          cd /tmp/rugby-bordeaux-canonical-export
+          node export.mjs
 
-      - name: Show Bordeaux complete audit summary
+      - name: Show canonical export summary
         if: always()
         run: |
-          node - <<'NODE'
-          const fs = require('fs');
-          const p = 'artifacts/rugby-bordeaux-2026-complete-audit/summary.json';
-          if (!fs.existsSync(p)) {
-            console.log('summary.json not found');
-            process.exit(0);
-          }
-          const s = JSON.parse(fs.readFileSync(p, 'utf8'));
-          console.log(JSON.stringify({
-            audit: s.audit,
-            competitionId: s.competitionId,
-            season: s.season,
-            discoveredLinkCount: s.discoveredLinkCount,
-            collectedCount: s.collectedCount,
-            failureCount: s.failureCount,
-            statsPresentCount: s.statsPresentCount,
-            pointsSummaryPresentCount: s.pointsSummaryPresentCount,
-            commentaryPresentCount: s.commentaryPresentCount,
-            lineupPresentCount: s.lineupPresentCount,
-            stagePotentialConflictCount: s.stagePotentialConflictCount,
-            stagePotentialConflictFixtures: s.stagePotentialConflictFixtures,
-            matchDataTopLevelKeys: s.matchDataTopLevelKeys,
-            commentaryPathFrequency: s.commentaryPathFrequency,
-            pointsSummaryPathFrequency: s.pointsSummaryPathFrequency,
-            lineupPathFrequency: s.lineupPathFrequency,
-            stagePathFrequency: s.stagePathFrequency,
-            failures: s.failures
-          }, null, 2));
-          NODE
-          echo '--- audit CSV sample ---'
-          head -n 25 artifacts/rugby-bordeaux-2026-complete-audit/matches-audit.csv || true
+          echo '--- canonical export summary ---'
+          cat artifacts/rugby-bordeaux-2026-canonical-export/summary.json || true
+          echo '--- matches.csv ---'
+          head -n 6 artifacts/rugby-bordeaux-2026-canonical-export/matches.csv || true
+          echo '--- team_match_stats.csv header/sample ---'
+          head -n 4 artifacts/rugby-bordeaux-2026-canonical-export/team_match_stats.csv || true
+          echo '--- points_summary.csv sample ---'
+          head -n 6 artifacts/rugby-bordeaux-2026-canonical-export/points_summary.csv || true
+          echo '--- commentary.csv sample ---'
+          head -n 6 artifacts/rugby-bordeaux-2026-canonical-export/commentary.csv || true
+          echo '--- lineups.csv sample ---'
+          head -n 6 artifacts/rugby-bordeaux-2026-canonical-export/lineups.csv || true
 
-      - name: Upload Bordeaux complete audit artifacts
+      - name: Upload canonical export artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: rugby-bordeaux-2026-complete-audit
-          path: artifacts/rugby-bordeaux-2026-complete-audit/
+          name: rugby-bordeaux-2026-canonical-export
+          path: artifacts/rugby-bordeaux-2026-canonical-export/
           if-no-files-found: warn
           retention-days: 14
