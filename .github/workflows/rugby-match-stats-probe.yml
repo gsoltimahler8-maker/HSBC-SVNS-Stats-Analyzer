@@ -1,4 +1,4 @@
-name: Rugby Results Network Probe
+name: Rugby Japan Women Bulk Collect
 
 on:
   push:
@@ -6,16 +6,16 @@ on:
       - probe/rugby-match-stats
     paths:
       - '.github/workflows/rugby-match-stats-probe.yml'
-      - 'scripts/diagnostics/rugby_results_network_probe.mjs'
+      - 'scripts/diagnostics/rugby_japan_women_bulk_collect.mjs'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  network-probe:
+  bulk-collect:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
       - uses: actions/checkout@v4
@@ -28,34 +28,36 @@ jobs:
         run: |
           corepack enable
           corepack prepare pnpm@10 --activate
-          rm -rf /tmp/rugby-results-network-probe
-          mkdir -p /tmp/rugby-results-network-probe
-          cp scripts/diagnostics/rugby_results_network_probe.mjs /tmp/rugby-results-network-probe/probe.mjs
-          cd /tmp/rugby-results-network-probe
+          rm -rf /tmp/rugby-japan-women-bulk
+          mkdir -p /tmp/rugby-japan-women-bulk
+          cp scripts/diagnostics/rugby_japan_women_bulk_collect.mjs /tmp/rugby-japan-women-bulk/collect.mjs
+          cd /tmp/rugby-japan-women-bulk
           printf '{"private":true,"type":"module"}\n' > package.json
           pnpm add playwright@1.55.0
           pnpm exec playwright install --with-deps chromium
 
-      - name: Probe fixtures-results network traffic
+      - name: Collect Japan Women 7s Results and Match Stats
         env:
-          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-results-network-probe
+          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-japan-women-bulk-collect
         run: |
-          cd /tmp/rugby-results-network-probe
-          node probe.mjs
+          cd /tmp/rugby-japan-women-bulk
+          node collect.mjs
 
-      - name: Show Results network summary
+      - name: Show bulk collection summary
         if: always()
         run: |
-          echo '--- Results network summary ---'
-          cat artifacts/rugby-results-network-probe/summary.json || true
-          echo '--- candidate body files ---'
-          find artifacts/rugby-results-network-probe -maxdepth 1 -type f -name 'candidate-*.txt' -printf '%f\n' | sort || true
+          echo '--- bulk collection summary ---'
+          cat artifacts/rugby-japan-women-bulk-collect/summary.json || true
+          echo '--- matches.csv ---'
+          head -n 25 artifacts/rugby-japan-women-bulk-collect/matches.csv || true
+          echo '--- stats-long.csv sample ---'
+          head -n 30 artifacts/rugby-japan-women-bulk-collect/stats-long.csv || true
 
-      - name: Upload Results network artifacts
+      - name: Upload bulk collection artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: rugby-results-network-probe
-          path: artifacts/rugby-results-network-probe/
+          name: rugby-japan-women-bulk-collect
+          path: artifacts/rugby-japan-women-bulk-collect/
           if-no-files-found: warn
           retention-days: 7
