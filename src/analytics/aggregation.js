@@ -30,7 +30,7 @@ const aggregateRatio = (
     const numerator = numberOrNull(numeratorGetter(match));
     const denominator = numberOrNull(denominatorGetter(match));
 
-    if (numerator === null || denominator === null) {
+    if (numerator === null || denominator === null || denominator === 0) {
       return;
     }
 

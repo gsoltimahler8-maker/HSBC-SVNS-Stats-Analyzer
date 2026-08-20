@@ -7,17 +7,19 @@
     "dev": "vite",
     "build": "npm run validate:release && vite build --base=/HSBC-SVNS-Stats-Analyzer/",
     "preview": "vite preview",
+    "prepare:lockfile": "node scripts/preparePortableLockfile.mjs",
+    "test": "node --test",
     "validate:matches": "node scripts/validateSampleMatches.mjs",
     "validate:videos": "node scripts/validateVideos.mjs",
     "validate:data": "npm run validate:matches && npm run validate:videos",
-    "validate:release": "npm run validate:data && node scripts/validateRelease.mjs"
+    "validate:release": "npm run test && npm run validate:data && node scripts/validateRelease.mjs"
   },
   "dependencies": {
-    "@vitejs/plugin-react": "latest",
-    "vite": "latest",
-    "react": "latest",
-    "react-dom": "latest",
-    "lucide-react": "latest",
-    "recharts": "latest"
+    "@vitejs/plugin-react": "6.0.2",
+    "vite": "8.0.16",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "lucide-react": "1.17.0",
+    "recharts": "3.8.1"
   }
 }
