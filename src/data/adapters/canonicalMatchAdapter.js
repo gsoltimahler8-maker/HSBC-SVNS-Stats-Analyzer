@@ -1,12 +1,46 @@
+import {
+  CANONICAL_EXTERNAL_ID_FIELDS,
+  CANONICAL_NULLABLE_STAT_FIELDS,
+} from '../schema/canonicalMatchSchema.js';
+
 const isRecord = (value) =>
   value !== null && typeof value === 'object' && !Array.isArray(value);
 
+function normalizeExternalIds(external) {
+  const source = isRecord(external) ? external : {};
+  const normalized = { ...source };
+
+  CANONICAL_EXTERNAL_ID_FIELDS.forEach((field) => {
+    if (normalized[field] === undefined || normalized[field] === '') {
+      normalized[field] = null;
+    }
+  });
+
+  return normalized;
+}
+
+function normalizeNullableStats(record) {
+  const normalized = { ...record };
+
+  CANONICAL_NULLABLE_STAT_FIELDS.forEach((field) => {
+    if (normalized[field] === undefined || normalized[field] === '') {
+      normalized[field] = null;
+    }
+  });
+
+  return normalized;
+}
+
 /**
- * Adapts one provider record into the application's canonical match shape.
+ * Adapts one provider record into the application's canonical team-match shape.
  *
- * v1.1-06 intentionally preserves every existing field so that the public
- * application behaves exactly as before. Field-by-field canonicalisation,
- * type/nullability rules and schema reconciliation belong to v1.1-07.
+ * v1.1-07 establishes two non-destructive normalization rules:
+ * - known external-ID keys are always present and use null when unavailable;
+ * - known nullable raw-stat fields are always present and use null when unavailable.
+ *
+ * Existing fields are otherwise preserved so the public application keeps the
+ * same behavior. Provider-specific renaming/mapping belongs in provider-specific
+ * adapters before records reach this canonical boundary.
  */
 export function adaptMatchRecord(rawMatch, context = {}) {
   if (!isRecord(rawMatch)) {
@@ -17,9 +51,11 @@ export function adaptMatchRecord(rawMatch, context = {}) {
     throw new TypeError(`Invalid match record${providerLabel}.`);
   }
 
+  const normalized = normalizeNullableStats(rawMatch);
+
   return {
-    ...rawMatch,
-    external: isRecord(rawMatch.external) ? { ...rawMatch.external } : {},
+    ...normalized,
+    external: normalizeExternalIds(rawMatch.external),
   };
 }
 
