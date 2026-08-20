@@ -1,0 +1,33 @@
+# Dependencies / build output
+node_modules/
+dist/
+.vite/
+coverage/
+
+# Logs and local tool output
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.cache/
+
+# Local environment / secrets
+.env
+.env.*
+!.env.example
+*.local
+
+# Private or rights-uncertain working material
+# These directories must remain local/private and must not be committed to this public repository.
+PRIVATE-DO-NOT-COMMIT/
+private/
+private-data/
+local-only/
+raw-private/
+staging-private/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.idea/
