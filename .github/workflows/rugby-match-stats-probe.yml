@@ -1,4 +1,4 @@
-name: Rugby Match Stats Probe
+name: Rugby Match Stats Direct Probe
 
 on:
   push:
@@ -6,16 +6,16 @@ on:
       - probe/rugby-match-stats
     paths:
       - '.github/workflows/rugby-match-stats-probe.yml'
-      - 'scripts/diagnostics/rugby_match_stats_probe.mjs'
+      - 'scripts/diagnostics/rugby_match_stats_direct_probe.mjs'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  probe:
+  direct-probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
 
     steps:
       - uses: actions/checkout@v4
@@ -24,54 +24,26 @@ jobs:
         with:
           node-version: 22
 
-      - name: Prepare isolated Playwright environment
-        run: |
-          corepack enable
-          corepack prepare pnpm@10 --activate
-          rm -rf /tmp/rugby-probe
-          mkdir -p /tmp/rugby-probe
-          cp scripts/diagnostics/rugby_match_stats_probe.mjs /tmp/rugby-probe/probe.mjs
-          cd /tmp/rugby-probe
-          printf '{"private":true,"type":"module"}\n' > package.json
-          pnpm add playwright@1.55.0
-          pnpm exec playwright install --with-deps chromium
-
-      - name: Probe Rugby.com.au Match Stats
+      - name: Direct probe of three Japan Women 7s fixtures
         env:
-          TARGET_URL: https://www.rugby.com.au/match-centre/112/2026/951419?tab=Match-Stats
-          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-match-stats-probe
-        run: |
-          cd /tmp/rugby-probe
-          node probe.mjs
+          OUT_DIR: artifacts/rugby-match-stats-direct-probe
+        run: node scripts/diagnostics/rugby_match_stats_direct_probe.mjs
 
-      - name: Show summary
+      - name: Show direct-probe summary
         if: always()
         run: |
-          echo '--- summary.json ---'
-          cat artifacts/rugby-match-stats-probe/summary.json || true
-          echo '--- Next.js match-data summary ---'
-          cat artifacts/rugby-match-stats-probe/next-data-summary.json || true
-          echo '--- Next.js stat inspection (condensed) ---'
-          node - <<'NODE'
-          const fs = require('fs');
-          const dir = 'artifacts/rugby-match-stats-probe';
-          if (!fs.existsSync(dir)) process.exit(0);
-          for (const name of fs.readdirSync(dir).filter(x => x.endsWith('-inspection.json'))) {
-            const x = JSON.parse(fs.readFileSync(`${dir}/${name}`, 'utf8'));
-            console.log('FILE', name);
-            console.log('statKeyPaths', JSON.stringify(x.statKeyPaths || [], null, 2));
-            console.log('statValueHits', JSON.stringify((x.statValueHits || []).slice(0, 20), null, 2));
-            console.log('likelyContainers', JSON.stringify((x.likelyContainers || []).slice(0, 12), null, 2));
-          }
-          NODE
-          echo '--- candidate network URLs ---'
-          node -e "const fs=require('fs'); const p='artifacts/rugby-match-stats-probe/network-candidates.json'; if(fs.existsSync(p)){for(const x of JSON.parse(fs.readFileSync(p,'utf8'))) console.log(x.status, x.resourceType, x.url)}"
+          echo '--- direct Next.js JSON probe summary ---'
+          cat artifacts/rugby-match-stats-direct-probe/summary.json || true
+          echo '--- generated files ---'
+          find artifacts/rugby-match-stats-direct-probe -maxdepth 1 -type f -printf '%f\n' | sort || true
+          echo '--- first CSV rows ---'
+          head -n 20 artifacts/rugby-match-stats-direct-probe/japan-women-7s-sample-stats.csv || true
 
-      - name: Upload probe artifacts
+      - name: Upload direct probe artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: rugby-match-stats-probe-951419
-          path: artifacts/rugby-match-stats-probe/
+          name: rugby-match-stats-direct-probe-3-fixtures
+          path: artifacts/rugby-match-stats-direct-probe/
           if-no-files-found: warn
           retention-days: 7
