@@ -15,7 +15,7 @@ permissions:
 jobs:
   probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
       - uses: actions/checkout@v4
@@ -24,16 +24,25 @@ jobs:
         with:
           node-version: 22
 
-      - name: Install Playwright
+      - name: Prepare isolated Playwright environment
         run: |
-          npm install --no-save playwright
-          npx playwright install --with-deps chromium
+          corepack enable
+          corepack prepare pnpm@10 --activate
+          rm -rf /tmp/rugby-probe
+          mkdir -p /tmp/rugby-probe
+          cp scripts/diagnostics/rugby_match_stats_probe.mjs /tmp/rugby-probe/probe.mjs
+          cd /tmp/rugby-probe
+          printf '{"private":true,"type":"module"}\n' > package.json
+          pnpm add playwright@1.55.0
+          pnpm exec playwright install --with-deps chromium
 
       - name: Probe Rugby.com.au Match Stats
         env:
           TARGET_URL: https://www.rugby.com.au/match-centre/112/2026/951419?tab=Match-Stats
-          OUT_DIR: artifacts/rugby-match-stats-probe
-        run: node scripts/diagnostics/rugby_match_stats_probe.mjs
+          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-match-stats-probe
+        run: |
+          cd /tmp/rugby-probe
+          node probe.mjs
 
       - name: Show summary
         if: always()
