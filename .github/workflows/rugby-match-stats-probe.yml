@@ -1,4 +1,4 @@
-name: Rugby Match Stats Direct Probe
+name: Rugby Results Discovery Probe
 
 on:
   push:
@@ -6,14 +6,14 @@ on:
       - probe/rugby-match-stats
     paths:
       - '.github/workflows/rugby-match-stats-probe.yml'
-      - 'scripts/diagnostics/rugby_match_stats_direct_probe.mjs'
+      - 'scripts/diagnostics/rugby_results_discovery_probe.mjs'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  direct-probe:
+  discovery-probe:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -24,26 +24,22 @@ jobs:
         with:
           node-version: 22
 
-      - name: Direct probe of three Japan Women 7s fixtures
+      - name: Probe Rugby.com.au fixtures-results Next.js data
         env:
-          OUT_DIR: artifacts/rugby-match-stats-direct-probe
-        run: node scripts/diagnostics/rugby_match_stats_direct_probe.mjs
+          OUT_DIR: artifacts/rugby-results-discovery-probe
+        run: node scripts/diagnostics/rugby_results_discovery_probe.mjs
 
-      - name: Show direct-probe summary
+      - name: Show Results discovery summary
         if: always()
         run: |
-          echo '--- direct Next.js JSON probe summary ---'
-          cat artifacts/rugby-match-stats-direct-probe/summary.json || true
-          echo '--- generated files ---'
-          find artifacts/rugby-match-stats-direct-probe -maxdepth 1 -type f -printf '%f\n' | sort || true
-          echo '--- first CSV rows ---'
-          head -n 20 artifacts/rugby-match-stats-direct-probe/japan-women-7s-sample-stats.csv || true
+          echo '--- fixtures-results discovery summary ---'
+          cat artifacts/rugby-results-discovery-probe/summary.json || true
 
-      - name: Upload direct probe artifacts
+      - name: Upload Results discovery artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: rugby-match-stats-direct-probe-3-fixtures
-          path: artifacts/rugby-match-stats-direct-probe/
+          name: rugby-results-discovery-probe
+          path: artifacts/rugby-results-discovery-probe/
           if-no-files-found: warn
           retention-days: 7
