@@ -1,77 +1,145 @@
-# Match Data Schema
+# SVNS Stats Analyzer — Canonical Match Data Schema
 
-## 目的
-
-この文書は、SVNS Stats Analyzer / SVNS Analytics Platform で扱う1試合分の正式データ形式を定義する。
-
-Version 0.4 では、サンプルデータから実データ投入へ移行するため、試合データの項目・必須/任意・出典管理・派生指標の扱いを整理する。
-
-このスキーマは、将来的に Rugby.com.au Match Stats 形式の実データ、手動入力JSON、データ管理画面、Supabase等に接続する際の基準とする。
+**Schema version:** `v1.1-canonical-match-1`  
+**Roadmap step:** v1.1-07  
+**Updated:** 2026-08-20  
+**Status:** Authoritative for the current v1.1 application model
 
 ---
 
-## 基本方針
+## 1. Purpose
 
-* 1レコード = 1チーム視点の1試合データとする。
-* 例：Japan vs New Zealand の試合で Japan 側データを扱う場合、`team` は `Japan`、`opponent` は `New Zealand` とする。
-* 同一試合の相手側データを扱う場合は、別レコードとして持つことも可能。
-* 速報性よりも、出典追跡・再現性・分析条件の明示を優先する。
-* Rugby.com.au Match Stats を主ソースとする。
-* RugbyPass 等は補助ソースとして扱い、主スタッツに無警告で混ぜない。
-* 不明値は無理に `0` にせず、必要に応じて `null` を許容する。
-* 派生指標は原則として保存せず、アプリ側で計算する。
-* 取得日時は `fetchedAt` に一本化する。
-* legacy field である `lastFetched` は使用しない。
+This document defines the canonical team-match record used by SVNS Stats Analyzer after the v1.1 provider/adapter separation.
 
----
-
-## 必須項目
-
-### 試合識別
-
-```js
-id: string
-```
-
-アプリ内で使う一意の試合ID。
-
-例：
-
-```js
-'M-202526-W-DUB-001'
-```
-
-命名規則の目安：
+The authoritative runtime schema metadata lives in:
 
 ```text
-M-{season}-{gender}-{tournamentCode}-{sequence}
+src/data/schema/canonicalMatchSchema.js
+```
+
+The canonical data dictionary is documented in:
+
+```text
+docs/canonical-match-data-dictionary.md
+```
+
+Older v0.x documents may still describe historical import conventions. Where those documents conflict with this file or the machine-readable schema, this v1.1 schema takes precedence.
+
+---
+
+## 2. Canonical data flow
+
+```text
+Provider source
+↓
+Provider implementation
+↓
+Provider-specific mapping when needed
+↓
+Canonical Match Adapter
+↓
+Canonical team-match record
+↓
+Derived Metrics Engine
+↓
+Analysis / Trends / Search / Video context
+```
+
+Current production provider:
+
+```text
+src/data/providers/staticJsonMatchProvider.js
+```
+
+Current canonical adapter:
+
+```text
+src/data/adapters/canonicalMatchAdapter.js
+```
+
+Current active source file:
+
+```text
+src/data/matches.json
 ```
 
 ---
 
-### 外部ID
+## 3. Record grain
+
+The canonical record grain is:
+
+> **one record = one team perspective for one match**
+
+Example:
+
+```text
+team: Japan
+opponent: Australia
+```
+
+The record stores statistics from the `team` perspective.
+
+This model is intentionally independent from the source provider. A future official World Rugby, RugbyPass or other provider adapter should map its source format into this same canonical shape.
+
+---
+
+## 4. Required canonical fields
+
+The following fields are required:
+
+```text
+id
+season
+tournament
+date
+gender
+stage
+team
+opponent
+result
+pointsFor
+pointsAgainst
+sourceProvider
+sourceUrl
+fetchedAt
+dataCoverageLevel
+dataCoverageSource
+statDefinitionVersion
+```
+
+### `id`
+
+```text
+Type: string
+Nullable: no
+```
+
+Application-level unique team-match record ID.
+
+The internal ID must not be assumed to equal any external provider match ID.
+
+---
+
+### `external`
 
 ```js
 external: {
-  rugbyComAu?: string | null,
-  svns?: string | null,
-  rugbyPass?: string | null
+  rugbyComAu: string | null,
+  svns: string | null,
+  rugbyPass: string | null
 }
 ```
 
-外部サイト上の試合IDを保持する。
+`external` is the container for provider/external identifiers.
 
-* `rugbyComAu`：Rugby.com.au側の試合ID
-* `svns`：SVNS公式側の試合ID
-* `rugbyPass`：RugbyPass側の試合ID
+The adapter normalizes the known keys so unavailable identifiers use `null` rather than an empty string or missing property.
 
-存在しない場合は `null` を許容する。
-
-外部IDは出典追跡・将来のデータ照合・重複確認のために保持する。
+External IDs are provenance / reconciliation keys, not the canonical application record ID.
 
 ---
 
-### 基本情報
+### Competition / identity fields
 
 ```js
 season: string
@@ -84,335 +152,368 @@ opponent: string
 result: 'W' | 'L' | 'D' | 'NC'
 ```
 
-説明：
+Rules:
 
-* `season`：例 `2025-26`
-* `tournament`：例 `Dubai SVNS`
-* `date`：ISO形式 `YYYY-MM-DD`
-* `gender`：`Women` または `Men`
-* `stage`：例 `Pool`, `Quarter Final`, `Semi Final`, `Bronze Final`, `Final`
-* `team`：分析対象チーム
-* `opponent`：対戦相手
-* `result`：
-
-  * `W`：勝利
-  * `L`：敗戦
-  * `D`：引き分け
-  * `NC`：未分類・中止・結果未確定など
+- `date` uses `YYYY-MM-DD`.
+- `team` and `opponent` must not be identical.
+- `result` is the canonical result field from the `team` perspective.
+- UI labels may be localized, but canonical values remain source-independent application values.
 
 ---
 
-### 得点
+## 5. Score fields
 
 ```js
 pointsFor: number
 pointsAgainst: number
 ```
 
-説明：
+These fields are required and non-negative.
 
-* `pointsFor`：対象チームの得点
-* `pointsAgainst`：相手チームの得点
+They represent the score from the canonical `team` perspective.
 
----
-
-## 主要スタッツ項目
-
-以下は Rugby.com.au Match Stats 形式を想定した主要項目である。
-
-実データに存在しない項目は `null` を許容する。
-
-`0` は「そのスタッツが実際に0だった」と確認できる場合にのみ使う。  
-不明値・未取得値・ソース上で確認できない値には `null` を使う。
-
-### Attack
-
-```js
-tries: number | null
-carries: number | null
-passes: number | null
-offloads: number | null
-cleanBreaks: number | null
-defendersBeaten: number | null
-```
-
----
-
-### Defence
-
-```js
-tackles: number | null
-missedTackles: number | null
-```
-
-`tackleSuccess` は保存せず、以下の式でアプリ側で算出する。
+Derived point differential is not stored:
 
 ```text
-tackles / (tackles + missedTackles) × 100
+Points Differential = pointsFor - pointsAgainst
 ```
 
 ---
 
-### Turnovers / Breakdown
+## 6. Nullable raw-stat fields
 
-```js
-turnoversWon: number | null
-turnoversConceded: number | null
-rucksWon: number | null
-rucksLost: number | null
-```
-
----
-
-### Possession / Territory
-
-```js
-possession: number | null
-territory: number | null
-```
-
-説明：
-
-* `possession`：ポゼッション率。0〜100の数値。
-* `territory`：テリトリー率。0〜100の数値。
-
-保存値は割合ではなく、パーセントポイントとする。
-
-正しい例：
+The canonical model recognizes the following nullable raw-stat fields:
 
 ```text
-55
+tries
+metres
+carries
+passes
+offloads
+cleanBreaks
+defendersBeaten
+tackles
+missedTackles
+turnoversWon
+turnoversConceded
+rucksWon
+rucksLost
+possession
+territory
+penaltiesConceded
+yellowCards
+redCards
 ```
 
-誤った例：
+Rules:
 
 ```text
-0.55
+observed zero → 0
+unknown / unavailable / not captured → null
 ```
+
+Do not use `0` to represent missing data.
+
+The canonical adapter normalizes missing/empty values for these known nullable fields to `null`.
+
+### Units
+
+| Field | Unit |
+| --- | --- |
+| tries | count |
+| metres | metres |
+| carries | count |
+| passes | count |
+| offloads | count |
+| cleanBreaks | count |
+| defendersBeaten | count |
+| tackles | count |
+| missedTackles | count |
+| turnoversWon | count |
+| turnoversConceded | count |
+| rucksWon | count |
+| rucksLost | count |
+| possession | percentage points, 0–100 |
+| territory | percentage points, 0–100 |
+| penaltiesConceded | count |
+| yellowCards | count |
+| redCards | count |
+
+`possession: 55` means 55%, not `0.55`.
 
 ---
 
-### Discipline
-
-```js
-penaltiesConceded: number | null
-yellowCards: number | null
-redCards: number | null
-```
-
----
-
-## 出典管理項目
-
-### 主ソース
+## 7. Provenance fields
 
 ```js
 sourceProvider: string
 sourceUrl: string
 fetchedAt: string
-```
-
-説明：
-
-* `sourceProvider`：例 `Rugby.com.au`, `Sample data`, `Manual entry`
-* `sourceUrl`：参照元URL
-* `fetchedAt`：取得日時。ISO datetime形式。
-
-例：
-
-```js
-fetchedAt: '2026-06-01T00:00:00Z'
-```
-
-`fetchedAt` は、データがいつ取得・確認されたかを示す正式フィールドである。
-
-`lastFetched` は過去の互換用フィールドであり、現在のスキーマでは使用しない。
-
----
-
-### legacy timestamp policy
-
-Version 0.4 では、取得日時フィールドを `fetchedAt` に統一した。
-
-現在の運用方針：
-
-```text
-Use fetchedAt.
-Do not use lastFetched.
-Do not add lastFetched to new match records.
-Do not rely on lastFetched in UI components.
-```
-
-旧データを取り込む場合は、active dataset に入れる前に `lastFetched` を `fetchedAt` へ移行する。
-
----
-
-### データ粒度
-
-```js
-dataCoverageLevel: 'full_match_stats' | 'limited_data' | 'results_only' | 'unknown'
+dataCoverageLevel: string
 dataCoverageSource: string
-```
-
-説明：
-
-* `full_match_stats`：詳細試合スタッツあり
-* `limited_data`：一部スタッツのみ
-* `results_only`：スコア・結果のみ
-* `unknown`：粒度未確認
-
-データ粒度は、比較分析の信頼性に関わるため必ず保持する。
-
-異なる `dataCoverageLevel` の試合を同じ分析対象に含める場合、UI側で注意表示する。
-
----
-
-### スタッツ定義バージョン
-
-```js
 statDefinitionVersion: string
 ```
 
-例：
+### `sourceProvider`
 
-```js
-'v1-rugby-com-au-match-stats'
-```
+Human-readable primary source/provider label for the record.
 
-この値は、スタッツ項目の定義や取得元仕様が変わった場合に変更する。
+Examples currently used by the project include source labels for sample data and Rugby.com.au Match Stats.
 
-例：
+This field describes provenance. It must not be interpreted as permission or licensing status.
 
-* Rugby.com.au Match Stats の項目定義が変わった場合
-* 新しい実データ取り込み形式を追加した場合
-* RugbyPass 等の補助ソースを別定義で扱う場合
+### `sourceUrl`
 
----
+Traceable source URL.
 
-## 派生指標
+It should normally use `http://` or `https://`.
 
-以下は保存せず、アプリ側で計算する。
+### `fetchedAt`
 
-```text
-pointDifferential = pointsFor - pointsAgainst
-tackleSuccess = tackles / (tackles + missedTackles) × 100
-```
+Valid ISO datetime representing when the source record was collected or verified.
 
-将来的に追加候補となる派生指標：
+`lastFetched` is not part of the canonical v1.1 model.
+
+### `dataCoverageLevel`
+
+Allowed values:
 
 ```text
-attackEfficiency
-defensiveEfficiency
-breakdownEfficiency
-disciplinePressure
+full_match_stats
+limited_data
+results_only
+unknown
 ```
 
-ただし、Version 0.4 では派生指標の本格実装は行わない。
+### `dataCoverageSource`
 
-派生指標を保存しない理由：
+Human-readable explanation/source for the coverage classification.
 
-* 元データ修正時に派生値が古くなるのを避けるため
-* 計算式の変更に対応しやすくするため
-* source data と derived data を明確に分けるため
+### `statDefinitionVersion`
 
----
+Version identifier for the provider/stat-definition mapping.
 
-## Version 0.4 時点の推奨1試合データ例
-
-```js
-{
-  id: 'M-202526-W-DUB-001',
-  external: {
-    rugbyComAu: '950101',
-    svns: 'dubai-w-001',
-    rugbyPass: null
-  },
-  season: '2025-26',
-  tournament: 'Dubai SVNS',
-  date: '2025-11-29',
-  gender: 'Women',
-  stage: 'Pool',
-  team: 'Japan',
-  opponent: 'New Zealand',
-  result: 'L',
-
-  pointsFor: 5,
-  pointsAgainst: 31,
-
-  tries: 1,
-  carries: null,
-  passes: null,
-  offloads: null,
-  cleanBreaks: 1,
-  defendersBeaten: 5,
-
-  tackles: 42,
-  missedTackles: 12,
-
-  turnoversWon: 2,
-  turnoversConceded: 6,
-  rucksWon: null,
-  rucksLost: null,
-
-  possession: 41,
-  territory: null,
-
-  penaltiesConceded: null,
-  yellowCards: null,
-  redCards: null,
-
-  sourceProvider: 'Sample data',
-  sourceUrl: 'https://example.com/rugby-match-950101',
-  fetchedAt: '2026-06-01T00:00:00Z',
-  dataCoverageLevel: 'full_match_stats',
-  dataCoverageSource: 'Sample data / Rugby.com.au Match Stats format',
-  statDefinitionVersion: 'v1-rugby-com-au-match-stats'
-}
-```
+This must change when the meaning or mapping of raw fields materially changes.
 
 ---
 
-## Version 0.4 のスコープ
+## 8. Compatibility fields
 
-Version 0.4 では、以下を目標とする。
-
-* 正式データスキーマの確定
-* `sampleMatches.js` の項目整理
-* 取得日時フィールドの `fetchedAt` への統一
-* legacy field `lastFetched` の削除
-* `sourceProvider` の追加
-* `sourceUrl` の明示
-* `dataCoverageLevel` / `dataCoverageSource` の明示
-* `statDefinitionVersion` の追加
-* 欠損値を `null` として扱える構造への整理
-* `validate:data` によるデータ検証
-* build時のデータ検証自動実行
-* 将来的な JSON 化に備えたデータ構造の安定化
-
----
-
-## Version 0.4 ではまだ行わないこと
-
-* Rugby.com.au からの自動取得
-* スクレイピング
-* Supabase 接続
-* データ管理画面の本実装
-* 管理者認証
-* RugbyPass との自動照合
-* 全試合データの大量投入
-
----
-
-## 関連ファイル
-
-Version 0.4 時点で、データスキーマと検証に関係する主なファイルは以下。
+The current application/dataset still contains fields that are useful for backwards compatibility but are not preferred canonical sources of truth for new provider mappings:
 
 ```text
-src/data/sampleMatches.js
+teamResult
+matchResult
+winner
+loser
+dataType
+```
+
+### `teamResult`
+
+Legacy result alias.
+
+Canonical source of truth:
+
+```text
+result
+```
+
+If both are present and disagree, validation emits a warning.
+
+### `matchResult`, `winner`, `loser`
+
+Presentation-oriented compatibility fields.
+
+New provider adapters should not depend on these when the equivalent value can be derived from canonical score/result fields.
+
+### `dataType`
+
+Current compatibility values:
+
+```text
+real
+sample
+```
+
+It remains optional in v1.1-07 because older sample records may not yet contain it consistently.
+
+Future migration may replace or formalize this classification through a stronger provenance model.
+
+---
+
+## 9. Derived metrics are not canonical raw fields
+
+The canonical match record stores observed/source-aligned raw values and provenance.
+
+Derived metrics remain in the analytics layer, primarily:
+
+```text
+src/utils/analyticsMetrics.js
+```
+
+Examples:
+
+```text
+Points Differential
+Win Rate
+Points per Match
+Tries per Match
+Points per 100 Metres
+Tries per 100 Metres
+Metres per Carry
+Clean Breaks per 100 Carries
+Defenders Beaten per Carry
+Turnover Differential
+Penalties per Match
+Tackle Success
+Ruck Success
+```
+
+Rules:
+
+- do not persist derived values merely for display convenience;
+- denominator `0` → `null`;
+- missing numerator/denominator → `null`;
+- aggregate ratio metrics should use pooled numerator/denominator where mathematically appropriate;
+- round only at presentation time.
+
+---
+
+## 10. Conversion-rate naming safeguard
+
+Aggregate ratios must not be mislabeled as event-sequence conversion rates.
+
+For example:
+
+```text
+Tries / Clean Breaks
+```
+
+may be calculated as an aggregate ratio, but it must not be described as:
+
+```text
+Line Break → Try Conversion
+```
+
+unless event/sequence linkage proves that the try followed the break in the relevant possession/sequence.
+
+True event conversion analysis belongs to the later Video-tagged Event / Event Sequence layer.
+
+---
+
+## 11. Possession safeguard
+
+`possession` in the canonical record is a percentage value.
+
+It is not a possession count.
+
+Therefore metrics such as:
+
+```text
+Points per possession
+Metres per possession
+```
+
+must not be calculated from `possession` percentage alone.
+
+A valid possession-count denominator or event/sequence model would be required.
+
+---
+
+## 12. Provider mapping rule
+
+Provider-specific field names must be translated before or at the adapter boundary.
+
+UI components and analytics code should consume canonical names, not provider-specific names.
+
+Target:
+
+```text
+World Rugby source shape ─┐
+RugbyPass source shape    ├→ provider mapping → canonical match
+Static JSON source shape  ┘
+```
+
+No provider role is assumed until confirmed.
+
+---
+
+## 13. Validation ownership
+
+Machine-readable schema metadata:
+
+```text
+src/data/schema/canonicalMatchSchema.js
+```
+
+Runtime/release validation:
+
+```text
 src/utils/validateMatches.js
 scripts/validateSampleMatches.mjs
-docs/DATA_VALIDATION_RULES.md
-MATCH_DATA_SCHEMA.md
+scripts/validateRelease.mjs
 ```
 
-`MATCH_DATA_SCHEMA.md` はデータ形式の定義、`docs/DATA_VALIDATION_RULES.md` は検証ルールと運用方針を扱う。
+The validator imports canonical enums/field lists from the machine-readable schema to reduce duplicated definitions.
+
+---
+
+## 14. Schema-version policy
+
+Current canonical application schema:
+
+```text
+v1.1-canonical-match-1
+```
+
+This schema version describes the Analyzer's canonical application record.
+
+It is distinct from:
+
+```text
+statDefinitionVersion
+```
+
+which identifies the mapping/definition of source statistics.
+
+Conceptually:
+
+```text
+Canonical schema version
+= shape expected by SVNS Stats Analyzer
+
+Stat definition version
+= meaning/mapping of a provider's statistical fields
+```
+
+---
+
+## 15. Current migration policy
+
+v1.1-07 is intentionally non-destructive.
+
+It does not:
+
+- rename current public fields;
+- delete compatibility fields;
+- alter current public match values;
+- add new match records;
+- add a backend/database;
+- introduce automated scraping;
+- change the public analysis UI.
+
+Instead it establishes a stable source of truth so later provider adapters and tests can target one model.
+
+---
+
+## 16. Next architecture step
+
+After v1.1-07, proceed to:
+
+```text
+v1.1-08
+Derived Metrics Engine Separation
+```
+
+The canonical raw-data model should remain independent from derived-metric and presentation logic.
