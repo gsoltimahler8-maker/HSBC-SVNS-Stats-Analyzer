@@ -1,4 +1,4 @@
-name: Rugby Japan Women Bulk Collect
+name: Rugby Results Pagination Probe
 
 on:
   push:
@@ -6,16 +6,16 @@ on:
       - probe/rugby-match-stats
     paths:
       - '.github/workflows/rugby-match-stats-probe.yml'
-      - 'scripts/diagnostics/rugby_japan_women_bulk_collect.mjs'
+      - 'scripts/diagnostics/rugby_results_pagination_probe.mjs'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  bulk-collect:
+  pagination-probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
 
     steps:
       - uses: actions/checkout@v4
@@ -28,36 +28,32 @@ jobs:
         run: |
           corepack enable
           corepack prepare pnpm@10 --activate
-          rm -rf /tmp/rugby-japan-women-bulk
-          mkdir -p /tmp/rugby-japan-women-bulk
-          cp scripts/diagnostics/rugby_japan_women_bulk_collect.mjs /tmp/rugby-japan-women-bulk/collect.mjs
-          cd /tmp/rugby-japan-women-bulk
+          rm -rf /tmp/rugby-results-pagination
+          mkdir -p /tmp/rugby-results-pagination
+          cp scripts/diagnostics/rugby_results_pagination_probe.mjs /tmp/rugby-results-pagination/probe.mjs
+          cd /tmp/rugby-results-pagination
           printf '{"private":true,"type":"module"}\n' > package.json
           pnpm add playwright@1.55.0
           pnpm exec playwright install --with-deps chromium
 
-      - name: Collect Japan Women 7s Results and Match Stats
+      - name: Probe Results pagination and GraphQL variables
         env:
-          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-japan-women-bulk-collect
+          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-results-pagination-probe
         run: |
-          cd /tmp/rugby-japan-women-bulk
-          node collect.mjs
+          cd /tmp/rugby-results-pagination
+          node probe.mjs
 
-      - name: Show bulk collection summary
+      - name: Show pagination summary
         if: always()
         run: |
-          echo '--- bulk collection summary ---'
-          cat artifacts/rugby-japan-women-bulk-collect/summary.json || true
-          echo '--- matches.csv ---'
-          head -n 25 artifacts/rugby-japan-women-bulk-collect/matches.csv || true
-          echo '--- stats-long.csv sample ---'
-          head -n 30 artifacts/rugby-japan-women-bulk-collect/stats-long.csv || true
+          echo '--- Results pagination summary ---'
+          cat artifacts/rugby-results-pagination-probe/summary.json || true
 
-      - name: Upload bulk collection artifacts
+      - name: Upload pagination probe artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: rugby-japan-women-bulk-collect
-          path: artifacts/rugby-japan-women-bulk-collect/
+          name: rugby-results-pagination-probe
+          path: artifacts/rugby-results-pagination-probe/
           if-no-files-found: warn
           retention-days: 7
