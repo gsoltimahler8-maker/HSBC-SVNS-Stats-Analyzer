@@ -1,4 +1,4 @@
-name: Rugby Entity Season clubSiteMeta Probe
+name: Rugby Entity Page Crawl Probe
 
 on:
   push:
@@ -6,16 +6,16 @@ on:
       - probe/rugby-match-stats
     paths:
       - '.github/workflows/rugby-match-stats-probe.yml'
-      - 'scripts/diagnostics/rugby_entity_season_clubmeta_probe.mjs'
+      - 'scripts/diagnostics/rugby_entity_page_crawl_probe.mjs'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  entity-season-clubmeta:
+  entity-page-crawl:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 35
 
     steps:
       - uses: actions/checkout@v4
@@ -24,18 +24,31 @@ jobs:
         with:
           node-version: 22
 
-      - name: Extract clubSiteMeta candidates and query season 2017
-        env:
-          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-entity-season-clubmeta
+      - name: Prepare isolated Playwright environment
         run: |
-          node scripts/diagnostics/rugby_entity_season_clubmeta_probe.mjs
+          corepack enable
+          corepack prepare pnpm@10 --activate
+          rm -rf /tmp/rugby-entity-page-crawl
+          mkdir -p /tmp/rugby-entity-page-crawl
+          cp scripts/diagnostics/rugby_entity_page_crawl_probe.mjs /tmp/rugby-entity-page-crawl/probe.mjs
+          cd /tmp/rugby-entity-page-crawl
+          printf '{"private":true,"type":"module"}\n' > package.json
+          pnpm add playwright@1.55.0
+          pnpm exec playwright install --with-deps chromium
 
-      - name: Show clubSiteMeta entity season probe summary
+      - name: Crawl entity pages and test season 2017
+        env:
+          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-entity-page-crawl
+        run: |
+          cd /tmp/rugby-entity-page-crawl
+          node probe.mjs
+
+      - name: Show entity page crawl summary
         if: always()
         run: |
           node - <<'NODE'
           const fs = require('fs');
-          const p = 'artifacts/rugby-entity-season-clubmeta/summary.json';
+          const p = 'artifacts/rugby-entity-page-crawl/summary.json';
           if (!fs.existsSync(p)) {
             console.log('summary.json not found');
             process.exit(0);
@@ -45,20 +58,24 @@ jobs:
             audit: s.audit,
             targetSeason: s.targetSeason,
             knownFixture: s.knownFixture,
+            visitedPageCount: s.visitedPageCount,
+            capturedEntityQueryCount: s.capturedEntityQueryCount,
             candidateCount: s.candidateCount,
             candidates: s.candidates,
             nonEmptyResultCount: s.nonEmptyResultCount,
             knownFixtureMatchCount: s.knownFixtureMatchCount,
+            knownFixtureMatches: s.knownFixtureMatches,
             queryResults: s.queryResults,
-            pageReports: s.pageReports
+            pagesWithEntityQueries: s.pagesWithEntityQueries,
+            visitedPages: s.visitedPages
           }, null, 2));
           NODE
 
-      - name: Upload clubSiteMeta entity season probe artifact
+      - name: Upload entity page crawl artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: rugby-entity-season-clubmeta
-          path: artifacts/rugby-entity-season-clubmeta/
+          name: rugby-entity-page-crawl
+          path: artifacts/rugby-entity-page-crawl/
           if-no-files-found: warn
           retention-days: 14
