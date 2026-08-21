@@ -1,4 +1,4 @@
-name: Rugby Legacy Hong Kong 2016 Quality
+name: Rugby Pre-2023 Season Coverage and API Discovery
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - probe/rugby-match-stats
     paths:
       - '.github/workflows/rugby-match-stats-probe.yml'
-      - 'scripts/diagnostics/rugby_legacy_hongkong_2016_quality_probe.mjs'
+      - 'scripts/diagnostics/rugby_pre2023_season_coverage_api_discovery.mjs'
       - 'scripts/diagnostics/legacy-sevens-seed-catalog.json'
   workflow_dispatch:
 
@@ -14,9 +14,9 @@ permissions:
   contents: read
 
 jobs:
-  legacy-hongkong-2016-quality:
+  pre2023-season-coverage-api-discovery:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 45
 
     steps:
       - uses: actions/checkout@v4
@@ -25,29 +25,33 @@ jobs:
         with:
           node-version: 22
 
-      - name: Prepare isolated Node environment
+      - name: Prepare isolated Playwright environment
         run: |
-          rm -rf /tmp/rugby-legacy-hongkong-2016-quality
-          mkdir -p /tmp/rugby-legacy-hongkong-2016-quality
-          cp scripts/diagnostics/rugby_legacy_hongkong_2016_quality_probe.mjs /tmp/rugby-legacy-hongkong-2016-quality/probe.mjs
-          cp scripts/diagnostics/legacy-sevens-seed-catalog.json /tmp/rugby-legacy-hongkong-2016-quality/legacy-sevens-seed-catalog.json
-          cd /tmp/rugby-legacy-hongkong-2016-quality
+          corepack enable
+          corepack prepare pnpm@10 --activate
+          rm -rf /tmp/rugby-pre2023-season-coverage-api-discovery
+          mkdir -p /tmp/rugby-pre2023-season-coverage-api-discovery
+          cp scripts/diagnostics/rugby_pre2023_season_coverage_api_discovery.mjs /tmp/rugby-pre2023-season-coverage-api-discovery/probe.mjs
+          cp scripts/diagnostics/legacy-sevens-seed-catalog.json /tmp/rugby-pre2023-season-coverage-api-discovery/legacy-sevens-seed-catalog.json
+          cd /tmp/rugby-pre2023-season-coverage-api-discovery
           printf '{"private":true,"type":"module"}\n' > package.json
+          pnpm add playwright@1.55.0
+          pnpm exec playwright install --with-deps chromium
 
-      - name: Reconstruct Hong Kong 2016 and audit effective stats density
+      - name: Discover season/year API routes and audit observed pre-2023 coverage
         env:
-          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-legacy-hongkong-2016-quality
-          CATALOG_PATH: /tmp/rugby-legacy-hongkong-2016-quality/legacy-sevens-seed-catalog.json
+          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-pre2023-season-coverage-api-discovery
+          CATALOG_PATH: /tmp/rugby-pre2023-season-coverage-api-discovery/legacy-sevens-seed-catalog.json
         run: |
-          cd /tmp/rugby-legacy-hongkong-2016-quality
+          cd /tmp/rugby-pre2023-season-coverage-api-discovery
           node probe.mjs
 
-      - name: Show Hong Kong 2016 legacy quality summary
+      - name: Show pre-2023 season coverage and API discovery summary
         if: always()
         run: |
           node - <<'NODE'
           const fs = require('fs');
-          const p = 'artifacts/rugby-legacy-hongkong-2016-quality/summary.json';
+          const p = 'artifacts/rugby-pre2023-season-coverage-api-discovery/summary.json';
           if (!fs.existsSync(p)) {
             console.log('summary.json not found');
             process.exit(0);
@@ -55,35 +59,29 @@ jobs:
           const s = JSON.parse(fs.readFileSync(p, 'utf8'));
           console.log(JSON.stringify({
             audit: s.audit,
-            seed: s.seed,
-            scannedCandidateCount: s.scannedCandidateCount,
-            scanMinFixtureId: s.scanMinFixtureId,
-            scanMaxFixtureId: s.scanMaxFixtureId,
-            kindCounts: s.kindCounts,
-            reconstructedFixtureCount: s.reconstructedFixtureCount,
-            minMatchedFixtureId: s.minMatchedFixtureId,
-            maxMatchedFixtureId: s.maxMatchedFixtureId,
-            firstDateTime: s.firstDateTime,
-            lastDateTime: s.lastDateTime,
-            uniqueTeamCount: s.uniqueTeamCount,
-            roundCounts: s.roundCounts,
-            statsPresentCount: s.statsPresentCount,
-            statsQualityCounts: s.statsQualityCounts,
-            richStatsCount: s.richStatsCount,
-            sparseStatsCount: s.sparseStatsCount,
-            scoreOnlyOrZeroStatsCount: s.scoreOnlyOrZeroStatsCount,
-            commentaryPresentCount: s.commentaryPresentCount,
-            pointsSummaryPresentCount: s.pointsSummaryPresentCount,
-            lineupPresentCount: s.lineupPresentCount,
-            lowestCoreDensityFixtures: s.lowestCoreDensityFixtures
+            legacySeedCount: s.legacySeedCount,
+            apiDiscovery: {
+              capturedGraphQlRequestCount: s.apiDiscovery?.capturedGraphQlRequestCount,
+              fixturesAndResultsCaptured: s.apiDiscovery?.fixturesAndResultsCaptured,
+              fixturesAndResultsVariables: s.apiDiscovery?.fixturesAndResultsVariables,
+              fixturesAndResultsQueryRelevantLines: s.apiDiscovery?.fixturesAndResultsQueryRelevantLines,
+              urlVariants: s.apiDiscovery?.urlVariants,
+              scriptCount: s.apiDiscovery?.scriptCount,
+              bundleReportCount: s.apiDiscovery?.bundleReportCount,
+              bundleReports: s.apiDiscovery?.bundleReports,
+              introspection: s.apiDiscovery?.introspection
+            },
+            eventSummary: s.eventSummary,
+            seasonCoverageObserved: s.seasonCoverageObserved,
+            note: s.note
           }, null, 2));
           NODE
 
-      - name: Upload Hong Kong 2016 quality artifacts
+      - name: Upload pre-2023 season coverage artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: rugby-legacy-hongkong-2016-quality
-          path: artifacts/rugby-legacy-hongkong-2016-quality/
+          name: rugby-pre2023-season-coverage-api-discovery
+          path: artifacts/rugby-pre2023-season-coverage-api-discovery/
           if-no-files-found: warn
           retention-days: 14
