@@ -1,4 +1,4 @@
-name: Rugby Bordeaux 2026 Schema Refinement
+name: Rugby SVNS Coverage Inventory
 
 on:
   push:
@@ -6,16 +6,16 @@ on:
       - probe/rugby-match-stats
     paths:
       - '.github/workflows/rugby-match-stats-probe.yml'
-      - 'scripts/diagnostics/rugby_bordeaux_2026_schema_refinement_probe.mjs'
+      - 'scripts/diagnostics/rugby_svns_coverage_inventory.mjs'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  schema-refinement:
+  coverage-inventory:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 35
 
     steps:
       - uses: actions/checkout@v4
@@ -28,63 +28,60 @@ jobs:
         run: |
           corepack enable
           corepack prepare pnpm@10 --activate
-          rm -rf /tmp/rugby-bordeaux-schema-refinement
-          mkdir -p /tmp/rugby-bordeaux-schema-refinement
-          cp scripts/diagnostics/rugby_bordeaux_2026_schema_refinement_probe.mjs /tmp/rugby-bordeaux-schema-refinement/probe.mjs
-          cd /tmp/rugby-bordeaux-schema-refinement
+          rm -rf /tmp/rugby-svns-coverage-inventory
+          mkdir -p /tmp/rugby-svns-coverage-inventory
+          cp scripts/diagnostics/rugby_svns_coverage_inventory.mjs /tmp/rugby-svns-coverage-inventory/inventory.mjs
+          cd /tmp/rugby-svns-coverage-inventory
           printf '{"private":true,"type":"module"}\n' > package.json
           pnpm add playwright@1.55.0
           pnpm exec playwright install --with-deps chromium
 
-      - name: Audit exact Commentary Points Summary and Lineup record shapes
+      - name: Inventory discoverable World Rugby Sevens Series and HSBC SVNS coverage
         env:
-          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-bordeaux-2026-schema-refinement
+          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-svns-coverage-inventory
         run: |
-          cd /tmp/rugby-bordeaux-schema-refinement
-          node probe.mjs
+          cd /tmp/rugby-svns-coverage-inventory
+          node inventory.mjs
 
-      - name: Show schema refinement summary
+      - name: Show coverage inventory summary
         if: always()
         run: |
           node - <<'NODE'
           const fs = require('fs');
-          const p = 'artifacts/rugby-bordeaux-2026-schema-refinement/summary.json';
+          const p = 'artifacts/rugby-svns-coverage-inventory/summary.json';
           if (!fs.existsSync(p)) {
             console.log('summary.json not found');
             process.exit(0);
           }
           const s = JSON.parse(fs.readFileSync(p, 'utf8'));
-          const compact = (x) => ({
-            rootTypes: x?.rootTypes,
-            bestCandidates: (x?.bestCandidates || []).map(c => ({
-              path: c.path,
-              fixtureCount: c.fixtureCount,
-              totalElements: c.totalElements,
-              objectElements: c.objectElements,
-              candidateScore: c.candidateScore,
-              topSignatures: c.topSignatures,
-              scalarKeyFrequency: c.scalarKeyFrequency
-            }))
-          });
           console.log(JSON.stringify({
             audit: s.audit,
-            competitionId: s.competitionId,
-            season: s.season,
-            discoveredLinkCount: s.discoveredLinkCount,
-            collectedCount: s.collectedCount,
+            competitionFilterCandidateCount: s.competitionFilterCandidateCount,
+            seriesTargetCompetitionCount: s.seriesTargetCompetitionCount,
+            inventoryRowCount: s.inventoryRowCount,
+            checkedEditionCount: s.checkedEditionCount,
+            withMatchStatsCount: s.withMatchStatsCount,
+            withCommentaryCount: s.withCommentaryCount,
+            withPointsSummaryCount: s.withPointsSummaryCount,
+            withLineupCount: s.withLineupCount,
+            oldestSourceSeason: s.oldestSourceSeason,
+            newestSourceSeason: s.newestSourceSeason,
+            sourceSeasons: s.sourceSeasons,
+            oldestCheckedEditions: s.oldestCheckedEditions,
+            noStatsEditions: s.noStatsEditions,
+            noResultsLinkCompetitions: s.noResultsLinkCompetitions,
             failureCount: s.failureCount,
-            commentary: compact(s.commentary),
-            pointsSummary: compact(s.pointsSummary),
-            lineup: compact(s.lineup),
             failures: s.failures
           }, null, 2));
           NODE
+          echo '--- coverage inventory CSV head ---'
+          head -n 30 artifacts/rugby-svns-coverage-inventory/svns-coverage-inventory.csv || true
 
-      - name: Upload schema refinement artifacts
+      - name: Upload coverage inventory artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: rugby-bordeaux-2026-schema-refinement
-          path: artifacts/rugby-bordeaux-2026-schema-refinement/
+          name: rugby-svns-coverage-inventory
+          path: artifacts/rugby-svns-coverage-inventory/
           if-no-files-found: warn
           retention-days: 14
