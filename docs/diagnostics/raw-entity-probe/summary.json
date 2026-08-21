@@ -1,0 +1,45 @@
+{
+  "audit": "Extract clubSiteMeta externalEntityId/type candidates and test EntityFixturesAndResults season=2017",
+  "targetSeason": "2017",
+  "knownFixture": "37719",
+  "pageCount": 3,
+  "candidateCount": 0,
+  "candidates": [],
+  "queryResultCount": 0,
+  "nonEmptyResultCount": 0,
+  "knownFixtureMatchCount": 0,
+  "queryResults": [],
+  "pageReports": [
+    {
+      "url": "https://www.rugby.com.au/",
+      "ok": true,
+      "status": 200,
+      "finalUrl": "https://www.rugby.com.au/",
+      "nextDataPresent": true,
+      "interestingObjectCount": 0,
+      "interestingObjects": [],
+      "externalEntityIdHtmlSnippetCount": 0
+    },
+    {
+      "url": "https://www.rugby.com.au/fixtures-results",
+      "ok": true,
+      "status": 200,
+      "finalUrl": "https://www.rugby.com.au/fixtures-results",
+      "nextDataPresent": true,
+      "interestingObjectCount": 0,
+      "interestingObjects": [],
+      "externalEntityIdHtmlSnippetCount": 0
+    },
+    {
+      "url": "https://www.rugby.com.au/competitions/fixtures-results",
+      "ok": false,
+      "status": 404,
+      "finalUrl": "https://www.rugby.com.au/competitions/fixtures-results",
+      "nextDataPresent": false,
+      "interestingObjectCount": 0,
+      "interestingObjects": [],
+      "externalEntityIdHtmlSnippetCount": 0
+    }
+  ],
+  "capturedAt": "2026-08-21T15:10:51.170Z"
+}

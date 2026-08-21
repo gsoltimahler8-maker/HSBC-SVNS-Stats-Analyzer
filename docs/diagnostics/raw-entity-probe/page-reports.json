@@ -1,0 +1,35 @@
+[
+  {
+    "url": "https://www.rugby.com.au/",
+    "ok": true,
+    "status": 200,
+    "finalUrl": "https://www.rugby.com.au/",
+    "nextDataPresent": true,
+    "interestingObjectCount": 0,
+    "interestingObjects": [],
+    "externalEntityIdHtmlSnippetCount": 0,
+    "externalEntityIdHtmlSnippets": []
+  },
+  {
+    "url": "https://www.rugby.com.au/fixtures-results",
+    "ok": true,
+    "status": 200,
+    "finalUrl": "https://www.rugby.com.au/fixtures-results",
+    "nextDataPresent": true,
+    "interestingObjectCount": 0,
+    "interestingObjects": [],
+    "externalEntityIdHtmlSnippetCount": 0,
+    "externalEntityIdHtmlSnippets": []
+  },
+  {
+    "url": "https://www.rugby.com.au/competitions/fixtures-results",
+    "ok": false,
+    "status": 404,
+    "finalUrl": "https://www.rugby.com.au/competitions/fixtures-results",
+    "nextDataPresent": false,
+    "interestingObjectCount": 0,
+    "interestingObjects": [],
+    "externalEntityIdHtmlSnippetCount": 0,
+    "externalEntityIdHtmlSnippets": []
+  }
+]
