@@ -1,4 +1,4 @@
-name: Rugby Legacy Wellington 2017 Validation
+name: Rugby Legacy Hong Kong 2016 Quality
 
 on:
   push:
@@ -6,14 +6,15 @@ on:
       - probe/rugby-match-stats
     paths:
       - '.github/workflows/rugby-match-stats-probe.yml'
-      - 'scripts/diagnostics/rugby_legacy_wellington_2017_probe.mjs'
+      - 'scripts/diagnostics/rugby_legacy_hongkong_2016_quality_probe.mjs'
+      - 'scripts/diagnostics/legacy-sevens-seed-catalog.json'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  wellington-legacy-validation:
+  legacy-hongkong-2016-quality:
     runs-on: ubuntu-latest
     timeout-minutes: 35
 
@@ -26,25 +27,27 @@ jobs:
 
       - name: Prepare isolated Node environment
         run: |
-          rm -rf /tmp/rugby-legacy-wellington-2017
-          mkdir -p /tmp/rugby-legacy-wellington-2017
-          cp scripts/diagnostics/rugby_legacy_wellington_2017_probe.mjs /tmp/rugby-legacy-wellington-2017/probe.mjs
-          cd /tmp/rugby-legacy-wellington-2017
+          rm -rf /tmp/rugby-legacy-hongkong-2016-quality
+          mkdir -p /tmp/rugby-legacy-hongkong-2016-quality
+          cp scripts/diagnostics/rugby_legacy_hongkong_2016_quality_probe.mjs /tmp/rugby-legacy-hongkong-2016-quality/probe.mjs
+          cp scripts/diagnostics/legacy-sevens-seed-catalog.json /tmp/rugby-legacy-hongkong-2016-quality/legacy-sevens-seed-catalog.json
+          cd /tmp/rugby-legacy-hongkong-2016-quality
           printf '{"private":true,"type":"module"}\n' > package.json
 
-      - name: Reconstruct Wellington 2017 by neighboring fixture IDs
+      - name: Reconstruct Hong Kong 2016 and audit effective stats density
         env:
-          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-legacy-wellington-2017
+          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-legacy-hongkong-2016-quality
+          CATALOG_PATH: /tmp/rugby-legacy-hongkong-2016-quality/legacy-sevens-seed-catalog.json
         run: |
-          cd /tmp/rugby-legacy-wellington-2017
+          cd /tmp/rugby-legacy-hongkong-2016-quality
           node probe.mjs
 
-      - name: Show Wellington legacy validation summary
+      - name: Show Hong Kong 2016 legacy quality summary
         if: always()
         run: |
           node - <<'NODE'
           const fs = require('fs');
-          const p = 'artifacts/rugby-legacy-wellington-2017/summary.json';
+          const p = 'artifacts/rugby-legacy-hongkong-2016-quality/summary.json';
           if (!fs.existsSync(p)) {
             console.log('summary.json not found');
             process.exit(0);
@@ -63,23 +66,24 @@ jobs:
             firstDateTime: s.firstDateTime,
             lastDateTime: s.lastDateTime,
             uniqueTeamCount: s.uniqueTeamCount,
-            teams: s.teams,
             roundCounts: s.roundCounts,
             statsPresentCount: s.statsPresentCount,
+            statsQualityCounts: s.statsQualityCounts,
+            richStatsCount: s.richStatsCount,
+            sparseStatsCount: s.sparseStatsCount,
+            scoreOnlyOrZeroStatsCount: s.scoreOnlyOrZeroStatsCount,
             commentaryPresentCount: s.commentaryPresentCount,
             pointsSummaryPresentCount: s.pointsSummaryPresentCount,
             lineupPresentCount: s.lineupPresentCount,
-            fixtureIds: s.fixtureIds,
-            firstFixtures: s.firstFixtures,
-            lastFixtures: s.lastFixtures
+            lowestCoreDensityFixtures: s.lowestCoreDensityFixtures
           }, null, 2));
           NODE
 
-      - name: Upload Wellington validation artifacts
+      - name: Upload Hong Kong 2016 quality artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: rugby-legacy-wellington-2017
-          path: artifacts/rugby-legacy-wellington-2017/
+          name: rugby-legacy-hongkong-2016-quality
+          path: artifacts/rugby-legacy-hongkong-2016-quality/
           if-no-files-found: warn
           retention-days: 14
