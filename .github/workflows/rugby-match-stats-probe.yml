@@ -1,4 +1,4 @@
-name: Rugby SVNS Coverage Inventory
+name: Rugby Legacy Sevens Coverage Discovery
 
 on:
   push:
@@ -6,16 +6,16 @@ on:
       - probe/rugby-match-stats
     paths:
       - '.github/workflows/rugby-match-stats-probe.yml'
-      - 'scripts/diagnostics/rugby_svns_coverage_inventory.mjs'
+      - 'scripts/diagnostics/rugby_legacy_sevens_discovery_probe.mjs'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  coverage-inventory:
+  legacy-discovery:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 30
 
     steps:
       - uses: actions/checkout@v4
@@ -28,27 +28,27 @@ jobs:
         run: |
           corepack enable
           corepack prepare pnpm@10 --activate
-          rm -rf /tmp/rugby-svns-coverage-inventory
-          mkdir -p /tmp/rugby-svns-coverage-inventory
-          cp scripts/diagnostics/rugby_svns_coverage_inventory.mjs /tmp/rugby-svns-coverage-inventory/inventory.mjs
-          cd /tmp/rugby-svns-coverage-inventory
+          rm -rf /tmp/rugby-legacy-sevens-discovery
+          mkdir -p /tmp/rugby-legacy-sevens-discovery
+          cp scripts/diagnostics/rugby_legacy_sevens_discovery_probe.mjs /tmp/rugby-legacy-sevens-discovery/probe.mjs
+          cd /tmp/rugby-legacy-sevens-discovery
           printf '{"private":true,"type":"module"}\n' > package.json
           pnpm add playwright@1.55.0
           pnpm exec playwright install --with-deps chromium
 
-      - name: Inventory discoverable World Rugby Sevens Series and HSBC SVNS coverage
+      - name: Probe legacy World Rugby Sevens Series discovery routes
         env:
-          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-svns-coverage-inventory
+          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-legacy-sevens-discovery
         run: |
-          cd /tmp/rugby-svns-coverage-inventory
-          node inventory.mjs
+          cd /tmp/rugby-legacy-sevens-discovery
+          node probe.mjs
 
-      - name: Show coverage inventory summary
+      - name: Show legacy discovery summary
         if: always()
         run: |
           node - <<'NODE'
           const fs = require('fs');
-          const p = 'artifacts/rugby-svns-coverage-inventory/summary.json';
+          const p = 'artifacts/rugby-legacy-sevens-discovery/summary.json';
           if (!fs.existsSync(p)) {
             console.log('summary.json not found');
             process.exit(0);
@@ -56,32 +56,37 @@ jobs:
           const s = JSON.parse(fs.readFileSync(p, 'utf8'));
           console.log(JSON.stringify({
             audit: s.audit,
-            competitionFilterCandidateCount: s.competitionFilterCandidateCount,
-            seriesTargetCompetitionCount: s.seriesTargetCompetitionCount,
-            inventoryRowCount: s.inventoryRowCount,
-            checkedEditionCount: s.checkedEditionCount,
-            withMatchStatsCount: s.withMatchStatsCount,
-            withCommentaryCount: s.withCommentaryCount,
-            withPointsSummaryCount: s.withPointsSummaryCount,
-            withLineupCount: s.withLineupCount,
-            oldestSourceSeason: s.oldestSourceSeason,
-            newestSourceSeason: s.newestSourceSeason,
-            sourceSeasons: s.sourceSeasons,
-            oldestCheckedEditions: s.oldestCheckedEditions,
-            noStatsEditions: s.noStatsEditions,
-            noResultsLinkCompetitions: s.noResultsLinkCompetitions,
-            failureCount: s.failureCount,
-            failures: s.failures
+            seed: s.seed,
+            sitemapProbe: s.sitemapProbe,
+            variants: (s.variants || []).map(v => ({
+              name: v.name,
+              ok: v.ok,
+              linkCount: v.linkCount,
+              seasons: v.seasons,
+              legacyLinkCount: v.legacyLinkCount,
+              snapshots: v.snapshots,
+              error: v.error
+            })),
+            graphqlRequestCount: s.graphqlRequestCount,
+            graphql: (s.graphql || []).map(g => ({
+              index: g.index,
+              variant: g.variant,
+              variableKeys: g.variableKeys,
+              variables: g.variables,
+              queryRelevantLines: g.queryRelevantLines
+            })),
+            discoveredLegacyLinkCount: s.discoveredLegacyLinkCount,
+            legacySeasons: s.legacySeasons,
+            legacyCompetitions: s.legacyCompetitions,
+            oldestLegacyLinks: s.oldestLegacyLinks
           }, null, 2));
           NODE
-          echo '--- coverage inventory CSV head ---'
-          head -n 30 artifacts/rugby-svns-coverage-inventory/svns-coverage-inventory.csv || true
 
-      - name: Upload coverage inventory artifacts
+      - name: Upload legacy discovery artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: rugby-svns-coverage-inventory
-          path: artifacts/rugby-svns-coverage-inventory/
+          name: rugby-legacy-sevens-discovery
+          path: artifacts/rugby-legacy-sevens-discovery/
           if-no-files-found: warn
           retention-days: 14
