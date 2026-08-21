@@ -1,4 +1,4 @@
-name: Rugby Legacy Sevens Team Pivot
+name: Rugby Legacy Fixture Neighborhood
 
 on:
   push:
@@ -6,16 +6,16 @@ on:
       - probe/rugby-match-stats
     paths:
       - '.github/workflows/rugby-match-stats-probe.yml'
-      - 'scripts/diagnostics/rugby_legacy_team_pivot_probe.mjs'
+      - 'scripts/diagnostics/rugby_legacy_fixture_neighborhood_probe.mjs'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  legacy-team-pivot:
+  legacy-fixture-neighborhood:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 35
 
     steps:
       - uses: actions/checkout@v4
@@ -24,31 +24,27 @@ jobs:
         with:
           node-version: 22
 
-      - name: Prepare isolated Playwright environment
+      - name: Prepare isolated Node environment
         run: |
-          corepack enable
-          corepack prepare pnpm@10 --activate
-          rm -rf /tmp/rugby-legacy-team-pivot
-          mkdir -p /tmp/rugby-legacy-team-pivot
-          cp scripts/diagnostics/rugby_legacy_team_pivot_probe.mjs /tmp/rugby-legacy-team-pivot/probe.mjs
-          cd /tmp/rugby-legacy-team-pivot
+          rm -rf /tmp/rugby-legacy-fixture-neighborhood
+          mkdir -p /tmp/rugby-legacy-fixture-neighborhood
+          cp scripts/diagnostics/rugby_legacy_fixture_neighborhood_probe.mjs /tmp/rugby-legacy-fixture-neighborhood/probe.mjs
+          cd /tmp/rugby-legacy-fixture-neighborhood
           printf '{"private":true,"type":"module"}\n' > package.json
-          pnpm add playwright@1.55.0
-          pnpm exec playwright install --with-deps chromium
 
-      - name: Discover legacy Sevens fixtures via team IDs and sourceType variants
+      - name: Reconstruct Hong Kong 2017 by neighboring fixture IDs
         env:
-          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-legacy-team-pivot
+          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-legacy-fixture-neighborhood
         run: |
-          cd /tmp/rugby-legacy-team-pivot
+          cd /tmp/rugby-legacy-fixture-neighborhood
           node probe.mjs
 
-      - name: Show legacy team pivot summary
+      - name: Show legacy fixture neighborhood summary
         if: always()
         run: |
           node - <<'NODE'
           const fs = require('fs');
-          const p = 'artifacts/rugby-legacy-team-pivot/summary.json';
+          const p = 'artifacts/rugby-legacy-fixture-neighborhood/summary.json';
           if (!fs.existsSync(p)) {
             console.log('summary.json not found');
             process.exit(0);
@@ -57,44 +53,37 @@ jobs:
           console.log(JSON.stringify({
             audit: s.audit,
             seed: s.seed,
-            seedTeams: s.seedTeams,
-            teamPivots: (s.teamPivots || []).map(x => ({
-              team: x.team,
-              totalFixtureCount: x.totalFixtureCount,
-              sevensLikeFixtureCount: x.sevensLikeFixtureCount,
-              sourceSeasons: x.sourceSeasons,
-              oldestSourceSeason: x.oldestSourceSeason,
-              legacyFixtureCountBefore2023: x.legacyFixtureCountBefore2023,
-              legacySevensFixtureCountBefore2023: x.legacySevensFixtureCountBefore2023,
-              legacyCompetitionIds: x.legacyCompetitionIds,
-              oldestLegacySevensFixtures: x.oldestLegacySevensFixtures
-            })),
-            sourceTypeVariants: (s.sourceTypeVariants || []).map(x => ({
-              sourceType: x.sourceType,
-              fixtureCount: x.fixtureCount,
-              sourceSeasons: x.sourceSeasons,
-              legacyFixtureCountBefore2023: x.legacyFixtureCountBefore2023,
-              oldestLegacyFixtures: x.oldestLegacyFixtures
-            })),
-            uniqueTeamPivotFixtureCount: s.uniqueTeamPivotFixtureCount,
-            legacySevensFixtureCountBefore2023: s.legacySevensFixtureCountBefore2023,
-            legacySeasons: s.legacySeasons,
-            legacyCompetitionIds: s.legacyCompetitionIds,
-            discoveredLegacyTeamIdCount: s.discoveredLegacyTeamIdCount,
-            discoveredLegacyTeamIds: s.discoveredLegacyTeamIds,
-            oldestLegacySevensFixtures: s.oldestLegacySevensFixtures,
-            failureCount: s.failureCount,
-            failures: s.failures
+            scanRadiusUsed: s.scanRadiusUsed,
+            scanMinFixtureId: s.scanMinFixtureId,
+            scanMaxFixtureId: s.scanMaxFixtureId,
+            scannedCandidateCount: s.scannedCandidateCount,
+            kindCounts: s.kindCounts,
+            httpStatusCounts: s.httpStatusCounts,
+            reconstructedFixtureCount: s.reconstructedFixtureCount,
+            minMatchedFixtureId: s.minMatchedFixtureId,
+            maxMatchedFixtureId: s.maxMatchedFixtureId,
+            firstDateTime: s.firstDateTime,
+            lastDateTime: s.lastDateTime,
+            uniqueTeamCount: s.uniqueTeamCount,
+            teams: s.teams,
+            roundCounts: s.roundCounts,
+            statsPresentCount: s.statsPresentCount,
+            commentaryPresentCount: s.commentaryPresentCount,
+            pointsSummaryPresentCount: s.pointsSummaryPresentCount,
+            lineupPresentCount: s.lineupPresentCount,
+            fixtureIds: s.fixtureIds,
+            firstFixtures: s.firstFixtures,
+            lastFixtures: s.lastFixtures
           }, null, 2));
           NODE
-          echo '--- team pivot fixture CSV head ---'
-          head -n 40 artifacts/rugby-legacy-team-pivot/team-pivot-fixtures.csv || true
+          echo '--- reconstructed fixture CSV ---'
+          head -n 60 artifacts/rugby-legacy-fixture-neighborhood/hong-kong-2017-fixtures.csv || true
 
-      - name: Upload legacy team pivot artifacts
+      - name: Upload legacy fixture neighborhood artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: rugby-legacy-team-pivot
-          path: artifacts/rugby-legacy-team-pivot/
+          name: rugby-legacy-fixture-neighborhood
+          path: artifacts/rugby-legacy-fixture-neighborhood/
           if-no-files-found: warn
           retention-days: 14
