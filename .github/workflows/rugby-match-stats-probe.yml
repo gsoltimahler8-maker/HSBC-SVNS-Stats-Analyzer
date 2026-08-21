@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   historical-coverage-matrix:
@@ -88,6 +88,28 @@ jobs:
             allMatchStatsSummaryKeyFrequency: s.allMatchStatsSummaryKeyFrequency,
           }, null, 2));
           NODE
+
+      - name: Persist compact audit results on probe branch
+        if: success()
+        run: |
+          mkdir -p docs/diagnostics
+          cp artifacts/rugby-historical-coverage-matrix/summary.json docs/diagnostics/rugby-historical-coverage-summary.json
+          cp artifacts/rugby-historical-coverage-matrix/coverage-matrix.csv docs/diagnostics/rugby-historical-coverage-matrix.csv
+          cp artifacts/rugby-historical-coverage-matrix/event-coverage.csv docs/diagnostics/rugby-historical-event-coverage.csv
+          cp artifacts/rugby-historical-coverage-matrix/other-match-data-keys.json docs/diagnostics/rugby-historical-other-match-data-keys.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- \
+            docs/diagnostics/rugby-historical-coverage-summary.json \
+            docs/diagnostics/rugby-historical-coverage-matrix.csv \
+            docs/diagnostics/rugby-historical-event-coverage.csv \
+            docs/diagnostics/rugby-historical-other-match-data-keys.json
+          if git diff --cached --quiet; then
+            echo 'No audit result changes to commit.'
+          else
+            git commit -m 'Record historical coverage audit results'
+            git push origin HEAD:probe/rugby-match-stats
+          fi
 
       - name: Upload historical coverage artifact
         if: always()
