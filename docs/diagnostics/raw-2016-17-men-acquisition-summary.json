@@ -1,0 +1,123 @@
+{
+  "canonicalSeason": "2016-17",
+  "sourceSeason": "2017",
+  "gender": "Men",
+  "eventCount": 10,
+  "resolvedEventCount": 10,
+  "rawFixtureCount": 450,
+  "totalBytes": 11538620,
+  "buildId": "WkK1WI2PLW8ebAIW6IYoz",
+  "eventSummary": [
+    {
+      "key": "DXB",
+      "event": "Dubai 7s",
+      "competitionId": "251",
+      "resolvedSeed": "31218",
+      "fixtureCount": 45,
+      "minFixtureId": 31189,
+      "maxFixtureId": 31233,
+      "firstDateTime": "2016-12-02T05:00:00+0000",
+      "lastDateTime": "2016-12-03T15:33:00+0000"
+    },
+    {
+      "key": "CPT",
+      "event": "Cape Town 7s",
+      "competitionId": "252",
+      "resolvedSeed": "37392",
+      "fixtureCount": 45,
+      "minFixtureId": 37392,
+      "maxFixtureId": 37436,
+      "firstDateTime": "2016-12-10T08:15:00+0000",
+      "lastDateTime": "2016-12-11T17:44:00+0000"
+    },
+    {
+      "key": "WLG",
+      "event": "Wellington 7s",
+      "competitionId": "253",
+      "resolvedSeed": "37459",
+      "fixtureCount": 45,
+      "minFixtureId": 37437,
+      "maxFixtureId": 37481,
+      "firstDateTime": "2017-01-27T22:00:00+0000",
+      "lastDateTime": "2017-01-29T07:30:00+0000"
+    },
+    {
+      "key": "SYD",
+      "event": "Sydney 7s",
+      "competitionId": "254",
+      "resolvedSeed": "37549",
+      "fixtureCount": 45,
+      "minFixtureId": 37516,
+      "maxFixtureId": 37560,
+      "firstDateTime": "2017-02-03T22:30:00+0000",
+      "lastDateTime": "2017-02-05T07:51:00+0000"
+    },
+    {
+      "key": "LAS",
+      "event": "Las Vegas 7s",
+      "competitionId": "255",
+      "resolvedSeed": "37590",
+      "fixtureCount": 45,
+      "minFixtureId": 37561,
+      "maxFixtureId": 37605,
+      "firstDateTime": "2017-03-04T00:09:00+0000",
+      "lastDateTime": "2017-03-06T01:00:00+0000"
+    },
+    {
+      "key": "VAN",
+      "event": "Vancouver 7s",
+      "competitionId": "256",
+      "resolvedSeed": "37660",
+      "fixtureCount": 45,
+      "minFixtureId": 37640,
+      "maxFixtureId": 37684,
+      "firstDateTime": "2017-03-11T17:30:00+0000",
+      "lastDateTime": "2017-03-13T01:19:00+0000"
+    },
+    {
+      "key": "HKG",
+      "event": "Hong Kong 7s",
+      "competitionId": "257",
+      "resolvedSeed": "37719",
+      "fixtureCount": 45,
+      "minFixtureId": 37719,
+      "maxFixtureId": 37763,
+      "firstDateTime": "2017-04-07T10:00:00+0000",
+      "lastDateTime": "2017-04-09T11:00:00+0000"
+    },
+    {
+      "key": "SIN",
+      "event": "Singapore 7s",
+      "competitionId": "258",
+      "resolvedSeed": "37769",
+      "fixtureCount": 45,
+      "minFixtureId": 37764,
+      "maxFixtureId": 37808,
+      "firstDateTime": "2017-04-15T03:00:00+0000",
+      "lastDateTime": "2017-04-16T12:20:00+0000"
+    },
+    {
+      "key": "PAR",
+      "event": "Paris 7s",
+      "competitionId": "259",
+      "resolvedSeed": "37825",
+      "fixtureCount": 45,
+      "minFixtureId": 37809,
+      "maxFixtureId": 37853,
+      "firstDateTime": "2017-05-13T08:00:00+0000",
+      "lastDateTime": "2017-05-14T15:33:00+0000"
+    },
+    {
+      "key": "LON",
+      "event": "London 7s",
+      "competitionId": "260",
+      "resolvedSeed": "37920",
+      "fixtureCount": 45,
+      "minFixtureId": 37888,
+      "maxFixtureId": 37932,
+      "firstDateTime": "2017-05-20T08:30:00+0000",
+      "lastDateTime": "2017-05-21T16:57:00+0000"
+    }
+  ],
+  "capturedAt": "2026-08-21T15:24:09.756Z"
+}
