@@ -1,0 +1,44 @@
+name: Rugby Raw Backfill Entity Crawl
+
+on:
+  push:
+    branches:
+      - probe/rugby-raw-backfill
+    paths:
+      - .github/workflows/rugby-raw-entity-crawl.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: probe/rugby-raw-backfill
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Capture real entity queries
+        env:
+          OUT_DIR: docs/diagnostics/raw-entity-crawl
+        run: node scripts/diagnostics/rugby_entity_page_crawl_probe.mjs
+      - name: Record run pointer
+        run: |
+          cat > docs/diagnostics/raw-entity-crawl/run.json <<EOF
+          {"run_id":${GITHUB_RUN_ID},"run_attempt":${GITHUB_RUN_ATTEMPT},"commit":"${GITHUB_SHA}","captured_at":"$(date -u +%FT%TZ)"}
+          EOF
+      - name: Commit tiny probe output
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -- docs/diagnostics/raw-entity-crawl
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Record raw backfill entity crawl"
+          git push origin HEAD:probe/rugby-raw-backfill
