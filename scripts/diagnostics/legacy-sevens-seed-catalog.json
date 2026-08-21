@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "scope": "World Rugby Sevens Series / HSBC SVNS legacy tournament seeds on Rugby.com.au",
+  "notes": [
+    "competitionId is not globally unique across time by itself; identify an event by competitionId + sourceSeason + gender + event date.",
+    "A seed is only an entry point. Tournament fixtures are reconstructed by neighboring fixture IDs and then verified against competitionId + sourceSeason.",
+    "Do not assume statsPresent means analysis-ready; legacy match stats can contain many structural fields with zero values."
+  ],
+  "seeds": [
+    {
+      "eventKey": "2016-M-HKG",
+      "gender": "Men",
+      "event": "Hong Kong 7s",
+      "competitionId": "257",
+      "sourceSeason": "2016",
+      "seedFixtureId": "30856",
+      "seedStatus": "verified_public_match_centre",
+      "validationStatus": "pending_neighborhood_validation"
+    },
+    {
+      "eventKey": "2017-M-WLG",
+      "gender": "Men",
+      "event": "Wellington 7s",
+      "competitionId": "253",
+      "sourceSeason": "2017",
+      "seedFixtureId": "37459",
+      "seedStatus": "verified",
+      "validationStatus": "neighborhood_reconstructed_45"
+    },
+    {
+      "eventKey": "2017-M-HKG",
+      "gender": "Men",
+      "event": "Hong Kong 7s",
+      "competitionId": "257",
+      "sourceSeason": "2017",
+      "seedFixtureId": "37719",
+      "seedStatus": "verified",
+      "validationStatus": "neighborhood_reconstructed_45"
+    }
+  ]
+}
