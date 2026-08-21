@@ -1,0 +1,1033 @@
+{
+  "count": 74,
+  "competitions": [
+    {
+      "id": "109",
+      "labels": [
+        "Bordeaux 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.compList[9]"
+      ]
+    },
+    {
+      "id": "110",
+      "labels": [
+        "SVNS Women's - Valladolid 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.compList[32]"
+      ]
+    },
+    {
+      "id": "112",
+      "labels": [
+        "Bordeaux 7s Womens"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.compList[10]"
+      ]
+    },
+    {
+      "id": "115",
+      "labels": [
+        "SVNS Men's - New York 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.compList[21]"
+      ]
+    },
+    {
+      "id": "116",
+      "labels": [
+        "SVNS Women's - New York 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.compList[22]"
+      ]
+    },
+    {
+      "id": "249",
+      "labels": [
+        "Korea 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[17].teams[13]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[35].teams[2]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[39].teams[9]"
+      ]
+    },
+    {
+      "id": "251",
+      "labels": [
+        "SVNS Men's - Dubai 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.compList[13]"
+      ]
+    },
+    {
+      "id": "252",
+      "labels": [
+        "SVNS Men's - Cape Town 7s",
+        "Argentina 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.compList[11]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[9].teams[4]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[11].teams[7]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[13].teams[10]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[15].teams[6]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[17].teams[9]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[19].teams[5]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[21].teams[4]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[23].teams[5]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[25].teams[7]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[27].teams[5]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[29].teams[10]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[31].teams[4]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[35].teams[5]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[39].teams[13]"
+      ]
+    },
+    {
+      "id": "253",
+      "labels": [
+        "Canada 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[11].teams[3]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[13].teams[3]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[15].teams[2]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[17].teams[2]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[19].teams[1]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[23].teams[1]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[25].teams[11]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[27].teams[1]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[29].teams[3]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[35].teams[9]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[39].teams[19]"
+      ]
+    },
+    {
+      "id": "254",
+      "labels": [
+        "Fiji 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[9].teams[1]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[11].teams[4]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[13].teams[6]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[15].teams[3]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[17].teams[5]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[19].teams[2]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[21].teams[1]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[23].teams[2]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[25].teams[13]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[27].teams[2]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[29].teams[6]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[31].teams[1]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[35].teams[12]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[39].teams[21]"
+      ]
+    },
+    {
+      "id": "255",
+      "labels": [
+        "France 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[9].teams[3]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[11].teams[8]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[13].teams[11]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[15].teams[7]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[17].teams[10]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[19].teams[6]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[21].teams[3]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[23].teams[6]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[25].teams[6]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[27].teams[6]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[29].teams[11]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[31].teams[3]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[35].teams[4]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[39].teams[12]"
+      ]
+    },
+    {
+      "id": "256",
+      "labels": [
+        "SVNS Men's - Vancouver 7s",
+        "Japan 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.compList[29]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[11].teams[14]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[13].teams[19]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[15].teams[14]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[25].teams[3]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[27].teams[12]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[29].teams[24]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[35].teams[0]"
+      ]
+    },
+    {
+      "id": "257",
+      "labels": [
+        "SVNS Men's - Hong Kong 7s",
+        "Kenya 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.compList[15]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[9].teams[9]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[11].teams[0]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[13].teams[0]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[15].teams[0]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[17].teams[0]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[21].teams[9]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[25].teams[10]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[27].teams[0]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[29].teams[1]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[31].teams[9]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[35].teams[8]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[39].teams[18]"
+      ]
+    },
+    {
+      "id": "258",
+      "labels": [
+        "SVNS Men's - Singapore 7s",
+        "Portugal 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.compList[25]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[13].teams[16]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[25].teams[9]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[29].teams[17]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[39].teams[15]"
+      ]
+    },
+    {
+      "id": "259",
+      "labels": [
+        "Russia 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[13].teams[18]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[25].teams[16]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[29].teams[22]"
+      ]
+    },
+    {
+      "id": "260",
+      "labels": [
+        "Samoa 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[11].teams[2]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[13].teams[2]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[15].teams[1]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[17].teams[1]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[19].teams[0]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[23].teams[0]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[25].teams[0]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[29].teams[2]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[39].teams[5]"
+      ]
+    },
+    {
+      "id": "261",
+      "labels": [
+        "SVNS Women's - Dubai 7s",
+        "Scotland 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.compList[14]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[13].teams[8]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[17].teams[7]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[25].teams[2]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[29].teams[8]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[39].teams[7]"
+      ]
+    },
+    {
+      "id": "262",
+      "labels": [
+        "USA 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[9].teams[0]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[11].teams[9]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[13].teams[12]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[15].teams[8]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[17].teams[11]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[19].teams[7]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[21].teams[0]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[23].teams[7]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[25].teams[5]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[27].teams[7]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[29].teams[12]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[31].teams[0]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[35].teams[3]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[39].teams[10]"
+      ]
+    },
+    {
+      "id": "263",
+      "labels": [
+        "Wales 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[13].teams[5]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[17].teams[4]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[25].teams[15]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[29].teams[5]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[39].teams[22]"
+      ]
+    },
+    {
+      "id": "264",
+      "labels": [
+        "Zimbabwe 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[13].teams[17]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[39].teams[17]"
+      ]
+    },
+    {
+      "id": "265",
+      "labels": [
+        "Brazil 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[19].teams[8]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[23].teams[8]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[27].teams[8]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[29].teams[13]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[35].teams[11]"
+      ]
+    },
+    {
+      "id": "282",
+      "labels": [
+        "Olympic Men's 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.compList[35]"
+      ]
+    },
+    {
+      "id": "283",
+      "labels": [
+        "Olympic Women's 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.compList[36]"
+      ]
+    },
+    {
+      "id": "296",
+      "labels": [
+        "SVNS Men's - Los Angeles 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.compList[17]"
+      ]
+    },
+    {
+      "id": "322",
+      "labels": [
+        "Rugby World Cup Sevens"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.compList[39]"
+      ]
+    },
+    {
+      "id": "323",
+      "labels": [
+        "Rugby World Cup Sevens - Women"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.compList[40]"
+      ]
+    },
+    {
+      "id": "348",
+      "labels": [
+        "SVNS Women's - Cape Town 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.compList[12]"
+      ]
+    },
+    {
+      "id": "350",
+      "labels": [
+        "SVNS Women - Hong Kong 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.compList[16]"
+      ]
+    },
+    {
+      "id": "374",
+      "labels": [
+        "Great Britain 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[9].teams[6]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[11].teams[10]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[13].teams[13]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[15].teams[9]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[19].teams[9]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[21].teams[6]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[23].teams[9]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[27].teams[9]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[29].teams[14]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[31].teams[6]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[35].teams[7]"
+      ]
+    },
+    {
+      "id": "375",
+      "labels": [
+        "Great Britain Women 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[10].teams[7]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[12].teams[2]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[14].teams[3]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[16].teams[2]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[18].teams[2]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[20].teams[2]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[22].teams[7]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[24].teams[6]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[26].teams[6]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[28].teams[7]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[30].teams[6]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[32].teams[7]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[36].teams[7]"
+      ]
+    },
+    {
+      "id": "376",
+      "labels": [
+        "Spain 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[9].teams[2]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[11].teams[11]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[13].teams[14]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[15].teams[10]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[17].teams[12]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[19].teams[10]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[21].teams[2]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[23].teams[10]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[25].teams[14]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[27].teams[10]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[29].teams[15]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[31].teams[2]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[35].teams[13]"
+      ]
+    },
+    {
+      "id": "401",
+      "labels": [
+        "Australia Women 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[10].teams[10]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[12].teams[1]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[14].teams[2]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[16].teams[1]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[18].teams[1]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[20].teams[1]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[22].teams[10]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[24].teams[9]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[26].teams[9]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[28].teams[12]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[30].teams[10]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[32].teams[10]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[36].teams[12]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[40].teams[9]"
+      ]
+    },
+    {
+      "id": "402",
+      "labels": [
+        "Brazil Women 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[10].teams[4]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[12].teams[3]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[14].teams[4]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[16].teams[3]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[18].teams[3]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[20].teams[3]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[22].teams[4]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[24].teams[4]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[26].teams[4]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[28].teams[4]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[30].teams[4]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[32].teams[4]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[36].teams[4]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[40].teams[11]"
+      ]
+    },
+    {
+      "id": "403",
+      "labels": [
+        "Canada Women 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[10].teams[0]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[12].teams[0]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[14].teams[0]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[16].teams[0]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[18].teams[0]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[20].teams[0]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[22].teams[0]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[24].teams[0]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[26].teams[0]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[28].teams[0]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[30].teams[0]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[32].teams[0]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[36].teams[1]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[40].teams[0]"
+      ]
+    },
+    {
+      "id": "407",
+      "labels": [
+        "England Women 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[14].teams[1]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[40].teams[2]"
+      ]
+    },
+    {
+      "id": "408",
+      "labels": [
+        "Fiji Women 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[10].teams[1]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[12].teams[9]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[14].teams[15]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[16].teams[10]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[18].teams[9]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[20].teams[9]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[22].teams[1]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[24].teams[1]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[26].teams[1]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[28].teams[1]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[30].teams[1]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[32].teams[1]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[36].teams[2]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[40].teams[1]"
+      ]
+    },
+    {
+      "id": "410",
+      "labels": [
+        "France Women 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[10].teams[5]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[12].teams[4]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[14].teams[5]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[16].teams[4]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[18].teams[4]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[20].teams[4]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[22].teams[5]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[24].teams[5]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[26].teams[5]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[28].teams[6]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[30].teams[5]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[32].teams[5]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[36].teams[5]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[40].teams[6]"
+      ]
+    },
+    {
+      "id": "415",
+      "labels": [
+        "Ireland Women 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[14].teams[13]"
+      ]
+    },
+    {
+      "id": "420",
+      "labels": [
+        "Japan Women 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[10].teams[9]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[12].teams[8]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[14].teams[12]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[16].teams[8]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[18].teams[8]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[20].teams[8]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[22].teams[9]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[24].teams[8]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[26].teams[8]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[28].teams[11]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[30].teams[9]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[32].teams[9]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[36].teams[11]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[40].teams[14]"
+      ]
+    },
+    {
+      "id": "421",
+      "labels": [
+        "New Zealand Women 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[10].teams[11]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[12].teams[10]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[14].teams[16]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[16].teams[11]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[18].teams[10]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[20].teams[10]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[22].teams[11]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[24].teams[10]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[26].teams[10]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[28].teams[13]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[30].teams[11]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[32].teams[11]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[36].teams[13]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[40].teams[15]"
+      ]
+    },
+    {
+      "id": "425",
+      "labels": [
+        "Russia Women 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[14].teams[14]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[28].teams[5]"
+      ]
+    },
+    {
+      "id": "426",
+      "labels": [
+        "Spain Women 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[10].teams[3]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[12].teams[5]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[14].teams[6]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[16].teams[5]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[18].teams[5]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[20].teams[5]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[22].teams[3]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[24].teams[3]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[26].teams[3]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[28].teams[3]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[30].teams[3]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[32].teams[3]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[36].teams[3]"
+      ]
+    },
+    {
+      "id": "427",
+      "labels": [
+        "USA Women 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[10].teams[8]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[12].teams[6]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[14].teams[7]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[16].teams[6]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[18].teams[6]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[20].teams[6]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[22].teams[8]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[24].teams[7]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[26].teams[7]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[28].teams[10]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[30].teams[8]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[32].teams[8]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[36].teams[10]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[40].teams[13]"
+      ]
+    },
+    {
+      "id": "430",
+      "labels": [
+        "Kenya Women 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[14].teams[8]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[28].teams[9]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[36].teams[9]"
+      ]
+    },
+    {
+      "id": "431",
+      "labels": [
+        "Uganda 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[11].teams[1]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[13].teams[1]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[39].teams[11]"
+      ]
+    },
+    {
+      "id": "432",
+      "labels": [
+        "South Africa Women 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[12].teams[11]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[14].teams[17]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[18].teams[11]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[40].teams[4]"
+      ]
+    },
+    {
+      "id": "503",
+      "labels": [
+        "Chile 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[29].teams[21]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[39].teams[4]"
+      ]
+    },
+    {
+      "id": "510",
+      "labels": [
+        "Germany 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[29].teams[20]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[39].teams[23]"
+      ]
+    },
+    {
+      "id": "512",
+      "labels": [
+        "Hong Kong 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[15].teams[12]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[25].teams[18]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[29].teams[18]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[39].teams[2]"
+      ]
+    },
+    {
+      "id": "513",
+      "labels": [
+        "Ireland 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[11].teams[12]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[13].teams[15]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[15].teams[11]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[17].teams[14]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[19].teams[11]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[23].teams[11]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[25].teams[4]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[27].teams[11]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[29].teams[16]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[35].teams[1]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[39].teams[8]"
+      ]
+    },
+    {
+      "id": "515",
+      "labels": [
+        "World Rugby Seven Series Men's - Toulouse 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.compList[27]"
+      ]
+    },
+    {
+      "id": "517",
+      "labels": [
+        "Mexico 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[29].teams[23]"
+      ]
+    },
+    {
+      "id": "518",
+      "labels": [
+        "SVNS Women's - Toulouse 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.compList[28]"
+      ]
+    },
+    {
+      "id": "530",
+      "labels": [
+        "Tonga 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[39].teams[0]"
+      ]
+    },
+    {
+      "id": "534",
+      "labels": [
+        "Uruguay 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[9].teams[8]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[11].teams[13]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[15].teams[13]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[21].teams[8]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[29].teams[19]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[31].teams[8]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[39].teams[3]"
+      ]
+    },
+    {
+      "id": "538",
+      "labels": [
+        "Jamaica 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[29].teams[0]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[39].teams[16]"
+      ]
+    },
+    {
+      "id": "539",
+      "labels": [
+        "China Women 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[10].teams[6]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[14].teams[9]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[22].teams[6]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[32].teams[6]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[36].teams[6]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[40].teams[7]"
+      ]
+    },
+    {
+      "id": "746",
+      "labels": [
+        "SVNS Women's - Vancouver 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.compList[30]"
+      ]
+    },
+    {
+      "id": "748",
+      "labels": [
+        "SVNS Men's - Perth 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.compList[23]"
+      ]
+    },
+    {
+      "id": "749",
+      "labels": [
+        "SVNS Men's - Madrid 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.compList[19]"
+      ]
+    },
+    {
+      "id": "750",
+      "labels": [
+        "SVNS Women's - Perth 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.compList[24]"
+      ]
+    },
+    {
+      "id": "751",
+      "labels": [
+        "SVNS Women's - Los Angeles 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.compList[18]"
+      ]
+    },
+    {
+      "id": "752",
+      "labels": [
+        "SVNS Women's - Singapore 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.compList[26]"
+      ]
+    },
+    {
+      "id": "753",
+      "labels": [
+        "SVNS Women's - Madrid 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.compList[20]"
+      ]
+    },
+    {
+      "id": "4515",
+      "labels": [
+        "Ireland Women 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[10].teams[2]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[12].teams[7]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[14].teams[10]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[16].teams[7]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[18].teams[7]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[20].teams[7]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[22].teams[2]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[24].teams[2]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[26].teams[2]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[28].teams[2]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[30].teams[2]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[32].teams[2]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[40].teams[3]"
+      ]
+    },
+    {
+      "id": "19570",
+      "labels": [
+        "New Zealand 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[9].teams[7]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[11].teams[5]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[13].teams[7]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[15].teams[4]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[17].teams[6]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[19].teams[3]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[21].teams[7]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[23].teams[3]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[25].teams[17]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[27].teams[3]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[29].teams[7]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[31].teams[7]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[35].teams[14]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[39].teams[1]"
+      ]
+    },
+    {
+      "id": "19571",
+      "labels": [
+        "Australia 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[9].teams[5]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[11].teams[15]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[13].teams[20]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[15].teams[15]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[17].teams[15]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[19].teams[12]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[21].teams[5]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[23].teams[12]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[25].teams[8]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[27].teams[13]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[29].teams[25]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[31].teams[5]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[35].teams[6]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[39].teams[14]"
+      ]
+    },
+    {
+      "id": "19572",
+      "labels": [
+        "South Africa 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[9].teams[10]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[11].teams[6]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[13].teams[9]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[15].teams[5]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[17].teams[8]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[19].teams[4]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[21].teams[10]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[23].teams[4]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[25].teams[12]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[27].teams[4]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[29].teams[9]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[31].teams[10]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[35].teams[10]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[39].teams[20]"
+      ]
+    },
+    {
+      "id": "19573",
+      "labels": [
+        "England 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[13].teams[4]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[17].teams[3]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[25].teams[1]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[29].teams[4]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[39].teams[6]"
+      ]
+    },
+    {
+      "id": "19705",
+      "labels": [
+        "Colombia Women 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[28].teams[8]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[30].teams[7]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[36].teams[8]",
+        "$.props.pageProps.pageData.content.document[0].props.competitions[40].teams[12]"
+      ]
+    },
+    {
+      "id": "29977",
+      "labels": [
+        "Russian Olympic Committee Womens 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[36].teams[0]"
+      ]
+    },
+    {
+      "id": "30019",
+      "labels": [
+        "Poland Women 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[40].teams[8]"
+      ]
+    },
+    {
+      "id": "30312",
+      "labels": [
+        "Madagascar Women 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[40].teams[5]"
+      ]
+    },
+    {
+      "id": "30350",
+      "labels": [
+        "Hong Kong Women 7s"
+      ],
+      "paths": [
+        "$.props.pageProps.pageData.content.document[0].props.competitions[16].teams[9]"
+      ]
+    }
+  ],
+  "capturedAt": "2026-08-21T15:17:19.455Z"
+}
