@@ -1029,6 +1029,2546 @@
       ]
     }
   ],
+  "parentCompetitions": [
+    {
+      "index": 0,
+      "scalars": {
+        "label": "Super Rugby Pacific"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 11,
+          "sampleScalars": [
+            {
+              "label": "Crusaders",
+              "value": "96"
+            },
+            {
+              "label": "Blues",
+              "value": "93"
+            },
+            {
+              "label": "Brumbies",
+              "value": "150"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 1,
+      "scalars": {
+        "label": "Rugby World Cup"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 24,
+          "sampleScalars": [
+            {
+              "label": "Japan",
+              "value": "3000"
+            },
+            {
+              "label": "South Africa",
+              "value": "900"
+            },
+            {
+              "label": "Ireland",
+              "value": "600"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 2,
+      "scalars": {
+        "label": "International"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 35,
+          "sampleScalars": [
+            {
+              "label": "Japan",
+              "value": "3000"
+            },
+            {
+              "label": "South Africa",
+              "value": "900"
+            },
+            {
+              "label": "Ireland",
+              "value": "600"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 3,
+      "scalars": {
+        "label": "Nations Championship"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 12,
+          "sampleScalars": [
+            {
+              "label": "Wallabies",
+              "value": "100"
+            },
+            {
+              "label": "Ireland",
+              "value": "600"
+            },
+            {
+              "label": "England",
+              "value": "550"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 4,
+      "scalars": {
+        "label": "Women's International"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 17,
+          "sampleScalars": [
+            {
+              "label": "Canada Women",
+              "value": "238"
+            },
+            {
+              "label": "Spain Women",
+              "value": "239"
+            },
+            {
+              "label": "USA Women",
+              "value": "242"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 5,
+      "scalars": {
+        "label": "Pacific Four Series"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 4,
+          "sampleScalars": [
+            {
+              "label": "New Zealand Women",
+              "value": "236"
+            },
+            {
+              "label": "USA Women",
+              "value": "242"
+            },
+            {
+              "label": "Canada Women",
+              "value": "238"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 6,
+      "scalars": {
+        "label": "Super Rugby Women's 2026"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 5,
+          "sampleScalars": [
+            {
+              "label": "Waratahs",
+              "value": "q8oqugMXKc4Qmmo54"
+            },
+            {
+              "label": "Drua",
+              "value": "xYFcJfxqNuryDaHiX"
+            },
+            {
+              "label": "Reds",
+              "value": "oSAsCh9jA6MhcatKf"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 7,
+      "scalars": {
+        "label": "Six Nations"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 6,
+          "sampleScalars": [
+            {
+              "label": "France",
+              "value": "650"
+            },
+            {
+              "label": "Italy",
+              "value": "952"
+            },
+            {
+              "label": "Scotland",
+              "value": "700"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 8,
+      "scalars": {
+        "label": "The Rugby Championship"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 4,
+          "sampleScalars": [
+            {
+              "label": "Wallabies",
+              "value": "100"
+            },
+            {
+              "label": "South Africa",
+              "value": "900"
+            },
+            {
+              "label": "New Zealand",
+              "value": "850"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 9,
+      "scalars": {
+        "label": "SVN's Men's - Bordeaux 7s"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 11,
+          "sampleScalars": [
+            {
+              "label": "USA 7s",
+              "value": "262"
+            },
+            {
+              "label": "Fiji 7s",
+              "value": "254"
+            },
+            {
+              "label": "Spain 7s",
+              "value": "376"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 10,
+      "scalars": {
+        "label": "SVNS Women's - Bordeaux 7s"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 12,
+          "sampleScalars": [
+            {
+              "label": "Canada Women 7s",
+              "value": "403"
+            },
+            {
+              "label": "Fiji Women 7s",
+              "value": "408"
+            },
+            {
+              "label": "Ireland Women 7s",
+              "value": "4515"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 11,
+      "scalars": {
+        "label": "SVNS Men's - Cape Town 7s"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 16,
+          "sampleScalars": [
+            {
+              "label": "Kenya 7s",
+              "value": "257"
+            },
+            {
+              "label": "Uganda 7s",
+              "value": "431"
+            },
+            {
+              "label": "Samoa 7s",
+              "value": "260"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 12,
+      "scalars": {
+        "label": "SVNS Women's - Cape Town 7s"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 12,
+          "sampleScalars": [
+            {
+              "label": "Canada Women 7s",
+              "value": "403"
+            },
+            {
+              "label": "Australia Women 7s",
+              "value": "401"
+            },
+            {
+              "label": "Great Britain Women 7s",
+              "value": "375"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 13,
+      "scalars": {
+        "label": "SVNS Men's - Dubai 7s"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 21,
+          "sampleScalars": [
+            {
+              "label": "Kenya 7s",
+              "value": "257"
+            },
+            {
+              "label": "Uganda 7s",
+              "value": "431"
+            },
+            {
+              "label": "Samoa 7s",
+              "value": "260"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 14,
+      "scalars": {
+        "label": "SVNS Women's - Dubai 7s"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 18,
+          "sampleScalars": [
+            {
+              "label": "Canada Women 7s",
+              "value": "403"
+            },
+            {
+              "label": "England Women 7s",
+              "value": "407"
+            },
+            {
+              "label": "Australia Women 7s",
+              "value": "401"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 15,
+      "scalars": {
+        "label": "SVNS Men's - Hong Kong 7s"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 16,
+          "sampleScalars": [
+            {
+              "label": "Kenya 7s",
+              "value": "257"
+            },
+            {
+              "label": "Samoa 7s",
+              "value": "260"
+            },
+            {
+              "label": "Canada 7s",
+              "value": "253"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 16,
+      "scalars": {
+        "label": "SVNS Women's - Hong Kong 7s"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 12,
+          "sampleScalars": [
+            {
+              "label": "Canada Women 7s",
+              "value": "403"
+            },
+            {
+              "label": "Australia Women 7s",
+              "value": "401"
+            },
+            {
+              "label": "Great Britain Women 7s",
+              "value": "375"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 17,
+      "scalars": {
+        "label": "SVNS Men's - Los Angeles 7s"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 16,
+          "sampleScalars": [
+            {
+              "label": "Kenya 7s",
+              "value": "257"
+            },
+            {
+              "label": "Samoa 7s",
+              "value": "260"
+            },
+            {
+              "label": "Canada 7s",
+              "value": "253"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 18,
+      "scalars": {
+        "label": "SVNS Women's - Los Angeles 7s"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 12,
+          "sampleScalars": [
+            {
+              "label": "Canada Women 7s",
+              "value": "403"
+            },
+            {
+              "label": "Australia Women 7s",
+              "value": "401"
+            },
+            {
+              "label": "Great Britain Women 7s",
+              "value": "375"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 19,
+      "scalars": {
+        "label": "SVNS Men's - Madrid 7s"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 13,
+          "sampleScalars": [
+            {
+              "label": "Samoa 7s",
+              "value": "260"
+            },
+            {
+              "label": "Canada 7s",
+              "value": "253"
+            },
+            {
+              "label": "Fiji 7s",
+              "value": "254"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 20,
+      "scalars": {
+        "label": "SVNS Women's - Madrid 7s"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 11,
+          "sampleScalars": [
+            {
+              "label": "Canada Women 7s",
+              "value": "403"
+            },
+            {
+              "label": "Australia Women 7s",
+              "value": "401"
+            },
+            {
+              "label": "Great Britain Women 7s",
+              "value": "375"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 21,
+      "scalars": {
+        "label": "SVNS Men's - New York 7s"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 11,
+          "sampleScalars": [
+            {
+              "label": "USA 7s",
+              "value": "262"
+            },
+            {
+              "label": "Fiji 7s",
+              "value": "254"
+            },
+            {
+              "label": "Spain 7s",
+              "value": "376"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 22,
+      "scalars": {
+        "label": "SVNS Women's - New York 7s "
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 12,
+          "sampleScalars": [
+            {
+              "label": "Canada Women 7s",
+              "value": "403"
+            },
+            {
+              "label": "Fiji Women 7s",
+              "value": "408"
+            },
+            {
+              "label": "Ireland Women 7s",
+              "value": "4515"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 23,
+      "scalars": {
+        "label": "SVNS Men's - Perth 7s"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 13,
+          "sampleScalars": [
+            {
+              "label": "Samoa 7s",
+              "value": "260"
+            },
+            {
+              "label": "Canada 7s",
+              "value": "253"
+            },
+            {
+              "label": "Fiji 7s",
+              "value": "254"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 24,
+      "scalars": {
+        "label": "SVNS Women's - Perth 7s"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 11,
+          "sampleScalars": [
+            {
+              "label": "Canada Women 7s",
+              "value": "403"
+            },
+            {
+              "label": "Fiji Women 7s",
+              "value": "408"
+            },
+            {
+              "label": "Ireland Women 7s",
+              "value": "4515"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 25,
+      "scalars": {
+        "label": "SVNS Men's - Singapore 7s"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 19,
+          "sampleScalars": [
+            {
+              "label": "Samoa 7s",
+              "value": "260"
+            },
+            {
+              "label": "England 7s",
+              "value": "19573"
+            },
+            {
+              "label": "Scotland 7s",
+              "value": "261"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 26,
+      "scalars": {
+        "label": "SVNS Women's - Singapore 7s"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 11,
+          "sampleScalars": [
+            {
+              "label": "Canada Women 7s",
+              "value": "403"
+            },
+            {
+              "label": "Fiji Women 7s",
+              "value": "408"
+            },
+            {
+              "label": "Ireland Women 7s",
+              "value": "4515"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 27,
+      "scalars": {
+        "label": "SVNS Men's - Toulouse 7s"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 14,
+          "sampleScalars": [
+            {
+              "label": "Kenya 7s",
+              "value": "257"
+            },
+            {
+              "label": "Canada 7s",
+              "value": "253"
+            },
+            {
+              "label": "Fiji 7s",
+              "value": "254"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 28,
+      "scalars": {
+        "label": "SVNS Women's - Toulouse 7s"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 14,
+          "sampleScalars": [
+            {
+              "label": "Canada Women 7s",
+              "value": "403"
+            },
+            {
+              "label": "Fiji Women 7s",
+              "value": "408"
+            },
+            {
+              "label": "Ireland Women 7s",
+              "value": "4515"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 29,
+      "scalars": {
+        "label": "SVNS Men's - Vancouver 7s"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 26,
+          "sampleScalars": [
+            {
+              "label": "Jamaica 7s",
+              "value": "538"
+            },
+            {
+              "label": "Kenya 7s",
+              "value": "257"
+            },
+            {
+              "label": "Samoa 7s",
+              "value": "260"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 30,
+      "scalars": {
+        "label": "SVNS Women's - Vancouver 7s"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 12,
+          "sampleScalars": [
+            {
+              "label": "Canada Women 7s",
+              "value": "403"
+            },
+            {
+              "label": "Fiji Women 7s",
+              "value": "408"
+            },
+            {
+              "label": "Ireland Women 7s",
+              "value": "4515"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 31,
+      "scalars": {
+        "label": "SNVS Men's - Valladolid"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 11,
+          "sampleScalars": [
+            {
+              "label": "USA 7s",
+              "value": "262"
+            },
+            {
+              "label": "Fiji 7s",
+              "value": "254"
+            },
+            {
+              "label": "Spain 7s",
+              "value": "376"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 32,
+      "scalars": {
+        "label": "SVNS Women's - Valladolid 7s"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 12,
+          "sampleScalars": [
+            {
+              "label": "Canada Women 7s",
+              "value": "403"
+            },
+            {
+              "label": "Fiji Women 7s",
+              "value": "408"
+            },
+            {
+              "label": "Ireland Women 7s",
+              "value": "4515"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 33,
+      "scalars": {
+        "label": "Australian Schoolboys/U18s 2025"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 4,
+          "sampleScalars": [
+            {
+              "label": "Australian U18s",
+              "value": "LPoAFtWHFfFtDaBju"
+            },
+            {
+              "label": "Australian Schoolboys",
+              "value": "hytkXJmcvqKa7pvta"
+            },
+            {
+              "label": "Fiji Schoolboys",
+              "value": "HYF9fR2A53aF6TjBQ"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 34,
+      "scalars": {
+        "label": "British & Irish Lions"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 23,
+          "sampleScalars": [
+            {
+              "label": "Hurricanes",
+              "value": "94"
+            },
+            {
+              "label": "Emerging Springboks",
+              "value": "33"
+            },
+            {
+              "label": "Provincial Barbarians",
+              "value": "285"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 35,
+      "scalars": {
+        "label": "Olympic Men's 7s"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 15,
+          "sampleScalars": [
+            {
+              "label": "Japan 7s",
+              "value": "256"
+            },
+            {
+              "label": "Ireland 7s",
+              "value": "513"
+            },
+            {
+              "label": "Korea 7s",
+              "value": "249"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 36,
+      "scalars": {
+        "label": "Olympic Women's 7s"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 14,
+          "sampleScalars": [
+            {
+              "label": "Russian Olympic Committee Womens 7s",
+              "value": "29977"
+            },
+            {
+              "label": "Canada Women 7s",
+              "value": "403"
+            },
+            {
+              "label": "Fiji Women 7s",
+              "value": "408"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 37,
+      "scalars": {
+        "label": "Pacific Nations Cup"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 7,
+          "sampleScalars": [
+            {
+              "label": "Japan",
+              "value": "3000"
+            },
+            {
+              "label": "Samoa",
+              "value": "950"
+            },
+            {
+              "label": "Fiji",
+              "value": "954"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 38,
+      "scalars": {
+        "label": "Rugby AU U15s 2025"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 2,
+          "sampleScalars": [
+            {
+              "label": "Reds U15",
+              "value": "jRzca7auJqB6mTXnR"
+            },
+            {
+              "label": "Waratahs U15",
+              "value": "q7mRcqMM9SjphHHkm"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 39,
+      "scalars": {
+        "label": "Rugby World Cup Sevens"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 24,
+          "sampleScalars": [
+            {
+              "label": "Tonga 7s",
+              "value": "530"
+            },
+            {
+              "label": "New Zealand 7s",
+              "value": "19570"
+            },
+            {
+              "label": "Hong Kong 7s",
+              "value": "512"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 40,
+      "scalars": {
+        "label": "Rugby World Cup Sevens - Women"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 16,
+          "sampleScalars": [
+            {
+              "label": "Canada Women 7s",
+              "value": "403"
+            },
+            {
+              "label": "Fiji Women 7s",
+              "value": "408"
+            },
+            {
+              "label": "England Women 7s",
+              "value": "407"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 41,
+      "scalars": {
+        "label": "Super Rugby AUS 2025"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 4,
+          "sampleScalars": [
+            {
+              "label": "Waratahs AUS",
+              "value": "CBLYeTnaZztCKG5vk"
+            },
+            {
+              "label": "Force AUS",
+              "value": "bNWYb3CA6QS2zcfyu"
+            },
+            {
+              "label": "Reds AUS",
+              "value": "63E2LLpYL3FqnoeH7"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 42,
+      "scalars": {
+        "label": "Super Rugby Aotearoa"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 5,
+          "sampleScalars": [
+            {
+              "label": "Crusaders",
+              "value": "96"
+            },
+            {
+              "label": "Highlanders",
+              "value": "95"
+            },
+            {
+              "label": "Chiefs",
+              "value": "91"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 43,
+      "scalars": {
+        "label": "Super Rugby Men's U16s"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 5,
+          "sampleScalars": [
+            {
+              "label": "Brumbies U16",
+              "value": "47cjBFFL4y3AKyRxn"
+            },
+            {
+              "label": "Force U16",
+              "value": "wj2H5sFhtuicFaJb9"
+            },
+            {
+              "label": "Waratahs U16",
+              "value": "HoS6pvWzfsYtcDBFC"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 44,
+      "scalars": {
+        "label": "Super Rugby Men's 16s 2025"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 5,
+          "sampleScalars": [
+            {
+              "label": "ACT Brumbies U16",
+              "value": "CNuMhN3mnob6p3TKA"
+            },
+            {
+              "label": "Waratahs U16",
+              "value": "aj6B3gbxcnWrFHqDh"
+            },
+            {
+              "label": "Force U16",
+              "value": "mXrS5p2GfpB2t5pEe"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 45,
+      "scalars": {
+        "label": "Super Rugby Men's 19s 2025"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 4,
+          "sampleScalars": [
+            {
+              "label": "Waratahs U19",
+              "value": "wbtDDG9YCwQfdk6fS"
+            },
+            {
+              "label": "Force U19",
+              "value": "n88jNGtBX5C7djDFQ"
+            },
+            {
+              "label": "Reds U19",
+              "value": "xa347YTSYsPRqqoTk"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 46,
+      "scalars": {
+        "label": "Super Rugby Men's U19s"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 5,
+          "sampleScalars": [
+            {
+              "label": "Brumbies U19",
+              "value": "kaMK53g4vR9n7pGC7"
+            },
+            {
+              "label": "Force U19",
+              "value": "xmKQgFNkmAsQcq4Pz"
+            },
+            {
+              "label": "Waratahs U19",
+              "value": "uvZ537yddNxTxtxhJ"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 47,
+      "scalars": {
+        "label": "Super Rugby Trans-Tasman"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 10,
+          "sampleScalars": [
+            {
+              "label": "Brumbies",
+              "value": "150"
+            },
+            {
+              "label": "Queensland Reds",
+              "value": "250"
+            },
+            {
+              "label": "Blues",
+              "value": "93"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 48,
+      "scalars": {
+        "label": "Super Rugby Women's 2025"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 5,
+          "sampleScalars": [
+            {
+              "label": "Waratahs",
+              "value": "NxM9GWvdz2wRxaBoR"
+            },
+            {
+              "label": "Fijian Drua",
+              "value": "rrvCk4Tpfp9qYjmGC"
+            },
+            {
+              "label": "Western Force",
+              "value": "yXcfnSoavWnxtBEjc"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 49,
+      "scalars": {
+        "label": "Super Rugby Women's 2024"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 6,
+          "sampleScalars": [
+            {
+              "label": "NSW Waratahs",
+              "value": "heBkDXz6CuHHvdGs4"
+            },
+            {
+              "label": "ACT Brumbies",
+              "value": "cEwjQMSD4cpAyE6GD"
+            },
+            {
+              "label": "Western Force",
+              "value": "RR8i7cAJDzimJAgQz"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 50,
+      "scalars": {
+        "label": "TRC U20s"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 4,
+          "sampleScalars": [
+            {
+              "label": "Argentina U20",
+              "value": "8350"
+            },
+            {
+              "label": "New Zealand U20",
+              "value": "TsokyY6DydkPBaooW"
+            },
+            {
+              "label": "Australia U20",
+              "value": "oizGygvZsfbe25JCF"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 51,
+      "scalars": {
+        "label": "U18 International"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 2,
+          "sampleScalars": [
+            {
+              "label": "Australia U18",
+              "value": "30401"
+            },
+            {
+              "label": "New Zealand U18",
+              "value": "30402"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 52,
+      "scalars": {
+        "label": "World Rugby U20 Championship"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 12,
+          "sampleScalars": [
+            {
+              "label": "South Africa U20",
+              "value": "8700"
+            },
+            {
+              "label": "Japan U20",
+              "value": "8550"
+            },
+            {
+              "label": "France U20",
+              "value": "8150"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 53,
+      "scalars": {
+        "label": "Women's Rugby World Cup"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 15,
+          "sampleScalars": [
+            {
+              "label": "Hong Kong Women",
+              "value": "19706"
+            },
+            {
+              "label": "South Africa Women",
+              "value": "241"
+            },
+            {
+              "label": "Ireland Women",
+              "value": "231"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 54,
+      "scalars": {
+        "label": "Women's Six Nations"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 6,
+          "sampleScalars": [
+            {
+              "label": "Ireland Women",
+              "value": "231"
+            },
+            {
+              "label": "Scotland Women",
+              "value": "232"
+            },
+            {
+              "label": "Wales Women",
+              "value": "234"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 55,
+      "scalars": {
+        "label": "WXV Global Series "
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 12,
+          "sampleScalars": [
+            {
+              "label": "France Women",
+              "value": "233"
+            },
+            {
+              "label": "USA Women",
+              "value": "242"
+            },
+            {
+              "label": "South Africa Women",
+              "value": "241"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 56,
+      "scalars": {
+        "label": "WXV Global Challenger Series"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 12,
+          "sampleScalars": [
+            {
+              "label": "France Women",
+              "value": "233"
+            },
+            {
+              "label": "USA Women",
+              "value": "242"
+            },
+            {
+              "label": "South Africa Women",
+              "value": "241"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 57,
+      "scalars": {
+        "label": "WXV 1"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 6,
+          "sampleScalars": [
+            {
+              "label": "England Women",
+              "value": "230"
+            },
+            {
+              "label": "New Zealand Women",
+              "value": "236"
+            },
+            {
+              "label": "Canada Women",
+              "value": "238"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 58,
+      "scalars": {
+        "label": "WXV 2"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 7,
+          "sampleScalars": [
+            {
+              "label": "Italy Women",
+              "value": "235"
+            },
+            {
+              "label": "Samoa Women",
+              "value": "243"
+            },
+            {
+              "label": "Wallaroos",
+              "value": "240"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 59,
+      "scalars": {
+        "label": "Next Gen 7s 2026 - Round 1 - Lennox Head"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 3,
+          "sampleScalars": [
+            {
+              "label": "NSW Waratahs 7s",
+              "value": "GAX8iqgvNZiZn3Rmt"
+            },
+            {
+              "label": "QLD Reds 7s",
+              "value": "XDnKGRQroAygCZKKA"
+            },
+            {
+              "label": "ACT Brumbies 7s",
+              "value": "7PwoN2k9sveSxwXSF"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 60,
+      "scalars": {
+        "label": "Next Gen 7s 2026 - Round 2 - Sydney"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 3,
+          "sampleScalars": [
+            {
+              "label": "NSW Waratahs 7s",
+              "value": "GAX8iqgvNZiZn3Rmt"
+            },
+            {
+              "label": "ACT Brumbies 7s",
+              "value": "7PwoN2k9sveSxwXSF"
+            },
+            {
+              "label": "QLD Reds 7s",
+              "value": "XDnKGRQroAygCZKKA"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 61,
+      "scalars": {
+        "label": "Next Gen 7s 2026 - Round 3 - Canberra"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 3,
+          "sampleScalars": [
+            {
+              "label": "ACT Brumbies 7s",
+              "value": "7PwoN2k9sveSxwXSF"
+            },
+            {
+              "label": "QLD Reds 7s",
+              "value": "XDnKGRQroAygCZKKA"
+            },
+            {
+              "label": "NSW Waratahs 7s",
+              "value": "GAX8iqgvNZiZn3Rmt"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 62,
+      "scalars": {
+        "label": "Next Gen 7s 2026 - Round 4 (Finals) - Sydney"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 3,
+          "sampleScalars": [
+            {
+              "label": "NSW Waratahs 7s",
+              "value": "GAX8iqgvNZiZn3Rmt"
+            },
+            {
+              "label": "QLD Reds 7s",
+              "value": "XDnKGRQroAygCZKKA"
+            },
+            {
+              "label": "ACT Brumbies 7s",
+              "value": "7PwoN2k9sveSxwXSF"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 63,
+      "scalars": {
+        "label": "2025 Next Gen 7s - Round 1"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 3,
+          "sampleScalars": [
+            {
+              "label": "Reds 7s",
+              "value": "q7AQDzKvQxJw5vsnM"
+            },
+            {
+              "label": "ACT Brumbies 7s",
+              "value": "2PGzdvYW3gGRnBC3i"
+            },
+            {
+              "label": "Waratahs 7s",
+              "value": "EacF77YncmDM5jQd3"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 64,
+      "scalars": {
+        "label": "2025 Next Gen 7s - Round 2"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 3,
+          "sampleScalars": [
+            {
+              "label": "Waratahs 7s",
+              "value": "EacF77YncmDM5jQd3"
+            },
+            {
+              "label": "ACT Brumbies 7s",
+              "value": "2PGzdvYW3gGRnBC3i"
+            },
+            {
+              "label": "Reds 7s",
+              "value": "q7AQDzKvQxJw5vsnM"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 65,
+      "scalars": {
+        "label": "2025 Next Gen 7s - Round 3"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 3,
+          "sampleScalars": [
+            {
+              "label": "ACT Brumbies 7s",
+              "value": "2PGzdvYW3gGRnBC3i"
+            },
+            {
+              "label": "Reds 7s",
+              "value": "q7AQDzKvQxJw5vsnM"
+            },
+            {
+              "label": "Waratahs 7s",
+              "value": "EacF77YncmDM5jQd3"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 66,
+      "scalars": {
+        "label": "2025 Next Gen 7s - Round 4 (Finals)"
+      },
+      "keys": [
+        "label",
+        "value",
+        "teams"
+      ],
+      "nested": {
+        "value": {
+          "kind": "object",
+          "keys": [
+            "id",
+            "sourceType"
+          ]
+        },
+        "teams": {
+          "kind": "array",
+          "length": 3,
+          "sampleScalars": [
+            {
+              "label": "Waratahs 7s",
+              "value": "EacF77YncmDM5jQd3"
+            },
+            {
+              "label": "ACT Brumbies 7s",
+              "value": "2PGzdvYW3gGRnBC3i"
+            },
+            {
+              "label": "Reds 7s",
+              "value": "q7AQDzKvQxJw5vsnM"
+            }
+          ]
+        }
+      }
+    }
+  ],
   "routeStrictness": {
     "buildId": "WkK1WI2PLW8ebAIW6IYoz",
     "fixture": "37719",
@@ -1056,5 +3596,5 @@
       }
     ]
   },
-  "capturedAt": "2026-08-21T15:19:25.076Z"
+  "capturedAt": "2026-08-21T15:20:11.812Z"
 }
