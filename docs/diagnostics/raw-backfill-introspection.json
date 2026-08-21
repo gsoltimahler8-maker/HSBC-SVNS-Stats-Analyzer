@@ -1,0 +1,21 @@
+{
+  "status": 400,
+  "errors": [
+    {
+      "message": "GraphQL introspection is not allowed by  Server, but the query contained __schema or __type. To enable introspection, pass introspection: true to Server in production",
+      "locations": [
+        {
+          "line": 2,
+          "column": 3
+        }
+      ],
+      "extensions": {
+        "validationErrorCode": "INTROSPECTION_DISABLED",
+        "code": "GRAPHQL_VALIDATION_FAILED"
+      }
+    }
+  ],
+  "candidates": [],
+  "candidateTypes": [],
+  "capturedAt": "2026-08-21T15:10:03.304Z"
+}
