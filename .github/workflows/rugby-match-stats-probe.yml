@@ -1,4 +1,4 @@
-name: Rugby Entity Page Crawl Probe
+name: Rugby 2016-17 Men's Full Season Coverage
 
 on:
   push:
@@ -6,16 +6,16 @@ on:
       - probe/rugby-match-stats
     paths:
       - '.github/workflows/rugby-match-stats-probe.yml'
-      - 'scripts/diagnostics/rugby_entity_page_crawl_probe.mjs'
+      - 'scripts/diagnostics/rugby_2017_mens_full_season_coverage_probe.mjs'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  entity-page-crawl:
+  mens-2017-full-season-coverage:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 45
 
     steps:
       - uses: actions/checkout@v4
@@ -24,31 +24,18 @@ jobs:
         with:
           node-version: 22
 
-      - name: Prepare isolated Playwright environment
-        run: |
-          corepack enable
-          corepack prepare pnpm@10 --activate
-          rm -rf /tmp/rugby-entity-page-crawl
-          mkdir -p /tmp/rugby-entity-page-crawl
-          cp scripts/diagnostics/rugby_entity_page_crawl_probe.mjs /tmp/rugby-entity-page-crawl/probe.mjs
-          cd /tmp/rugby-entity-page-crawl
-          printf '{"private":true,"type":"module"}\n' > package.json
-          pnpm add playwright@1.55.0
-          pnpm exec playwright install --with-deps chromium
-
-      - name: Crawl entity pages and test season 2017
+      - name: Discover remaining 2016-17 men's event seeds and audit full season coverage
         env:
-          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-entity-page-crawl
+          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-2017-mens-full-season-coverage
         run: |
-          cd /tmp/rugby-entity-page-crawl
-          node probe.mjs
+          node scripts/diagnostics/rugby_2017_mens_full_season_coverage_probe.mjs
 
-      - name: Show entity page crawl summary
+      - name: Show 2016-17 men's full season coverage summary
         if: always()
         run: |
           node - <<'NODE'
           const fs = require('fs');
-          const p = 'artifacts/rugby-entity-page-crawl/summary.json';
+          const p = 'artifacts/rugby-2017-mens-full-season-coverage/summary.json';
           if (!fs.existsSync(p)) {
             console.log('summary.json not found');
             process.exit(0);
@@ -56,26 +43,30 @@ jobs:
           const s = JSON.parse(fs.readFileSync(p, 'utf8'));
           console.log(JSON.stringify({
             audit: s.audit,
-            targetSeason: s.targetSeason,
-            knownFixture: s.knownFixture,
-            visitedPageCount: s.visitedPageCount,
-            capturedEntityQueryCount: s.capturedEntityQueryCount,
-            candidateCount: s.candidateCount,
-            candidates: s.candidates,
-            nonEmptyResultCount: s.nonEmptyResultCount,
-            knownFixtureMatchCount: s.knownFixtureMatchCount,
-            knownFixtureMatches: s.knownFixtureMatches,
-            queryResults: s.queryResults,
-            pagesWithEntityQueries: s.pagesWithEntityQueries,
-            visitedPages: s.visitedPages
+            canonicalSeriesSeason: s.canonicalSeriesSeason,
+            sourceSeason: s.sourceSeason,
+            officialEventCount: s.officialEventCount,
+            discoveredEventCount: s.discoveredEventCount,
+            reconstructedEventCount: s.reconstructedEventCount,
+            completeEventCoverage: s.completeEventCoverage,
+            reconstructedFixtureCount: s.reconstructedFixtureCount,
+            richStatsCount: s.richStatsCount,
+            sparseStatsCount: s.sparseStatsCount,
+            scoreOnlyOrZeroStatsCount: s.scoreOnlyOrZeroStatsCount,
+            noStatsCount: s.noStatsCount,
+            analysisReadyCount: s.analysisReadyCount,
+            analysisReadyFixtureRatio: s.analysisReadyFixtureRatio,
+            seasonTrendEligibility: s.seasonTrendEligibility,
+            discovery: s.discovery,
+            eventSummary: s.eventSummary
           }, null, 2));
           NODE
 
-      - name: Upload entity page crawl artifacts
+      - name: Upload 2016-17 men's full season coverage artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: rugby-entity-page-crawl
-          path: artifacts/rugby-entity-page-crawl/
+          name: rugby-2017-mens-full-season-coverage
+          path: artifacts/rugby-2017-mens-full-season-coverage/
           if-no-files-found: warn
           retention-days: 14
