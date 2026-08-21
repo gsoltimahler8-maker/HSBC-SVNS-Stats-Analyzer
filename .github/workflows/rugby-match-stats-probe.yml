@@ -1,4 +1,4 @@
-name: Rugby Legacy Fixture Neighborhood
+name: Rugby Legacy Wellington 2017 Validation
 
 on:
   push:
@@ -6,14 +6,14 @@ on:
       - probe/rugby-match-stats
     paths:
       - '.github/workflows/rugby-match-stats-probe.yml'
-      - 'scripts/diagnostics/rugby_legacy_fixture_neighborhood_probe.mjs'
+      - 'scripts/diagnostics/rugby_legacy_wellington_2017_probe.mjs'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  legacy-fixture-neighborhood:
+  wellington-legacy-validation:
     runs-on: ubuntu-latest
     timeout-minutes: 35
 
@@ -26,25 +26,25 @@ jobs:
 
       - name: Prepare isolated Node environment
         run: |
-          rm -rf /tmp/rugby-legacy-fixture-neighborhood
-          mkdir -p /tmp/rugby-legacy-fixture-neighborhood
-          cp scripts/diagnostics/rugby_legacy_fixture_neighborhood_probe.mjs /tmp/rugby-legacy-fixture-neighborhood/probe.mjs
-          cd /tmp/rugby-legacy-fixture-neighborhood
+          rm -rf /tmp/rugby-legacy-wellington-2017
+          mkdir -p /tmp/rugby-legacy-wellington-2017
+          cp scripts/diagnostics/rugby_legacy_wellington_2017_probe.mjs /tmp/rugby-legacy-wellington-2017/probe.mjs
+          cd /tmp/rugby-legacy-wellington-2017
           printf '{"private":true,"type":"module"}\n' > package.json
 
-      - name: Reconstruct Hong Kong 2017 by neighboring fixture IDs
+      - name: Reconstruct Wellington 2017 by neighboring fixture IDs
         env:
-          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-legacy-fixture-neighborhood
+          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-legacy-wellington-2017
         run: |
-          cd /tmp/rugby-legacy-fixture-neighborhood
+          cd /tmp/rugby-legacy-wellington-2017
           node probe.mjs
 
-      - name: Show legacy fixture neighborhood summary
+      - name: Show Wellington legacy validation summary
         if: always()
         run: |
           node - <<'NODE'
           const fs = require('fs');
-          const p = 'artifacts/rugby-legacy-fixture-neighborhood/summary.json';
+          const p = 'artifacts/rugby-legacy-wellington-2017/summary.json';
           if (!fs.existsSync(p)) {
             console.log('summary.json not found');
             process.exit(0);
@@ -53,12 +53,10 @@ jobs:
           console.log(JSON.stringify({
             audit: s.audit,
             seed: s.seed,
-            scanRadiusUsed: s.scanRadiusUsed,
+            scannedCandidateCount: s.scannedCandidateCount,
             scanMinFixtureId: s.scanMinFixtureId,
             scanMaxFixtureId: s.scanMaxFixtureId,
-            scannedCandidateCount: s.scannedCandidateCount,
             kindCounts: s.kindCounts,
-            httpStatusCounts: s.httpStatusCounts,
             reconstructedFixtureCount: s.reconstructedFixtureCount,
             minMatchedFixtureId: s.minMatchedFixtureId,
             maxMatchedFixtureId: s.maxMatchedFixtureId,
@@ -76,14 +74,12 @@ jobs:
             lastFixtures: s.lastFixtures
           }, null, 2));
           NODE
-          echo '--- reconstructed fixture CSV ---'
-          head -n 60 artifacts/rugby-legacy-fixture-neighborhood/hong-kong-2017-fixtures.csv || true
 
-      - name: Upload legacy fixture neighborhood artifacts
+      - name: Upload Wellington validation artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: rugby-legacy-fixture-neighborhood
-          path: artifacts/rugby-legacy-fixture-neighborhood/
+          name: rugby-legacy-wellington-2017
+          path: artifacts/rugby-legacy-wellington-2017/
           if-no-files-found: warn
           retention-days: 14
