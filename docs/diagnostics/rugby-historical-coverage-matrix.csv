@@ -1,9 +1,1 @@
-source_season,canonical_season,gender,discovered_event_count,fixture_count,detail_success,detail_failure,rich_stats,sparse_stats,score_only_or_zero,no_stats,analysis_ready_stats_ratio,points_summary_count,points_summary_ratio,lineup_count,lineup_ratio,commentary_count,commentary_ratio,all_season_stat_count,all_season_stat_ratio,stat_title_count,stat_schema_vs_2025_26,fixture_schema_vs_2025_26,points_schema_vs_2025_26,lineup_schema_vs_2025_26,commentary_schema_vs_2025_26
-2023,2022-23,Men,5,225,225,0,225,0,0,0,1,225,1,225,1,225,1,225,1,40,1,1,1,1,1
-2023,2022-23,Women,5,170,170,0,170,0,0,0,1,170,1,170,1,170,1,170,1,40,1,1,1,1,1
-2024,2023-24,Men,6,228,86,142,86,0,0,0,1,86,1,86,1,86,1,86,1,40,1,1,1,1,1
-2024,2023-24,Women,7,260,120,140,119,1,0,0,1,120,1,120,1,120,1,120,1,40,1,1,1,1,1
-2025,2024-25,Men,4,176,6,170,6,0,0,0,1,6,1,6,1,6,1,6,1,40,1,1,1,1,1
-2025,2024-25,Women,5,208,12,196,12,0,0,0,1,12,1,12,1,12,1,12,1,40,1,1,1,1,1
-2026,2025-26,Men,5,112,49,63,49,0,0,0,1,49,1,49,1,49,1,49,1,40,1,1,1,1,1
-2026,2025-26,Women,7,164,98,66,98,0,0,0,1,98,1,98,1,98,1,98,1,40,1,1,1,1,1
+source_season,canonical_season,gender,discovered_event_count,fixture_count,detail_success,detail_failure,rich_stats,sparse_stats,score_only_or_zero,no_stats,analysis_ready_stats_ratio,points_summary_count,points_summary_ratio,lineup_count,lineup_ratio,commentary_count,commentary_ratio,all_season_stat_count,all_season_stat_ratio,referees_count,referees_ratio,fixture_meta_count,fixture_meta_ratio,stat_title_count,stat_schema_vs_2025_26,fixture_schema_vs_2025_26,points_schema_vs_2025_26,lineup_schema_vs_2025_26,commentary_schema_vs_2025_26,all_season_stat_schema_vs_2025_26,referees_schema_vs_2025_26,fixture_meta_schema_vs_2025_26
