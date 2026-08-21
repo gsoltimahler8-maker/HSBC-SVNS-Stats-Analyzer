@@ -1029,5 +1029,32 @@
       ]
     }
   ],
-  "capturedAt": "2026-08-21T15:17:19.455Z"
+  "routeStrictness": {
+    "buildId": "WkK1WI2PLW8ebAIW6IYoz",
+    "fixture": "37719",
+    "tests": [
+      {
+        "requestedComp": "257",
+        "status": 200,
+        "hasFixture": true,
+        "actualComp": "257",
+        "actualFixture": "37719"
+      },
+      {
+        "requestedComp": "251",
+        "status": 200,
+        "hasFixture": false,
+        "actualComp": "",
+        "actualFixture": ""
+      },
+      {
+        "requestedComp": "999",
+        "status": 200,
+        "hasFixture": false,
+        "actualComp": "",
+        "actualFixture": ""
+      }
+    ]
+  },
+  "capturedAt": "2026-08-21T15:19:25.076Z"
 }
