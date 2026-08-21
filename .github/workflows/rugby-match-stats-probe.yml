@@ -1,4 +1,4 @@
-name: Rugby Entity Season Minimal Probe
+name: Rugby Entity Season clubSiteMeta Probe
 
 on:
   push:
@@ -6,16 +6,16 @@ on:
       - probe/rugby-match-stats
     paths:
       - '.github/workflows/rugby-match-stats-probe.yml'
-      - 'scripts/diagnostics/rugby_entity_season_min_probe.mjs'
+      - 'scripts/diagnostics/rugby_entity_season_clubmeta_probe.mjs'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  entity-season-min:
+  entity-season-clubmeta:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
       - uses: actions/checkout@v4
@@ -24,31 +24,41 @@ jobs:
         with:
           node-version: 22
 
-      - name: Run season-only EntityFixturesAndResults probe
+      - name: Extract clubSiteMeta candidates and query season 2017
         env:
-          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-entity-season-min
+          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-entity-season-clubmeta
         run: |
-          node scripts/diagnostics/rugby_entity_season_min_probe.mjs
+          node scripts/diagnostics/rugby_entity_season_clubmeta_probe.mjs
 
-      - name: Show Entity season probe summary
+      - name: Show clubSiteMeta entity season probe summary
         if: always()
         run: |
           node - <<'NODE'
           const fs = require('fs');
-          const p = 'artifacts/rugby-entity-season-min/summary.json';
+          const p = 'artifacts/rugby-entity-season-clubmeta/summary.json';
           if (!fs.existsSync(p)) {
             console.log('summary.json not found');
             process.exit(0);
           }
           const s = JSON.parse(fs.readFileSync(p, 'utf8'));
-          console.log(JSON.stringify(s, null, 2));
+          console.log(JSON.stringify({
+            audit: s.audit,
+            targetSeason: s.targetSeason,
+            knownFixture: s.knownFixture,
+            candidateCount: s.candidateCount,
+            candidates: s.candidates,
+            nonEmptyResultCount: s.nonEmptyResultCount,
+            knownFixtureMatchCount: s.knownFixtureMatchCount,
+            queryResults: s.queryResults,
+            pageReports: s.pageReports
+          }, null, 2));
           NODE
 
-      - name: Upload Entity season probe artifact
+      - name: Upload clubSiteMeta entity season probe artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: rugby-entity-season-min
-          path: artifacts/rugby-entity-season-min/
+          name: rugby-entity-season-clubmeta
+          path: artifacts/rugby-entity-season-clubmeta/
           if-no-files-found: warn
           retention-days: 14
