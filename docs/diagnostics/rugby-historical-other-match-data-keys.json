@@ -1,0 +1,107 @@
+{
+  "otherMatchDataKeys": [],
+  "allMatchStatsSummaryKeyFrequency": [
+    {
+      "key": "__typename",
+      "count": 766
+    },
+    {
+      "key": "id",
+      "count": 766
+    },
+    {
+      "key": "lineUp",
+      "count": 766
+    },
+    {
+      "key": "playSummary",
+      "count": 766
+    },
+    {
+      "key": "pointsSummary",
+      "count": 766
+    },
+    {
+      "key": "referees",
+      "count": 766
+    }
+  ],
+  "fixtureItemKeyFrequency": [
+    {
+      "key": "__typename",
+      "count": 766
+    },
+    {
+      "key": "awayTeam",
+      "count": 766
+    },
+    {
+      "key": "compId",
+      "count": 766
+    },
+    {
+      "key": "compName",
+      "count": 766
+    },
+    {
+      "key": "dateTime",
+      "count": 766
+    },
+    {
+      "key": "fixtureMeta",
+      "count": 766
+    },
+    {
+      "key": "group",
+      "count": 766
+    },
+    {
+      "key": "homeTeam",
+      "count": 766
+    },
+    {
+      "key": "id",
+      "count": 766
+    },
+    {
+      "key": "isBye",
+      "count": 766
+    },
+    {
+      "key": "isLive",
+      "count": 766
+    },
+    {
+      "key": "matchLabel",
+      "count": 766
+    },
+    {
+      "key": "round",
+      "count": 766
+    },
+    {
+      "key": "roundLabel",
+      "count": 766
+    },
+    {
+      "key": "roundType",
+      "count": 766
+    },
+    {
+      "key": "season",
+      "count": 766
+    },
+    {
+      "key": "sourceType",
+      "count": 766
+    },
+    {
+      "key": "status",
+      "count": 766
+    },
+    {
+      "key": "venue",
+      "count": 766
+    }
+  ]
+}
