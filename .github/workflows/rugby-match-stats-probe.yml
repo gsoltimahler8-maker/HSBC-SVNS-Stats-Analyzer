@@ -1,4 +1,4 @@
-name: Rugby 2016-17 Men's Full Season Coverage
+name: Rugby Historical Coverage Matrix 2016-17 to 2025-26
 
 on:
   push:
@@ -6,16 +6,16 @@ on:
       - probe/rugby-match-stats
     paths:
       - '.github/workflows/rugby-match-stats-probe.yml'
-      - 'scripts/diagnostics/rugby_2017_mens_full_season_coverage_probe.mjs'
+      - 'scripts/diagnostics/rugby_historical_coverage_matrix.mjs'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  mens-2017-full-season-coverage:
+  historical-coverage-matrix:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 120
 
     steps:
       - uses: actions/checkout@v4
@@ -24,18 +24,31 @@ jobs:
         with:
           node-version: 22
 
-      - name: Discover remaining 2016-17 men's event seeds and audit full season coverage
-        env:
-          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-2017-mens-full-season-coverage
+      - name: Prepare isolated Playwright environment
         run: |
-          node scripts/diagnostics/rugby_2017_mens_full_season_coverage_probe.mjs
+          corepack enable
+          corepack prepare pnpm@10 --activate
+          rm -rf /tmp/rugby-historical-coverage
+          mkdir -p /tmp/rugby-historical-coverage
+          cp scripts/diagnostics/rugby_historical_coverage_matrix.mjs /tmp/rugby-historical-coverage/audit.mjs
+          cd /tmp/rugby-historical-coverage
+          printf '{"private":true,"type":"module"}\n' > package.json
+          pnpm add playwright@1.55.0
+          pnpm exec playwright install --with-deps chromium
 
-      - name: Show 2016-17 men's full season coverage summary
+      - name: Audit all discoverable Series data from 2016-17 through 2025-26
+        env:
+          OUT_DIR: ${{ github.workspace }}/artifacts/rugby-historical-coverage-matrix
+        run: |
+          cd /tmp/rugby-historical-coverage
+          node audit.mjs
+
+      - name: Show coverage summary
         if: always()
         run: |
           node - <<'NODE'
           const fs = require('fs');
-          const p = 'artifacts/rugby-2017-mens-full-season-coverage/summary.json';
+          const p = 'artifacts/rugby-historical-coverage-matrix/summary.json';
           if (!fs.existsSync(p)) {
             console.log('summary.json not found');
             process.exit(0);
@@ -43,30 +56,44 @@ jobs:
           const s = JSON.parse(fs.readFileSync(p, 'utf8'));
           console.log(JSON.stringify({
             audit: s.audit,
-            canonicalSeriesSeason: s.canonicalSeriesSeason,
-            sourceSeason: s.sourceSeason,
-            officialEventCount: s.officialEventCount,
-            discoveredEventCount: s.discoveredEventCount,
-            reconstructedEventCount: s.reconstructedEventCount,
-            completeEventCoverage: s.completeEventCoverage,
-            reconstructedFixtureCount: s.reconstructedFixtureCount,
-            richStatsCount: s.richStatsCount,
-            sparseStatsCount: s.sparseStatsCount,
-            scoreOnlyOrZeroStatsCount: s.scoreOnlyOrZeroStatsCount,
-            noStatsCount: s.noStatsCount,
-            analysisReadyCount: s.analysisReadyCount,
-            analysisReadyFixtureRatio: s.analysisReadyFixtureRatio,
-            seasonTrendEligibility: s.seasonTrendEligibility,
-            discovery: s.discovery,
-            eventSummary: s.eventSummary
+            hardBoundary: s.hardBoundary,
+            latestCanonicalSeason: s.latestCanonicalSeason,
+            baselineCanonicalSeason: s.baselineCanonicalSeason,
+            targetCompetitionFilterCount: s.targetCompetitionFilterCount,
+            discoveredFixtureCountWithinBoundary: s.discoveredFixtureCountWithinBoundary,
+            detailSuccessCount: s.detailSuccessCount,
+            detailFailureCount: s.detailFailureCount,
+            discoveryFailureCount: s.discoveryFailureCount,
+            seasonGenderRows: (s.seasonGenderRows || []).map(x => ({
+              season: x.canonicalSeason,
+              gender: x.gender,
+              events: x.discoveredEventCount,
+              fixtures: x.fixtureCount,
+              detailSuccess: x.detailSuccessCount,
+              rich: x.richStatsCount,
+              sparse: x.sparseStatsCount,
+              zero: x.scoreOnlyOrZeroStatsCount,
+              noStats: x.noStatsCount,
+              pointsSummary: `${x.pointsSummaryCount}/${x.detailSuccessCount}`,
+              lineup: `${x.lineupCount}/${x.detailSuccessCount}`,
+              commentary: `${x.commentaryCount}/${x.detailSuccessCount}`,
+              allSeasonStat: `${x.allSeasonStatCount}/${x.detailSuccessCount}`,
+              statSchemaVs2025_26: x.baselineComparison?.statTitles?.baselineCoverageRatio,
+              fixtureSchemaVs2025_26: x.baselineComparison?.fixtureSchema?.baselineCoverageRatio,
+              pointsSchemaVs2025_26: x.baselineComparison?.pointsSchema?.baselineCoverageRatio,
+              lineupSchemaVs2025_26: x.baselineComparison?.lineupSchema?.baselineCoverageRatio,
+              commentarySchemaVs2025_26: x.baselineComparison?.commentarySchema?.baselineCoverageRatio,
+            })),
+            otherMatchDataKeys: s.otherMatchDataKeys,
+            allMatchStatsSummaryKeyFrequency: s.allMatchStatsSummaryKeyFrequency,
           }, null, 2));
           NODE
 
-      - name: Upload 2016-17 men's full season coverage artifact
+      - name: Upload historical coverage artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: rugby-2017-mens-full-season-coverage
-          path: artifacts/rugby-2017-mens-full-season-coverage/
+          name: rugby-historical-coverage-matrix-2016-17-to-2025-26
+          path: artifacts/rugby-historical-coverage-matrix/
           if-no-files-found: warn
           retention-days: 14
