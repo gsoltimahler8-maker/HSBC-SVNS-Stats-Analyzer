@@ -1,0 +1,51 @@
+name: Rugby Raw Backfill 2016-17 Men
+
+on:
+  push:
+    branches:
+      - probe/rugby-raw-backfill
+    paths:
+      - scripts/diagnostics/rugby_raw_backfill_2017_men.mjs
+      - .github/workflows/rugby-raw-backfill-2017-men.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  OUT_DIR: artifacts/raw-2016-17-men
+
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: probe/rugby-raw-backfill
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Acquire raw Rugby.com.au JSON
+        run: node scripts/diagnostics/rugby_raw_backfill_2017_men.mjs
+      - name: Record transport pointer
+        run: |
+          mkdir -p docs/diagnostics
+          cp artifacts/raw-2016-17-men/acquisition_summary.json docs/diagnostics/raw-2016-17-men-acquisition-summary.json
+          cat > docs/diagnostics/raw-2016-17-men-run.json <<EOF
+          {"run_id":${GITHUB_RUN_ID},"run_attempt":${GITHUB_RUN_ATTEMPT},"commit":"${GITHUB_SHA}","captured_at":"$(date -u +%FT%TZ)"}
+          EOF
+      - name: Upload immutable raw archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: rugby-raw-2016-17-men
+          path: artifacts/raw-2016-17-men
+          retention-days: 7
+          if-no-files-found: error
+      - name: Commit only tiny acquisition pointers
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -- docs/diagnostics/raw-2016-17-men-acquisition-summary.json docs/diagnostics/raw-2016-17-men-run.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Record raw 2016-17 men acquisition pointer"
+          git push origin HEAD:probe/rugby-raw-backfill
