@@ -40,17 +40,27 @@ jobs:
         env:
           OUT_DIR: ${{ github.workspace }}/artifacts/rugby-historical-coverage-matrix
         run: |
+          mkdir -p "$OUT_DIR"
           cd /tmp/rugby-historical-coverage
-          node audit.mjs
+          set +e
+          node audit.mjs > "$OUT_DIR/audit-console.log" 2>&1
+          code=$?
+          set -e
+          printf '%s\n' "$code" > "$OUT_DIR/exit-code.txt"
+          tail -n 400 "$OUT_DIR/audit-console.log" > "$OUT_DIR/audit-console-tail.log" || true
+          echo "Audit exit code: $code"
 
-      - name: Show coverage summary
+      - name: Show coverage summary or diagnostics
         if: always()
         run: |
           node - <<'NODE'
           const fs = require('fs');
-          const p = 'artifacts/rugby-historical-coverage-matrix/summary.json';
+          const base = 'artifacts/rugby-historical-coverage-matrix';
+          const p = `${base}/summary.json`;
           if (!fs.existsSync(p)) {
             console.log('summary.json not found');
+            if (fs.existsSync(`${base}/exit-code.txt`)) console.log('exit code:', fs.readFileSync(`${base}/exit-code.txt`, 'utf8').trim());
+            if (fs.existsSync(`${base}/audit-console-tail.log`)) console.log(fs.readFileSync(`${base}/audit-console-tail.log`, 'utf8'));
             process.exit(0);
           }
           const s = JSON.parse(fs.readFileSync(p, 'utf8'));
@@ -89,21 +99,28 @@ jobs:
           }, null, 2));
           NODE
 
-      - name: Persist compact audit results on probe branch
-        if: success()
+      - name: Persist compact audit results and diagnostics on probe branch
+        if: always()
         run: |
           mkdir -p docs/diagnostics
-          cp artifacts/rugby-historical-coverage-matrix/summary.json docs/diagnostics/rugby-historical-coverage-summary.json
-          cp artifacts/rugby-historical-coverage-matrix/coverage-matrix.csv docs/diagnostics/rugby-historical-coverage-matrix.csv
-          cp artifacts/rugby-historical-coverage-matrix/event-coverage.csv docs/diagnostics/rugby-historical-event-coverage.csv
-          cp artifacts/rugby-historical-coverage-matrix/other-match-data-keys.json docs/diagnostics/rugby-historical-other-match-data-keys.json
+          base='artifacts/rugby-historical-coverage-matrix'
+          [ -f "$base/summary.json" ] && cp "$base/summary.json" docs/diagnostics/rugby-historical-coverage-summary.json || true
+          [ -f "$base/coverage-matrix.csv" ] && cp "$base/coverage-matrix.csv" docs/diagnostics/rugby-historical-coverage-matrix.csv || true
+          [ -f "$base/event-coverage.csv" ] && cp "$base/event-coverage.csv" docs/diagnostics/rugby-historical-event-coverage.csv || true
+          [ -f "$base/other-match-data-keys.json" ] && cp "$base/other-match-data-keys.json" docs/diagnostics/rugby-historical-other-match-data-keys.json || true
+          [ -f "$base/exit-code.txt" ] && cp "$base/exit-code.txt" docs/diagnostics/rugby-historical-audit-exit-code.txt || true
+          [ -f "$base/audit-console-tail.log" ] && cp "$base/audit-console-tail.log" docs/diagnostics/rugby-historical-audit-console-tail.log || true
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -- \
-            docs/diagnostics/rugby-historical-coverage-summary.json \
-            docs/diagnostics/rugby-historical-coverage-matrix.csv \
-            docs/diagnostics/rugby-historical-event-coverage.csv \
+          paths=(
+            docs/diagnostics/rugby-historical-coverage-summary.json
+            docs/diagnostics/rugby-historical-coverage-matrix.csv
+            docs/diagnostics/rugby-historical-event-coverage.csv
             docs/diagnostics/rugby-historical-other-match-data-keys.json
+            docs/diagnostics/rugby-historical-audit-exit-code.txt
+            docs/diagnostics/rugby-historical-audit-console-tail.log
+          )
+          for p in "${paths[@]}"; do [ -f "$p" ] && git add -- "$p"; done
           if git diff --cached --quiet; then
             echo 'No audit result changes to commit.'
           else
