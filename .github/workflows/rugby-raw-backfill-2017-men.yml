@@ -26,26 +26,44 @@ jobs:
         with:
           node-version: 22
       - name: Acquire raw Rugby.com.au JSON
-        run: node scripts/diagnostics/rugby_raw_backfill_2017_men.mjs
+        id: acquire
+        shell: bash
+        run: |
+          set +e
+          mkdir -p docs/diagnostics
+          node scripts/diagnostics/rugby_raw_backfill_2017_men.mjs > docs/diagnostics/raw-2016-17-men-acquisition.log 2>&1
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          echo "${code}" > docs/diagnostics/raw-2016-17-men-exit-code.txt
+          exit 0
       - name: Record transport pointer
+        shell: bash
         run: |
           mkdir -p docs/diagnostics
-          cp artifacts/raw-2016-17-men/acquisition_summary.json docs/diagnostics/raw-2016-17-men-acquisition-summary.json
+          if [ -f artifacts/raw-2016-17-men/acquisition_summary.json ]; then
+            cp artifacts/raw-2016-17-men/acquisition_summary.json docs/diagnostics/raw-2016-17-men-acquisition-summary.json
+          fi
           cat > docs/diagnostics/raw-2016-17-men-run.json <<EOF
-          {"run_id":${GITHUB_RUN_ID},"run_attempt":${GITHUB_RUN_ATTEMPT},"commit":"${GITHUB_SHA}","captured_at":"$(date -u +%FT%TZ)"}
+          {"run_id":${GITHUB_RUN_ID},"run_attempt":${GITHUB_RUN_ATTEMPT},"commit":"${GITHUB_SHA}","exit_code":${{ steps.acquire.outputs.exit_code }},"captured_at":"$(date -u +%FT%TZ)"}
           EOF
       - name: Upload immutable raw archive
+        if: steps.acquire.outputs.exit_code == '0'
         uses: actions/upload-artifact@v4
         with:
           name: rugby-raw-2016-17-men
           path: artifacts/raw-2016-17-men
           retention-days: 7
           if-no-files-found: error
-      - name: Commit only tiny acquisition pointers
+      - name: Commit tiny acquisition pointers and diagnostics
+        shell: bash
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add -- docs/diagnostics/raw-2016-17-men-acquisition-summary.json docs/diagnostics/raw-2016-17-men-run.json
+          git add -- docs/diagnostics/raw-2016-17-men-run.json docs/diagnostics/raw-2016-17-men-exit-code.txt docs/diagnostics/raw-2016-17-men-acquisition.log
+          if [ -f docs/diagnostics/raw-2016-17-men-acquisition-summary.json ]; then git add -- docs/diagnostics/raw-2016-17-men-acquisition-summary.json; fi
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m "Record raw 2016-17 men acquisition pointer"
+          git commit -m "Record raw 2016-17 men acquisition result"
           git push origin HEAD:probe/rugby-raw-backfill
+      - name: Fail after diagnostics if acquisition failed
+        if: steps.acquire.outputs.exit_code != '0'
+        run: exit 1
